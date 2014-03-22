@@ -21,7 +21,7 @@ enum TokenKind
   TokenKindOpenBrace,
   TokenKindCloseBrace,
   TokenKindEndOfParagraph,
-  TokenKindTODO,
+  TokenKindUnknown,
   TokenKindCount
 };
 

@@ -17,15 +17,13 @@ private:
   int CurrentPos;
   std::string File;
 
-  char LastChar;
-
 public:
-  CheffeLexer(const std::string& SrcFile) : CurrentPos(-1), File(SrcFile), LastChar(' ')
+  CheffeLexer(const std::string& SrcFile) : CurrentPos(0), File(SrcFile)
   {
   }
 
   // Gets a char from the input
-  int getChar();
+  int getNextChar();
 
   // Peeks at the next char from the input
   int peekNextChar();

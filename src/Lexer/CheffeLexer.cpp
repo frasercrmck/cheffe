@@ -5,18 +5,18 @@
 namespace cheffe
 {
 
-int CheffeLexer::getChar()
+int CheffeLexer::getNextChar()
 {
-  return File[++CurrentPos];
+  return File[CurrentPos++];
 }
 
 int CheffeLexer::peekNextChar()
 {
-  if (CurrentPos >= (File.size() - 1))
+  if (CurrentPos < File.size())
   {
-    return '\0';
+    return File[CurrentPos];
   }
-  return File[CurrentPos + 1];
+  return END_OF_FILE;
 }
 
 std::string CheffeLexer::getTextSpan(const std::size_t Begin, const std::size_t End)
@@ -35,55 +35,56 @@ std::string CheffeLexer::lookAhead(const std::size_t NumChars)
 
 Token CheffeLexer::getToken()
 {
-  Token Tok(TokenKindCount);
+  Token Tok(TokenKindUnknown);
+
+  Tok.Begin = CurrentPos;
 
   // Skip any whitespace.
-  while (isspace(LastChar))
+  while (isspace(peekNextChar()))
   {
-    if (LastChar == NEW_LINE)
+    if (peekNextChar() == NEW_LINE)
     {
-      Tok.Begin = CurrentPos;
       Tok.Kind = TokenKindNewLine;
 
-      const char NextChar = peekNextChar();
-      if (NextChar == NEW_LINE)
+      getNextChar();
+      if (peekNextChar() == NEW_LINE)
       {
-        LastChar = getChar();
+        getNextChar();
         Tok.Kind = TokenKindEndOfParagraph;
       }
-
-      LastChar = getChar();
 
       Tok.End = CurrentPos;
       return Tok;
     }
 
-    LastChar = getChar();
+    getNextChar();
   }
 
   Tok.Begin = CurrentPos;
-  if (isalpha(LastChar))
+
+  const int Char = getNextChar();
+  if (isalpha(Char))
   {
-    std::string IdentifierString{ LastChar };
-    while (isalpha(LastChar = getChar()))
+    std::string IdentifierString{ (char)Char };
+    while (isalpha(peekNextChar()))
     {
-      IdentifierString += LastChar;
+      IdentifierString += getNextChar();
     }
+
+    Tok.IdentifierString = std::move(IdentifierString);
 
     Tok.End = CurrentPos;
     Tok.Kind = TokenKindIdentifier;
-    Tok.IdentifierString = std::move(IdentifierString);
     return Tok;
   }
 
-  if (isdigit(LastChar))
+  if (isdigit(Char))
   {
-    std::string NumStr;
-    do
+    std::string NumStr = { (char)Char };
+    while (isdigit(peekNextChar()))
     {
-      NumStr += LastChar;
-      LastChar = getChar();
-    } while (isdigit(LastChar));
+      NumStr += getNextChar();
+    }
 
     Tok.NumVal = strtod(NumStr.c_str(), 0);
 
@@ -92,22 +93,19 @@ Token CheffeLexer::getToken()
     return Tok;
   }
 
-  if (LastChar == END_OF_FILE)
+  if (Char == END_OF_FILE)
   {
     Tok.End = CurrentPos;
     Tok.Kind = TokenKindEOF;
     return Tok;
   }
 
-  if (ispunct(LastChar))
+  if (ispunct(Char))
   {
-    const char ThisChar = LastChar;
-    LastChar = getChar();
-
     Tok.End = CurrentPos;
-    Tok.Kind = TokenKindTODO;
+    Tok.Kind = TokenKindUnknown;
 
-    switch (ThisChar)
+    switch (Char)
     {
     default:
       break;
@@ -131,10 +129,8 @@ Token CheffeLexer::getToken()
     return Tok;
   }
 
-  LastChar = getChar();
-
   Tok.End = CurrentPos;
-  Tok.Kind = TokenKindTODO;
+  Tok.Kind = TokenKindUnknown;
   return Tok;
 }
 
