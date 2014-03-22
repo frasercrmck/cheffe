@@ -11,20 +11,22 @@ using namespace cheffe;
 static CheffeErrorCode readFile(const std::string& FileName, std::string& File)
 {
   std::ifstream InStream(FileName, std::ios::in | std::ios::binary);
-  if (InStream)
+
+  if (!InStream)
   {
-    InStream.seekg(0, std::ios::end);
-
-    File.resize(InStream.tellg());
-
-    InStream.seekg(0, std::ios::beg);
-    InStream.read(&File[0], File.size());
-
-    InStream.close();
-
-    return CheffeErrorCode::CHEFFE_SUCCESS;
+    return CheffeErrorCode::CHEFFE_ERROR;
   }
-  return CheffeErrorCode::CHEFFE_ERROR;
+
+  InStream.seekg(0, std::ios::end);
+
+  File.resize(InStream.tellg());
+
+  InStream.seekg(0, std::ios::beg);
+  InStream.read(&File[0], File.size());
+
+  InStream.close();
+
+  return CheffeErrorCode::CHEFFE_SUCCESS;
 }
 
 int main(int argc, char** argv)
