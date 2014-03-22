@@ -100,14 +100,18 @@ public:
     return Kind == Tok;
   }
 
+  bool isAllOf(TokenKind Tok)
+  {
+    return is(Tok);
+  }
   template <typename ...Tail>
-  bool is(TokenKind&& Tok, Tail&&... Toks)
+  bool isAllOf(TokenKind&& Tok, Tail&&... Toks)
   {
       if (Kind != Tok)
       {
         return false;
       }
-      return is(std::forward<Tail>(Toks)...);
+      return isAllOf(std::forward<Tail>(Toks)...);
   }
 
   bool isNot(TokenKind Tok)
@@ -115,14 +119,18 @@ public:
     return Kind != Tok;
   }
 
+  bool isNotAnyOf(TokenKind Tok)
+  {
+    return isNot(Tok);
+  }
   template <typename ...Tail>
-  bool isNot(TokenKind&& Tok, Tail&&... Toks)
+  bool isNotAnyOf(TokenKind&& Tok, Tail&&... Toks)
   {
       if (Kind == Tok)
       {
         return false;
       }
-      return isNot(std::forward<Tail>(Toks)...);
+      return isNotAnyOf(std::forward<Tail>(Toks)...);
   }
 
   std::size_t getBegin()

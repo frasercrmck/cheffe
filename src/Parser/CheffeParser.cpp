@@ -71,7 +71,7 @@ CheffeErrorCode CheffeParser::parseRecipeTitle()
   const std::size_t BeginTitlePos = CurrentToken.getBegin();
 
   // Parse the Recipe Title.
-  while (CurrentToken.isNot(TokenKindFullStop, TokenKindEndOfParagraph, TokenKindEOF))
+  while (CurrentToken.isNotAnyOf(TokenKindFullStop, TokenKindEndOfParagraph, TokenKindEOF))
   {
     getNextToken();
   }
@@ -109,7 +109,7 @@ CheffeErrorCode CheffeParser::parseCommentBlock()
 
   getNextToken();
   const std::size_t CommentsBeginPos = CurrentToken.getBegin();
-  while (CurrentToken.isNot(TokenKindEndOfParagraph, TokenKindEOF))
+  while (CurrentToken.isNotAnyOf(TokenKindEndOfParagraph, TokenKindEOF))
   {
     getNextToken();
   }
@@ -150,11 +150,11 @@ CheffeErrorCode CheffeParser::parseIngredientsList()
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
-  while (CurrentToken.isNot(TokenKindEndOfParagraph, TokenKindEOF))
+  while (CurrentToken.isNotAnyOf(TokenKindEndOfParagraph, TokenKindEOF))
   {
     getNextToken();
     const std::size_t BeginIngredientPos = CurrentToken.getBegin();
-    while (CurrentToken.isNot(TokenKindNewLine, TokenKindEndOfParagraph, TokenKindEOF))
+    while (CurrentToken.isNotAnyOf(TokenKindNewLine, TokenKindEndOfParagraph, TokenKindEOF))
     {
       getNextToken();
     }
@@ -396,7 +396,7 @@ CheffeErrorCode CheffeParser::parseMethod()
 
   getNextToken();
   CHEFFE_DEBUG("\nMETHOD LIST:\n");
-  while (CurrentToken.isNot(TokenKindEndOfParagraph, TokenKindEOF))
+  while (CurrentToken.isNotAnyOf(TokenKindEndOfParagraph, TokenKindEOF))
   {
     CheffeErrorCode Success = parseMethodStatement();
     if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
@@ -437,7 +437,7 @@ CheffeErrorCode CheffeParser::parseMethodStatement()
   }
 
   const std::size_t BeginMethodPos = CurrentToken.getBegin();
-  while (CurrentToken.isNot(TokenKindFullStop, TokenKindEOF))
+  while (CurrentToken.isNotAnyOf(TokenKindFullStop, TokenKindEOF))
   {
     getNextToken();
   }
@@ -503,7 +503,7 @@ CheffeErrorCode CheffeParser::parseServesStatement()
   CHEFFE_DEBUG("SERVES: " << ServesNum << "\n\n");
 
   getNextToken();
-  if (CurrentToken.isNot(TokenKindEndOfParagraph, TokenKindEOF))
+  if (CurrentToken.isNotAnyOf(TokenKindEndOfParagraph, TokenKindEOF))
   {
     if (CurrentToken.isNot(TokenKindNewLine))
     {
@@ -512,7 +512,7 @@ CheffeErrorCode CheffeParser::parseServesStatement()
     }
 
     getNextToken();
-    if (CurrentToken.isNot(TokenKindEndOfParagraph, TokenKindEOF))
+    if (CurrentToken.isNotAnyOf(TokenKindEndOfParagraph, TokenKindEOF))
     {
       std::cerr << "Invalid Serves Statement\n";
       return CheffeErrorCode::CHEFFE_ERROR;
