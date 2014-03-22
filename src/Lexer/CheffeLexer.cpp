@@ -10,6 +10,15 @@ int CheffeLexer::getChar()
   return File[++CurrentPos];
 }
 
+int CheffeLexer::peekNextChar()
+{
+  if (CurrentPos >= (File.size() - 1))
+  {
+    return '\0';
+  }
+  return File[CurrentPos + 1];
+}
+
 std::string CheffeLexer::getTextSpan(const std::size_t Begin, const std::size_t End)
 {
   assert(Begin >= 0 && Begin <= End && "");
@@ -36,7 +45,7 @@ Token CheffeLexer::getToken()
       Tok.Begin = CurrentPos;
       Tok.Kind = TokenKindNewLine;
 
-      const char NextChar = CurrentPos < (File.size() - 1) ? File[CurrentPos + 1] : '\0';
+      const char NextChar = peekNextChar();
       if (NextChar == NEW_LINE)
       {
         LastChar = getChar();

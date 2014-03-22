@@ -27,6 +27,9 @@ public:
   // Gets a char from the input
   int getChar();
 
+  // Peeks at the next char from the input
+  int peekNextChar();
+
   // Returns a token from the input, consuming one or more characters.
   Token getToken();
 
