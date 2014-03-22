@@ -34,16 +34,16 @@ public:
   {
   }
 
-  int parseRecipe();
+  CheffeErrorCode parseRecipe();
 
-  int parseRecipeTitle();
-  int parseCommentBlock();
-  int parseIngredientsList();
-  int parseCookingTime();
-  int parseOvenTemperature();
-  int parseMethod();
-  int parseMethodStatement();
-  int parseServesStatement();
+  CheffeErrorCode parseRecipeTitle();
+  CheffeErrorCode parseCommentBlock();
+  CheffeErrorCode parseIngredientsList();
+  CheffeErrorCode parseCookingTime();
+  CheffeErrorCode parseOvenTemperature();
+  CheffeErrorCode parseMethod();
+  CheffeErrorCode parseMethodStatement();
+  CheffeErrorCode parseServesStatement();
 
   Token getNextToken();
 };

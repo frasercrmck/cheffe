@@ -3,7 +3,7 @@
 
 namespace cheffe
 {
-enum
+enum class CheffeErrorCode
 {
   CHEFFE_SUCCESS,
   CHEFFE_ERROR

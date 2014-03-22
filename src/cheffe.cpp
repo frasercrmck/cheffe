@@ -8,7 +8,7 @@
 
 using namespace cheffe;
 
-static int readFile(const std::string& FileName, std::string& File)
+static CheffeErrorCode readFile(const std::string& FileName, std::string& File)
 {
   std::ifstream InStream(FileName, std::ios::in | std::ios::binary);
   if (InStream)
@@ -22,9 +22,9 @@ static int readFile(const std::string& FileName, std::string& File)
 
     InStream.close();
 
-    return CHEFFE_SUCCESS;
+    return CheffeErrorCode::CHEFFE_SUCCESS;
   }
-  return CHEFFE_ERROR;
+  return CheffeErrorCode::CHEFFE_ERROR;
 }
 
 int main(int argc, char** argv)
@@ -46,8 +46,8 @@ int main(int argc, char** argv)
     return 1;
   }
 
-  const int Ret = readFile(FileName, InFile);
-  if (Ret != CHEFFE_SUCCESS)
+  const CheffeErrorCode Ret = readFile(FileName, InFile);
+  if (Ret != CheffeErrorCode::CHEFFE_SUCCESS)
   {
     std::cerr << "Error: could not read input file '" << FileName << "'\n";
     return 1;
@@ -61,9 +61,9 @@ int main(int argc, char** argv)
 
   CheffeParser Parser(InFile);
 
-  int Success = Parser.parseRecipe();
+  CheffeErrorCode Success = Parser.parseRecipe();
 
-  if (Success != CHEFFE_SUCCESS)
+  if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
   {
     std::cerr << "Error: could not parse input file\n";
   }
