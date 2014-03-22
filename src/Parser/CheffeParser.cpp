@@ -420,17 +420,19 @@ CheffeErrorCode CheffeParser::parseMethodStatement()
   const std::string MethodKeyword = CurrentToken.getIdentifierString();
   auto FindResult =
       std::find(std::begin(ValidMethodKeywords), std::end(ValidMethodKeywords), MethodKeyword);
-  bool IsValidMethodKeyword = FindResult == std::end(ValidMethodKeywords);
+
+  bool IsKnownVerb = false;
+  const bool IsValidMethodKeyword = FindResult != std::end(ValidMethodKeywords);
 
   if (!IsValidMethodKeyword)
   {
     FindResult =
         std::find(std::begin(ValidVerbKeywords), std::end(ValidVerbKeywords), MethodKeyword);
 
-    IsValidMethodKeyword = FindResult == std::end(ValidVerbKeywords);
+    IsKnownVerb = FindResult != std::end(ValidVerbKeywords);
   }
 
-  if (!IsValidMethodKeyword)
+  if (!IsValidMethodKeyword && !IsKnownVerb)
   {
     std::cerr << "Invalid Method Keyword: '" << MethodKeyword.c_str() << "'\n";
     return CheffeErrorCode::CHEFFE_ERROR;
