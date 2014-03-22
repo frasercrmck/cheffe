@@ -20,7 +20,7 @@ const std::unordered_set<std::string> ValidMethodKeywords = {
 };
 
 const std::unordered_set<std::string> ValidVerbKeywords = {
-  "Sift", "Rub"
+  "Sift", "Rub", "Melt", "Caramelise", "Cook", "Heat"
 };
 
 class CheffeParser
