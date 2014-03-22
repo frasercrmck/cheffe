@@ -67,6 +67,10 @@ public:
       : Kind(Other.Kind), Begin(Other.Begin), End(Other.End),
         IdentifierString(std::move(Other.IdentifierString)), NumVal(Other.NumVal)
   {
+    Other.Kind = TokenKindUnknown;
+    Other.Begin = 0;
+    Other.End = 0;
+    Other.NumVal = 0;
   }
 
   // Copy assignment operator
@@ -86,10 +90,12 @@ public:
     Kind = Other.Kind;
     Begin = Other.Begin;
     End = Other.End;
-    IdentifierString = Other.IdentifierString;
+    IdentifierString = std::move(Other.IdentifierString);
     NumVal = Other.NumVal;
 
-    Other.IdentifierString = "";
+    Other.Kind = TokenKindUnknown;
+    Other.Begin = 0;
+    Other.End = 0;
     Other.NumVal = 0;
     return *this;
   }
