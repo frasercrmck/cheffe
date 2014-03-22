@@ -69,7 +69,7 @@ public:
   {
   }
 
-  // Assignment operator
+  // Copy assignment operator
   Token& operator=(const Token& Other)
   {
     Kind = Other.Kind;
@@ -79,6 +79,21 @@ public:
     NumVal = Other.NumVal;
     return *this;
   }
+
+  // Move assignment operator
+  Token& operator=(Token&& Other)
+  {
+    Kind = Other.Kind;
+    Begin = Other.Begin;
+    End = Other.End;
+    IdentifierString = Other.IdentifierString;
+    NumVal = Other.NumVal;
+
+    Other.IdentifierString = "";
+    Other.NumVal = 0;
+    return *this;
+  }
+
 
   bool is(TokenKind Tok)
   {
