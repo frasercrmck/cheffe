@@ -85,9 +85,29 @@ public:
     return Kind == Tok;
   }
 
+  template <typename ...Tail>
+  bool is(TokenKind&& Tok, Tail&&... Toks)
+  {
+      if (Kind != Tok)
+      {
+        return false;
+      }
+      return is(std::forward<Tail>(Toks)...);
+  }
+
   bool isNot(TokenKind Tok)
   {
     return Kind != Tok;
+  }
+
+  template <typename ...Tail>
+  bool isNot(TokenKind&& Tok, Tail&&... Toks)
+  {
+      if (Kind == Tok)
+      {
+        return false;
+      }
+      return isNot(std::forward<Tail>(Toks)...);
   }
 
   std::size_t getBegin()
