@@ -7,6 +7,8 @@ namespace cheffe
 
 int CheffeLexer::getNextChar()
 {
+  if (CurrentPos >= File.size())
+    return -1;
   const char Char = File[CurrentPos++];
   if (Char == '\n')
   {
@@ -22,11 +24,11 @@ int CheffeLexer::getNextChar()
 
 int CheffeLexer::peekNextChar()
 {
-  if (CurrentPos < File.size())
+  if (CurrentPos >= File.size())
   {
-    return File[CurrentPos];
+    return -1;
   }
-  return END_OF_FILE;
+  return File[CurrentPos];
 }
 
 std::string CheffeLexer::getTextSpan(const std::size_t Begin, const std::size_t End)
@@ -52,12 +54,12 @@ Token CheffeLexer::getToken()
   // Skip any whitespace.
   while (isspace(peekNextChar()))
   {
-    if (peekNextChar() == NEW_LINE)
+    if (peekNextChar() == '\n')
     {
       Tok.Kind = TokenKind::NewLine;
 
       getNextChar();
-      if (peekNextChar() == NEW_LINE)
+      if (peekNextChar() == '\n')
       {
         getNextChar();
         Tok.Kind = TokenKind::EndOfParagraph;
@@ -77,6 +79,14 @@ Token CheffeLexer::getToken()
   Tok.ColumnNumber = ColumnNumber;
 
   const int Char = getNextChar();
+
+  if (Char == -1)
+  {
+    Tok.End = CurrentPos;
+    Tok.Kind = TokenKind::EndOfFile;
+    return Tok;
+  }
+
   if (isalpha(Char))
   {
     std::string IdentifierString{ (char)Char };
@@ -104,13 +114,6 @@ Token CheffeLexer::getToken()
 
     Tok.End = CurrentPos;
     Tok.Kind = TokenKind::Number;
-    return Tok;
-  }
-
-  if (Char == END_OF_FILE)
-  {
-    Tok.End = CurrentPos;
-    Tok.Kind = TokenKind::EndOfFile;
     return Tok;
   }
 

@@ -5,9 +5,6 @@
 
 #include <string>
 
-#define END_OF_FILE '\0'
-#define NEW_LINE '\n'
-
 namespace cheffe
 {
 
