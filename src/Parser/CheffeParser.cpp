@@ -130,7 +130,7 @@ CheffeErrorCode CheffeParser::parseIngredientsList()
 {
   // Eat the 'Ingredients' token
   getNextToken();
-  if (!CurrentToken.equals("Ingredients"))
+  if (CurrentToken.isNot("Ingredients"))
   {
     std::cerr << "Invalid Ingredient list\n";
     return CheffeErrorCode::CHEFFE_ERROR;
@@ -179,14 +179,14 @@ CheffeErrorCode CheffeParser::parseCookingTime()
   }
 
   getNextToken();
-  if (!CurrentToken.equals("Cooking"))
+  if (CurrentToken.isNot("Cooking"))
   {
     std::cerr << "";
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
   getNextToken();
-  if (!CurrentToken.equals("time"))
+  if (CurrentToken.isNot("time"))
   {
     std::cerr << "";
     return CheffeErrorCode::CHEFFE_ERROR;
@@ -254,7 +254,7 @@ CheffeErrorCode CheffeParser::parseOvenTemperature()
   getNextToken();
   const std::size_t OvenTempBeginPos = CurrentToken.getBegin();
 
-  if (!CurrentToken.equals("Pre"))
+  if (CurrentToken.isNot("Pre"))
   {
     std::cerr << "";
     return CheffeErrorCode::CHEFFE_ERROR;
@@ -268,21 +268,21 @@ CheffeErrorCode CheffeParser::parseOvenTemperature()
   }
 
   getNextToken();
-  if (!CurrentToken.equals("heat"))
+  if (CurrentToken.isNot("heat"))
   {
     std::cerr << "";
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
   getNextToken();
-  if (!CurrentToken.equals("oven"))
+  if (CurrentToken.isNot("oven"))
   {
     std::cerr << "";
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
   getNextToken();
-  if (!CurrentToken.equals("to"))
+  if (CurrentToken.isNot("to"))
   {
     std::cerr << "";
     return CheffeErrorCode::CHEFFE_ERROR;
@@ -297,14 +297,14 @@ CheffeErrorCode CheffeParser::parseOvenTemperature()
   const int Temperature = CurrentToken.getNumVal();
 
   getNextToken();
-  if (!CurrentToken.equals("degrees"))
+  if (CurrentToken.isNot("degrees"))
   {
     std::cerr << "";
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
   getNextToken();
-  if (!CurrentToken.equals("Celcius"))
+  if (CurrentToken.isNot("Celcius"))
   {
     std::cerr << "";
     return CheffeErrorCode::CHEFFE_ERROR;
@@ -317,14 +317,14 @@ CheffeErrorCode CheffeParser::parseOvenTemperature()
   if (CurrentToken.is(TokenKind::OpenBrace))
   {
     getNextToken();
-    if (!CurrentToken.equals("gas"))
+    if (CurrentToken.isNot("gas"))
     {
       std::cerr << "";
       return CheffeErrorCode::CHEFFE_ERROR;
     }
 
     getNextToken();
-    if (!CurrentToken.equals("mark"))
+    if (CurrentToken.isNot("mark"))
     {
       std::cerr << "";
       return CheffeErrorCode::CHEFFE_ERROR;
@@ -374,7 +374,7 @@ CheffeErrorCode CheffeParser::parseMethod()
 {
   // Eat the 'Method' token
   getNextToken();
-  if (!CurrentToken.equals("Method"))
+  if (CurrentToken.isNot("Method"))
   {
     std::cerr << "Invalid Method list\n";
     return CheffeErrorCode::CHEFFE_ERROR;
@@ -481,7 +481,7 @@ CheffeErrorCode CheffeParser::parseServesStatement()
   }
 
   getNextToken();
-  if (!CurrentToken.equals(ServesStr))
+  if (CurrentToken.isNot(ServesStr))
   {
     std::cerr << "";
     return CheffeErrorCode::CHEFFE_ERROR;

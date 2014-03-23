@@ -113,43 +113,76 @@ public:
     return *this;
   }
 
-
   bool is(TokenKind Tok)
   {
     return Kind == Tok;
   }
-
-  bool isAllOf(TokenKind Tok)
+  bool is(const std::string& Str)
   {
-    return is(Tok);
+    return is(TokenKind::Identifier) && !IdentifierString.compare(Str);
   }
-  template <typename ...Tail>
+  bool is(std::string&& Str)
+  {
+    return is(TokenKind::Identifier) && !IdentifierString.compare(Str);
+  }
+
+  bool isAllOf()
+  {
+    return true;
+  }
+  template <typename... Tail>
   bool isAllOf(TokenKind&& Tok, Tail&&... Toks)
   {
-      if (Kind != Tok)
-      {
-        return false;
-      }
-      return isAllOf(std::forward<Tail>(Toks)...);
+    if (isNot(std::forward<TokenKind>(Tok)))
+    {
+      return false;
+    }
+    return isAllOf(std::forward<Tail>(Toks)...);
+  }
+  template <typename... Tail>
+  bool isAllOf(std::string&& Str, Tail&&... Toks)
+  {
+    if (isNot(std::forward<std::string>(Str)))
+    {
+      return false;
+    }
+    return isAllOf(std::forward<Tail>(Toks)...);
   }
 
   bool isNot(TokenKind Tok)
   {
     return Kind != Tok;
   }
-
-  bool isNotAnyOf(TokenKind Tok)
+  bool isNot(const std::string& Str)
   {
-    return isNot(Tok);
+    return !is(Str);
   }
-  template <typename ...Tail>
+  bool isNot(std::string&& Str)
+  {
+    return !is(Str);
+  }
+
+  bool isNotAnyOf()
+  {
+    return true;
+  }
+  template <typename... Tail>
   bool isNotAnyOf(TokenKind&& Tok, Tail&&... Toks)
   {
-      if (Kind == Tok)
-      {
-        return false;
-      }
-      return isNotAnyOf(std::forward<Tail>(Toks)...);
+    if (is(std::forward<TokenKind>(Tok)))
+    {
+      return false;
+    }
+    return isNotAnyOf(std::forward<Tail>(Toks)...);
+  }
+  template <typename... Tail>
+  bool isNotAnyOf(std::string&& Str, Tail&&... Toks)
+  {
+    if (is(std::forward<std::string>(Str)))
+    {
+      return false;
+    }
+    return isNotAnyOf(std::forward<Tail>(Toks)...);
   }
 
   std::size_t getBegin()
@@ -185,15 +218,6 @@ public:
   int getNumVal()
   {
     return NumVal;
-  }
-
-  bool equals(const std::string& Str)
-  {
-    return is(TokenKind::Identifier) && !IdentifierString.compare(Str);
-  }
-  bool equals(std::string&& Str)
-  {
-    return is(TokenKind::Identifier) && !IdentifierString.compare(Str);
   }
 };
 
