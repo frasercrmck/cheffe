@@ -7,7 +7,17 @@ namespace cheffe
 
 int CheffeLexer::getNextChar()
 {
-  return File[CurrentPos++];
+  const char Char = File[CurrentPos++];
+  if (Char == '\n')
+  {
+    ++LineNumber;
+    ColumnNumber = 0;
+  }
+  else
+  {
+    ++ColumnNumber;
+  }
+  return Char;
 }
 
 int CheffeLexer::peekNextChar()
@@ -53,6 +63,8 @@ Token CheffeLexer::getToken()
         Tok.Kind = TokenKindEndOfParagraph;
       }
 
+      Tok.LineNumber = LineNumber;
+      Tok.ColumnNumber = ColumnNumber;
       Tok.End = CurrentPos;
       return Tok;
     }
@@ -61,6 +73,8 @@ Token CheffeLexer::getToken()
   }
 
   Tok.Begin = CurrentPos;
+  Tok.LineNumber = LineNumber;
+  Tok.ColumnNumber = ColumnNumber;
 
   const int Char = getNextChar();
   if (isalpha(Char))

@@ -37,16 +37,19 @@ private:
   std::size_t Begin;
   std::size_t End;
 
+  unsigned LineNumber;
+  unsigned ColumnNumber;
+
   int NumVal;
   std::string IdentifierString;
 
 public:
   // Constructors
-  Token() : Kind(TokenKindEOF), Begin(0), End(0), NumVal(0)
+  Token() : Kind(TokenKindEOF), Begin(0), End(0), LineNumber(1), ColumnNumber(0), NumVal(0)
   {
   }
 
-  Token(TokenKind Tok) : Kind(Tok), Begin(0), End(0), NumVal(0)
+  Token(TokenKind Tok) : Kind(Tok), Begin(0), End(0), LineNumber(1), ColumnNumber(0), NumVal(0)
   {
   }
 
@@ -57,19 +60,23 @@ public:
 
   // Copy constructor
   Token(const Token& Other)
-      : Kind(Other.Kind), Begin(Other.Begin), End(Other.End),
-        IdentifierString(Other.IdentifierString), NumVal(Other.NumVal)
+      : Kind(Other.Kind), Begin(Other.Begin), End(Other.End), LineNumber(Other.LineNumber),
+        ColumnNumber(Other.ColumnNumber), IdentifierString(Other.IdentifierString),
+        NumVal(Other.NumVal)
   {
   }
 
   // Move constructor
   Token(Token&& Other)
-      : Kind(Other.Kind), Begin(Other.Begin), End(Other.End),
-        IdentifierString(std::move(Other.IdentifierString)), NumVal(Other.NumVal)
+      : Kind(Other.Kind), Begin(Other.Begin), End(Other.End), LineNumber(Other.LineNumber),
+        ColumnNumber(Other.ColumnNumber), IdentifierString(std::move(Other.IdentifierString)),
+        NumVal(Other.NumVal)
   {
     Other.Kind = TokenKindUnknown;
     Other.Begin = 0;
     Other.End = 0;
+    Other.LineNumber = 0;
+    Other.ColumnNumber = 0;
     Other.NumVal = 0;
   }
 
@@ -79,6 +86,8 @@ public:
     Kind = Other.Kind;
     Begin = Other.Begin;
     End = Other.End;
+    LineNumber = Other.LineNumber;
+    ColumnNumber = Other.ColumnNumber;
     IdentifierString = Other.IdentifierString;
     NumVal = Other.NumVal;
     return *this;
@@ -90,12 +99,16 @@ public:
     Kind = Other.Kind;
     Begin = Other.Begin;
     End = Other.End;
+    LineNumber = Other.LineNumber;
+    ColumnNumber = Other.ColumnNumber;
     IdentifierString = std::move(Other.IdentifierString);
     NumVal = Other.NumVal;
 
     Other.Kind = TokenKindUnknown;
     Other.Begin = 0;
     Other.End = 0;
+    Other.LineNumber = 0;
+    Other.ColumnNumber = 0;
     Other.NumVal = 0;
     return *this;
   }
@@ -152,6 +165,16 @@ public:
   std::size_t getLen()
   {
     return End - Begin;
+  }
+
+  unsigned getLineNumber()
+  {
+    return LineNumber;
+  }
+
+  unsigned getColumnNumber()
+  {
+    return ColumnNumber;
   }
 
   std::string getIdentifierString()

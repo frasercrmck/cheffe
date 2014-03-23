@@ -17,8 +17,12 @@ private:
   int CurrentPos;
   std::string File;
 
+  unsigned LineNumber;
+  unsigned ColumnNumber;
+
 public:
-  CheffeLexer(const std::string& SrcFile) : CurrentPos(0), File(SrcFile)
+  CheffeLexer(const std::string& SrcFile)
+      : CurrentPos(0), File(SrcFile), LineNumber(1), ColumnNumber(0)
   {
   }
 
