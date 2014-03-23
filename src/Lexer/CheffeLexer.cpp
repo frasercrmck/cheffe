@@ -45,7 +45,7 @@ std::string CheffeLexer::lookAhead(const std::size_t NumChars)
 
 Token CheffeLexer::getToken()
 {
-  Token Tok(TokenKindUnknown);
+  Token Tok(TokenKind::Unknown);
 
   Tok.Begin = CurrentPos;
 
@@ -54,13 +54,13 @@ Token CheffeLexer::getToken()
   {
     if (peekNextChar() == NEW_LINE)
     {
-      Tok.Kind = TokenKindNewLine;
+      Tok.Kind = TokenKind::NewLine;
 
       getNextChar();
       if (peekNextChar() == NEW_LINE)
       {
         getNextChar();
-        Tok.Kind = TokenKindEndOfParagraph;
+        Tok.Kind = TokenKind::EndOfParagraph;
       }
 
       Tok.LineNumber = LineNumber;
@@ -88,7 +88,7 @@ Token CheffeLexer::getToken()
     Tok.IdentifierString = std::move(IdentifierString);
 
     Tok.End = CurrentPos;
-    Tok.Kind = TokenKindIdentifier;
+    Tok.Kind = TokenKind::Identifier;
     return Tok;
   }
 
@@ -103,40 +103,40 @@ Token CheffeLexer::getToken()
     Tok.NumVal = strtod(NumStr.c_str(), 0);
 
     Tok.End = CurrentPos;
-    Tok.Kind = TokenKindNumber;
+    Tok.Kind = TokenKind::Number;
     return Tok;
   }
 
   if (Char == END_OF_FILE)
   {
     Tok.End = CurrentPos;
-    Tok.Kind = TokenKindEOF;
+    Tok.Kind = TokenKind::EndOfFile;
     return Tok;
   }
 
   if (ispunct(Char))
   {
     Tok.End = CurrentPos;
-    Tok.Kind = TokenKindUnknown;
+    Tok.Kind = TokenKind::Unknown;
 
     switch (Char)
     {
     default:
       break;
     case '.':
-      Tok.Kind = TokenKindFullStop;
+      Tok.Kind = TokenKind::FullStop;
       break;
     case '-':
-      Tok.Kind = TokenKindHyphen;
+      Tok.Kind = TokenKind::Hyphen;
       break;
     case ':':
-      Tok.Kind = TokenKindColon;
+      Tok.Kind = TokenKind::Colon;
       break;
     case '(':
-      Tok.Kind = TokenKindOpenBrace;
+      Tok.Kind = TokenKind::OpenBrace;
       break;
     case ')':
-      Tok.Kind = TokenKindCloseBrace;
+      Tok.Kind = TokenKind::CloseBrace;
       break;
     }
 
@@ -144,7 +144,7 @@ Token CheffeLexer::getToken()
   }
 
   Tok.End = CurrentPos;
-  Tok.Kind = TokenKindUnknown;
+  Tok.Kind = TokenKind::Unknown;
   return Tok;
 }
 

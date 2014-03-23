@@ -9,20 +9,20 @@ namespace cheffe
 
 class CheffeLexer;
 
-enum TokenKind
+enum class TokenKind
 {
-  TokenKindEOF,
-  TokenKindNewLine,
-  TokenKindIdentifier,
-  TokenKindNumber,
-  TokenKindFullStop,
-  TokenKindHyphen,
-  TokenKindColon,
-  TokenKindOpenBrace,
-  TokenKindCloseBrace,
-  TokenKindEndOfParagraph,
-  TokenKindUnknown,
-  TokenKindCount
+  EndOfFile,
+  NewLine,
+  Identifier,
+  Number,
+  FullStop,
+  Hyphen,
+  Colon,
+  OpenBrace,
+  CloseBrace,
+  EndOfParagraph,
+  Unknown,
+  Count
 };
 
 class Token
@@ -45,7 +45,7 @@ private:
 
 public:
   // Constructors
-  Token() : Kind(TokenKindEOF), Begin(0), End(0), LineNumber(1), ColumnNumber(0), NumVal(0)
+  Token() : Kind(TokenKind::EndOfFile), Begin(0), End(0), LineNumber(1), ColumnNumber(0), NumVal(0)
   {
   }
 
@@ -72,7 +72,7 @@ public:
         ColumnNumber(Other.ColumnNumber), IdentifierString(std::move(Other.IdentifierString)),
         NumVal(Other.NumVal)
   {
-    Other.Kind = TokenKindUnknown;
+    Other.Kind = TokenKind::Unknown;
     Other.Begin = 0;
     Other.End = 0;
     Other.LineNumber = 0;
@@ -104,7 +104,7 @@ public:
     IdentifierString = std::move(Other.IdentifierString);
     NumVal = Other.NumVal;
 
-    Other.Kind = TokenKindUnknown;
+    Other.Kind = TokenKind::Unknown;
     Other.Begin = 0;
     Other.End = 0;
     Other.LineNumber = 0;
@@ -189,11 +189,11 @@ public:
 
   bool equals(const std::string& Str)
   {
-    return is(TokenKindIdentifier) && !IdentifierString.compare(Str);
+    return is(TokenKind::Identifier) && !IdentifierString.compare(Str);
   }
   bool equals(std::string&& Str)
   {
-    return is(TokenKindIdentifier) && !IdentifierString.compare(Str);
+    return is(TokenKind::Identifier) && !IdentifierString.compare(Str);
   }
 };
 

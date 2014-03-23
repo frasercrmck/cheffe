@@ -58,7 +58,7 @@ CheffeErrorCode CheffeParser::parseRecipe()
     {
       return Success;
     }
-  } while (CurrentToken.isNot(TokenKindEOF));
+  } while (CurrentToken.isNot(TokenKind::EndOfFile));
 
   return Success;
 }
@@ -71,12 +71,12 @@ CheffeErrorCode CheffeParser::parseRecipeTitle()
   const std::size_t BeginTitlePos = CurrentToken.getBegin();
 
   // Parse the Recipe Title.
-  while (CurrentToken.isNotAnyOf(TokenKindFullStop, TokenKindEndOfParagraph, TokenKindEOF))
+  while (CurrentToken.isNotAnyOf(TokenKind::FullStop, TokenKind::EndOfParagraph, TokenKind::EndOfFile))
   {
     getNextToken();
   }
 
-  if (CurrentToken.isNot(TokenKindFullStop))
+  if (CurrentToken.isNot(TokenKind::FullStop))
   {
     std::cerr << "Error while processing Recipe Title: expected '.'\n";
     return CheffeErrorCode::CHEFFE_ERROR;
@@ -87,7 +87,7 @@ CheffeErrorCode CheffeParser::parseRecipeTitle()
   CHEFFE_DEBUG("RECIPE TITLE:\n\"" << RecipeTitle.c_str() << "\"\n\n");
 
   getNextToken();
-  if (CurrentToken.isNot(TokenKindEndOfParagraph))
+  if (CurrentToken.isNot(TokenKind::EndOfParagraph))
   {
     std::cerr << "Error while processing Recipe Title: expected EndOfParagraph\n";
     return CheffeErrorCode::CHEFFE_ERROR;
@@ -109,12 +109,12 @@ CheffeErrorCode CheffeParser::parseCommentBlock()
 
   getNextToken();
   const std::size_t CommentsBeginPos = CurrentToken.getBegin();
-  while (CurrentToken.isNotAnyOf(TokenKindEndOfParagraph, TokenKindEOF))
+  while (CurrentToken.isNotAnyOf(TokenKind::EndOfParagraph, TokenKind::EndOfFile))
   {
     getNextToken();
   }
 
-  if (CurrentToken.isNot(TokenKindEndOfParagraph))
+  if (CurrentToken.isNot(TokenKind::EndOfParagraph))
   {
     std::cerr << "";
     return CheffeErrorCode::CHEFFE_ERROR;
@@ -137,24 +137,24 @@ CheffeErrorCode CheffeParser::parseIngredientsList()
   }
 
   getNextToken();
-  if (CurrentToken.isNot(TokenKindFullStop))
+  if (CurrentToken.isNot(TokenKind::FullStop))
   {
     std::cerr << "Invalid Ingredient list\n";
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
   getNextToken();
-  if (CurrentToken.isNot(TokenKindNewLine))
+  if (CurrentToken.isNot(TokenKind::NewLine))
   {
     std::cerr << "Invalid Ingredient list\n";
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
-  while (CurrentToken.isNotAnyOf(TokenKindEndOfParagraph, TokenKindEOF))
+  while (CurrentToken.isNotAnyOf(TokenKind::EndOfParagraph, TokenKind::EndOfFile))
   {
     getNextToken();
     const std::size_t BeginIngredientPos = CurrentToken.getBegin();
-    while (CurrentToken.isNotAnyOf(TokenKindNewLine, TokenKindEndOfParagraph, TokenKindEOF))
+    while (CurrentToken.isNotAnyOf(TokenKind::NewLine, TokenKind::EndOfParagraph, TokenKind::EndOfFile))
     {
       getNextToken();
     }
@@ -193,14 +193,14 @@ CheffeErrorCode CheffeParser::parseCookingTime()
   }
 
   getNextToken();
-  if (CurrentToken.isNot(TokenKindColon))
+  if (CurrentToken.isNot(TokenKind::Colon))
   {
     std::cerr << "";
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
   getNextToken();
-  if (CurrentToken.isNot(TokenKindNumber))
+  if (CurrentToken.isNot(TokenKind::Number))
   {
     std::cerr << "";
     return CheffeErrorCode::CHEFFE_ERROR;
@@ -208,7 +208,7 @@ CheffeErrorCode CheffeParser::parseCookingTime()
   const int Time = CurrentToken.getNumVal();
 
   getNextToken();
-  if (CurrentToken.isNot(TokenKindIdentifier))
+  if (CurrentToken.isNot(TokenKind::Identifier))
   {
     std::cerr << "";
     return CheffeErrorCode::CHEFFE_ERROR;
@@ -222,14 +222,14 @@ CheffeErrorCode CheffeParser::parseCookingTime()
   }
 
   getNextToken();
-  if (CurrentToken.isNot(TokenKindFullStop))
+  if (CurrentToken.isNot(TokenKind::FullStop))
   {
     std::cerr << "Invalid Cooking Time\n";
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
   getNextToken();
-  if (CurrentToken.isNot(TokenKindEndOfParagraph))
+  if (CurrentToken.isNot(TokenKind::EndOfParagraph))
   {
     std::cerr << "Invalid Cooking Time\n";
     return CheffeErrorCode::CHEFFE_ERROR;
@@ -261,7 +261,7 @@ CheffeErrorCode CheffeParser::parseOvenTemperature()
   }
 
   getNextToken();
-  if (CurrentToken.isNot(TokenKindHyphen))
+  if (CurrentToken.isNot(TokenKind::Hyphen))
   {
     std::cerr << "";
     return CheffeErrorCode::CHEFFE_ERROR;
@@ -289,7 +289,7 @@ CheffeErrorCode CheffeParser::parseOvenTemperature()
   }
 
   getNextToken();
-  if (CurrentToken.isNot(TokenKindNumber))
+  if (CurrentToken.isNot(TokenKind::Number))
   {
     std::cerr << "";
     return CheffeErrorCode::CHEFFE_ERROR;
@@ -314,7 +314,7 @@ CheffeErrorCode CheffeParser::parseOvenTemperature()
 
   int GasMark = 0;
   bool HasGasMark = false;
-  if (CurrentToken.is(TokenKindOpenBrace))
+  if (CurrentToken.is(TokenKind::OpenBrace))
   {
     getNextToken();
     if (!CurrentToken.equals("gas"))
@@ -331,7 +331,7 @@ CheffeErrorCode CheffeParser::parseOvenTemperature()
     }
 
     getNextToken();
-    if (CurrentToken.isNot(TokenKindNumber))
+    if (CurrentToken.isNot(TokenKind::Number))
     {
       std::cerr << "";
       return CheffeErrorCode::CHEFFE_ERROR;
@@ -339,7 +339,7 @@ CheffeErrorCode CheffeParser::parseOvenTemperature()
     GasMark = CurrentToken.getNumVal();
 
     getNextToken();
-    if (CurrentToken.isNot(TokenKindCloseBrace))
+    if (CurrentToken.isNot(TokenKind::CloseBrace))
     {
       std::cerr << "";
       return CheffeErrorCode::CHEFFE_ERROR;
@@ -349,13 +349,13 @@ CheffeErrorCode CheffeParser::parseOvenTemperature()
   }
 
   getNextToken();
-  if (CurrentToken.isNot(TokenKindFullStop))
+  if (CurrentToken.isNot(TokenKind::FullStop))
   {
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
   getNextToken();
-  if (CurrentToken.isNot(TokenKindEndOfParagraph))
+  if (CurrentToken.isNot(TokenKind::EndOfParagraph))
   {
     return CheffeErrorCode::CHEFFE_ERROR;
   }
@@ -381,14 +381,14 @@ CheffeErrorCode CheffeParser::parseMethod()
   }
 
   getNextToken();
-  if (CurrentToken.isNot(TokenKindFullStop))
+  if (CurrentToken.isNot(TokenKind::FullStop))
   {
     std::cerr << "Invalid Method list\n";
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
   getNextToken();
-  if (CurrentToken.isNot(TokenKindNewLine))
+  if (CurrentToken.isNot(TokenKind::NewLine))
   {
     std::cerr << "Invalid Method list\n";
     return CheffeErrorCode::CHEFFE_ERROR;
@@ -396,7 +396,7 @@ CheffeErrorCode CheffeParser::parseMethod()
 
   getNextToken();
   CHEFFE_DEBUG("\nMETHOD LIST:\n");
-  while (CurrentToken.isNotAnyOf(TokenKindEndOfParagraph, TokenKindEOF))
+  while (CurrentToken.isNotAnyOf(TokenKind::EndOfParagraph, TokenKind::EndOfFile))
   {
     CheffeErrorCode Success = parseMethodStatement();
     if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
@@ -411,7 +411,7 @@ CheffeErrorCode CheffeParser::parseMethod()
 
 CheffeErrorCode CheffeParser::parseMethodStatement()
 {
-  if (CurrentToken.isNot(TokenKindIdentifier))
+  if (CurrentToken.isNot(TokenKind::Identifier))
   {
     std::cerr << "Invalid Method Statement\n";
     return CheffeErrorCode::CHEFFE_ERROR;
@@ -439,12 +439,12 @@ CheffeErrorCode CheffeParser::parseMethodStatement()
   }
 
   const std::size_t BeginMethodPos = CurrentToken.getBegin();
-  while (CurrentToken.isNotAnyOf(TokenKindFullStop, TokenKindEOF))
+  while (CurrentToken.isNotAnyOf(TokenKind::FullStop, TokenKind::EndOfFile))
   {
     getNextToken();
   }
 
-  if (CurrentToken.isNot(TokenKindFullStop))
+  if (CurrentToken.isNot(TokenKind::FullStop))
   {
     std::cerr << "Error while processing Method Statement: expected '.'\n";
     return CheffeErrorCode::CHEFFE_ERROR;
@@ -457,7 +457,7 @@ CheffeErrorCode CheffeParser::parseMethodStatement()
   CHEFFE_DEBUG("\"" << MethodStatement.c_str() << "\"\n");
 
   getNextToken();
-  while (CurrentToken.is(TokenKindNewLine))
+  while (CurrentToken.is(TokenKind::NewLine))
   {
     getNextToken();
   }
@@ -466,7 +466,7 @@ CheffeErrorCode CheffeParser::parseMethodStatement()
 
 CheffeErrorCode CheffeParser::parseServesStatement()
 {
-  if (CurrentToken.is(TokenKindEOF))
+  if (CurrentToken.is(TokenKind::EndOfFile))
   {
     return CheffeErrorCode::CHEFFE_SUCCESS;
   }
@@ -488,7 +488,7 @@ CheffeErrorCode CheffeParser::parseServesStatement()
   }
 
   getNextToken();
-  if (CurrentToken.isNot(TokenKindNumber))
+  if (CurrentToken.isNot(TokenKind::Number))
   {
     std::cerr << "";
     return CheffeErrorCode::CHEFFE_ERROR;
@@ -496,7 +496,7 @@ CheffeErrorCode CheffeParser::parseServesStatement()
   const int ServesNum = CurrentToken.getNumVal();
 
   getNextToken();
-  if (CurrentToken.isNot(TokenKindFullStop))
+  if (CurrentToken.isNot(TokenKind::FullStop))
   {
     std::cerr << "Invalid Serves Statement\n";
     return CheffeErrorCode::CHEFFE_ERROR;
@@ -505,16 +505,16 @@ CheffeErrorCode CheffeParser::parseServesStatement()
   CHEFFE_DEBUG("SERVES: " << ServesNum << "\n\n");
 
   getNextToken();
-  if (CurrentToken.isNotAnyOf(TokenKindEndOfParagraph, TokenKindEOF))
+  if (CurrentToken.isNotAnyOf(TokenKind::EndOfParagraph, TokenKind::EndOfFile))
   {
-    if (CurrentToken.isNot(TokenKindNewLine))
+    if (CurrentToken.isNot(TokenKind::NewLine))
     {
       std::cerr << "Invalid Serves Statement\n";
       return CheffeErrorCode::CHEFFE_ERROR;
     }
 
     getNextToken();
-    if (CurrentToken.isNotAnyOf(TokenKindEndOfParagraph, TokenKindEOF))
+    if (CurrentToken.isNotAnyOf(TokenKind::EndOfParagraph, TokenKind::EndOfFile))
     {
       std::cerr << "Invalid Serves Statement\n";
       return CheffeErrorCode::CHEFFE_ERROR;
