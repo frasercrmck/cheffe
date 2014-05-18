@@ -3,6 +3,7 @@
 
 #include "cheffe.h"
 #include "Lexer/CheffeLexer.h"
+#include "Utils/CheffeDiagnosticHandler.h"
 
 #include <vector>
 #include <unordered_set>
@@ -29,6 +30,8 @@ private:
   CheffeLexer Lexer;
   Token CurrentToken;
 
+  CheffeDiagnosticHandler Diagnostic;
+
 public:
   CheffeParser(const std::string& File) : Lexer(File), CurrentToken()
   {
@@ -46,6 +49,10 @@ public:
   CheffeErrorCode parseServesStatement();
 
   Token getNextToken();
+
+  // Return true if token didn't match, false otherwise.
+  bool expectToken(const Token &Tok);
+  bool consumeAndExpectToken(const Token &Tok);
 };
 
 } // end namespace cheffe
