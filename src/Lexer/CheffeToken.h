@@ -58,6 +58,18 @@ public:
   {
   }
 
+  Token(std::string Str)
+      : Kind(TokenKind::Identifier), Begin(0), End(0), LineNumber(1), ColumnNumber(0), NumVal(0),
+        IdentifierString(Str)
+  {
+  }
+
+  Token(const char *Str)
+      : Kind(TokenKind::Identifier), Begin(0), End(0), LineNumber(1), ColumnNumber(0), NumVal(0),
+        IdentifierString(Str)
+  {
+  }
+
   // Copy constructor
   Token(const Token& Other)
       : Kind(Other.Kind), Begin(Other.Begin), End(Other.End), LineNumber(Other.LineNumber),
