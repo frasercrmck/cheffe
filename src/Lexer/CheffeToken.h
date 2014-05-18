@@ -2,6 +2,7 @@
 #define CHEFFE_TOKEN
 
 #include <string>
+#include <iostream>
 #include <cstring>
 
 namespace cheffe
@@ -24,6 +25,35 @@ enum class TokenKind
   Unknown,
   Count
 };
+
+static std::string TokenKindToString(const TokenKind Kind)
+{
+  switch (Kind)
+  {
+  default:
+    return "";
+  case TokenKind::EndOfFile:
+    return "'EndOfFile (\\0)'";
+  case TokenKind::NewLine:
+    return "'NewLine (\\n)'";
+  case TokenKind::Identifier:
+    return "'Identifier'";
+  case TokenKind::Number:
+    return "'Number'";
+  case TokenKind::FullStop:
+    return "'.'";
+  case TokenKind::Hyphen:
+    return "'-'";
+  case TokenKind::Colon:
+    return "':'";
+  case TokenKind::OpenBrace:
+    return "'('";
+  case TokenKind::CloseBrace:
+    return "')'";
+  case TokenKind::EndOfParagraph:
+    return "'EndOfParagraph (\\n\\n)'";
+  }
+}
 
 class Token
 {
@@ -236,6 +266,22 @@ public:
   int getNumVal() const
   {
     return NumVal;
+  }
+
+  friend std::ostream& operator<< (std::ostream& stream, const Token &Tok)
+  {
+    if (Tok.Kind == TokenKind::Identifier) {
+      stream << Tok.IdentifierString;
+      return stream;
+    }
+
+    if (Tok.Kind == TokenKind::Number) {
+      stream << Tok.NumVal;
+      return stream;
+    }
+
+    stream << TokenKindToString(Tok.Kind);
+    return stream;
   }
 };
 
