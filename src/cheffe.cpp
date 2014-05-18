@@ -33,7 +33,7 @@ int main(int argc, char** argv)
 {
   std::string InFile;
   std::string FileName;
-  for (unsigned i = 1; i < argc; ++i)
+  for (int i = 1; i < argc; ++i)
   {
     // Input file is last in argument list
     if (i == argc - 1)
