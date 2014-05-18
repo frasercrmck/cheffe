@@ -3,7 +3,6 @@
 
 #include <string>
 #include <iostream>
-#include <cstring>
 
 namespace cheffe
 {
