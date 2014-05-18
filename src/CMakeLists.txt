@@ -11,5 +11,6 @@ add_executable( cheffe ${cheffe-src-files} )
 
 add_subdirectory( Lexer )
 add_subdirectory( Parser )
+add_subdirectory( Utils )
 
-target_link_libraries ( cheffe CheffeParser CheffeLexer )
+target_link_libraries ( cheffe CheffeParser CheffeLexer CheffeUtils )
