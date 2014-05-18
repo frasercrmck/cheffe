@@ -54,23 +54,24 @@ public:
   }
 
   Token(TokenKind Tok, std::size_t B, std::size_t E, int Val)
-      : Kind(Tok), Begin(E), End(E), NumVal(Val)
+      : Kind(Tok), Begin(B), End(E), NumVal(Val)
   {
   }
 
   // Copy constructor
   Token(const Token& Other)
       : Kind(Other.Kind), Begin(Other.Begin), End(Other.End), LineNumber(Other.LineNumber),
-        ColumnNumber(Other.ColumnNumber), IdentifierString(Other.IdentifierString),
-        NumVal(Other.NumVal)
+        ColumnNumber(Other.ColumnNumber), NumVal(Other.NumVal),
+        IdentifierString(Other.IdentifierString)
   {
   }
 
   // Move constructor
   Token(Token&& Other)
       : Kind(Other.Kind), Begin(Other.Begin), End(Other.End), LineNumber(Other.LineNumber),
-        ColumnNumber(Other.ColumnNumber), IdentifierString(std::move(Other.IdentifierString)),
-        NumVal(Other.NumVal)
+        ColumnNumber(Other.ColumnNumber), NumVal(Other.NumVal),
+        IdentifierString(std::move(Other.IdentifierString))
+
   {
     Other.Kind = TokenKind::Unknown;
     Other.Begin = 0;
