@@ -3,7 +3,7 @@
 namespace cheffe
 {
 
-void CheffeDiagnosticHandler::Report(const std::string &Msg)
+void CheffeDiagnosticHandler::Report(const std::string& Msg)
 {
   std::string Message = Msg;
   const std::size_t MessageLength = Message.length();

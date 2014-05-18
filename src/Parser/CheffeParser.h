@@ -51,8 +51,8 @@ public:
   Token getNextToken();
 
   // Return true if token didn't match, false otherwise.
-  bool expectToken(const Token &Tok);
-  bool consumeAndExpectToken(const Token &Tok);
+  bool expectToken(const Token& Tok);
+  bool consumeAndExpectToken(const Token& Tok);
 };
 
 } // end namespace cheffe

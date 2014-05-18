@@ -267,14 +267,16 @@ public:
     return NumVal;
   }
 
-  friend std::ostream& operator<< (std::ostream& stream, const Token &Tok)
+  friend std::ostream& operator<<(std::ostream& stream, const Token& Tok)
   {
-    if (Tok.Kind == TokenKind::Identifier) {
+    if (Tok.Kind == TokenKind::Identifier)
+    {
       stream << Tok.IdentifierString;
       return stream;
     }
 
-    if (Tok.Kind == TokenKind::Number) {
+    if (Tok.Kind == TokenKind::Number)
+    {
       stream << Tok.NumVal;
       return stream;
     }

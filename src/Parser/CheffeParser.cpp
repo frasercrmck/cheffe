@@ -64,14 +64,14 @@ CheffeErrorCode CheffeParser::parseRecipe()
 }
 
 // Return true if token didn't match, false otherwise.
-bool CheffeParser::consumeAndExpectToken(const Token &Tok)
+bool CheffeParser::consumeAndExpectToken(const Token& Tok)
 {
   getNextToken();
   return expectToken(Tok);
 }
 
 // Return true if token didn't match, false otherwise.
-bool CheffeParser::expectToken(const Token &Tok)
+bool CheffeParser::expectToken(const Token& Tok)
 {
   if (CurrentToken.isNot(Tok.getKind()))
   {
