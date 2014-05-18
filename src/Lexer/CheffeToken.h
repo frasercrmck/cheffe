@@ -186,37 +186,42 @@ public:
     return isNotAnyOf(std::forward<Tail>(Toks)...);
   }
 
-  std::size_t getBegin()
+  TokenKind getKind() const
+  {
+    return Kind;
+  }
+
+  std::size_t getBegin() const
   {
     return Begin;
   }
 
-  std::size_t getEnd()
+  std::size_t getEnd() const
   {
     return End;
   }
 
-  std::size_t getLen()
+  std::size_t getLen() const
   {
     return End - Begin;
   }
 
-  unsigned getLineNumber()
+  unsigned getLineNumber() const
   {
     return LineNumber;
   }
 
-  unsigned getColumnNumber()
+  unsigned getColumnNumber() const
   {
     return ColumnNumber;
   }
 
-  std::string getIdentifierString()
+  std::string getIdentifierString() const
   {
     return IdentifierString;
   }
 
-  int getNumVal()
+  int getNumVal() const
   {
     return NumVal;
   }
