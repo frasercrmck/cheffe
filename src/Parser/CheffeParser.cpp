@@ -64,19 +64,21 @@ CheffeErrorCode CheffeParser::parseRecipe()
 }
 
 // Return true if token didn't match, false otherwise.
-bool CheffeParser::consumeAndExpectToken(const Token& Tok)
+template <typename T>
+bool CheffeParser::consumeAndExpectToken(const T& Kind)
 {
   getNextToken();
-  return expectToken(Tok);
+  return expectToken(Kind);
 }
 
 // Return true if token didn't match, false otherwise.
-bool CheffeParser::expectToken(const Token& Tok)
+template <typename T>
+bool CheffeParser::expectToken(const T& Kind)
 {
-  if (CurrentToken.isNot(Tok.getKind()))
+  if (CurrentToken.isNot(Kind))
   {
     std::ostringstream os;
-    os << "Error while parsing source file: expected " << Tok << ", got " << CurrentToken;
+    os << "Error while parsing source file: expected " << Kind << ", got " << CurrentToken;
     Diagnostic.Report(os.str());
     return true;
   }

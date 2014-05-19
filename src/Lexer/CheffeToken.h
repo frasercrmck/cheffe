@@ -54,6 +54,12 @@ static std::string TokenKindToString(const TokenKind Kind)
   }
 }
 
+static std::ostream& operator<<(std::ostream& stream, const TokenKind& Kind)
+{
+  stream << TokenKindToString(Kind);
+  return stream;
+}
+
 class Token
 {
 public:
@@ -98,6 +104,7 @@ public:
         IdentifierString(Str)
   {
   }
+
 
   // Copy constructor
   Token(const Token& Other)
@@ -281,7 +288,7 @@ public:
       return stream;
     }
 
-    stream << TokenKindToString(Tok.Kind);
+    stream << Tok.Kind;
     return stream;
   }
 };
