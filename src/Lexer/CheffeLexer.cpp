@@ -7,8 +7,10 @@ namespace cheffe
 
 int CheffeLexer::getNextChar()
 {
-  if (CurrentPos >= File.size())
+  if (static_cast<std::size_t>(CurrentPos) >= File.Source.size())
+  {
     return -1;
+  }
   const char Char = File[CurrentPos++];
   if (Char == '\n')
   {
@@ -24,7 +26,7 @@ int CheffeLexer::getNextChar()
 
 int CheffeLexer::peekNextChar()
 {
-  if (CurrentPos >= File.size())
+  if (static_cast<std::size_t>(CurrentPos) >= File.Source.size())
   {
     return -1;
   }
@@ -34,15 +36,15 @@ int CheffeLexer::peekNextChar()
 std::string CheffeLexer::getTextSpan(const std::size_t Begin, const std::size_t End)
 {
   assert(Begin >= 0 && Begin <= End && "");
-  return File.substr(Begin, End - Begin);
+  return File.Source.substr(Begin, End - Begin);
 }
 
 std::string CheffeLexer::lookAhead(const std::size_t NumChars)
 {
-  assert(CurrentPos < File.size() && "");
+  assert(CurrentPos < File.Source.size() && "");
   // This std::string constructor handles the case if
   // CurrentPos + NumChars exceeds File.size().
-  return File.substr(CurrentPos, NumChars);
+  return File.Source.substr(CurrentPos, NumChars);
 }
 
 Token CheffeLexer::getToken()

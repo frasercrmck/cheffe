@@ -1,6 +1,7 @@
 #ifndef CHEFFE_LEXER
 #define CHEFFE_LEXER
 
+#include "cheffe.h"
 #include "CheffeToken.h"
 
 #include <string>
@@ -12,13 +13,13 @@ class CheffeLexer
 {
 private:
   int CurrentPos;
-  std::string File;
+  CheffeSourceFile File;
 
   unsigned LineNumber;
   unsigned ColumnNumber;
 
 public:
-  CheffeLexer(const std::string& SrcFile)
+  CheffeLexer(const CheffeSourceFile& SrcFile)
       : CurrentPos(0), File(SrcFile), LineNumber(1), ColumnNumber(0)
   {
   }

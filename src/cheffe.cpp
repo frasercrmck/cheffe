@@ -8,9 +8,9 @@
 
 using namespace cheffe;
 
-static CheffeErrorCode readFile(const std::string& FileName, std::string& File)
+static CheffeErrorCode readFile(CheffeSourceFile& File)
 {
-  std::ifstream InStream(FileName, std::ios::in | std::ios::binary);
+  std::ifstream InStream(File.Name, std::ios::in | std::ios::binary);
 
   if (!InStream)
   {
@@ -19,10 +19,10 @@ static CheffeErrorCode readFile(const std::string& FileName, std::string& File)
 
   InStream.seekg(0, std::ios::end);
 
-  File.resize(InStream.tellg());
+  File.Source.resize(InStream.tellg());
 
   InStream.seekg(0, std::ios::beg);
-  InStream.read(&File[0], File.size());
+  InStream.read(&File[0], File.Source.size());
 
   InStream.close();
 
@@ -31,7 +31,6 @@ static CheffeErrorCode readFile(const std::string& FileName, std::string& File)
 
 int main(int argc, char** argv)
 {
-  std::string InFile;
   std::string FileName;
   for (int i = 1; i < argc; ++i)
   {
@@ -48,16 +47,18 @@ int main(int argc, char** argv)
     return 1;
   }
 
-  const CheffeErrorCode Ret = readFile(FileName, InFile);
+  CheffeSourceFile InFile = { FileName, "" };
+  const CheffeErrorCode Ret = readFile(InFile);
+
   if (Ret != CheffeErrorCode::CHEFFE_SUCCESS)
   {
-    std::cerr << "Error: could not read input file '" << FileName << "'\n";
+    std::cerr << "Error: could not read input file '" << InFile.Name << "'\n";
     return 1;
   }
 
-  if (InFile.empty())
+  if (InFile.Source.empty())
   {
-    std::cerr << "Error: empty input file '" << FileName << "'\n";
+    std::cerr << "Error: empty input file '" << InFile.Name << "'\n";
     return 1;
   }
 

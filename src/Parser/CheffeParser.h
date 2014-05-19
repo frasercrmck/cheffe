@@ -33,7 +33,8 @@ private:
   CheffeDiagnosticHandler Diagnostic;
 
 public:
-  CheffeParser(const std::string& File) : Lexer(File), CurrentToken()
+  CheffeParser(const CheffeSourceFile& SrcFile)
+      : Lexer(SrcFile), CurrentToken(), Diagnostic(SrcFile)
   {
   }
 
