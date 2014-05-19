@@ -57,6 +57,7 @@ Token CheffeLexer::getToken()
     if (peekNextChar() == '\n')
     {
       Tok.Kind = TokenKind::NewLine;
+      Tok.LineNumber = LineNumber;
 
       getNextChar();
       if (peekNextChar() == '\n')
@@ -65,7 +66,6 @@ Token CheffeLexer::getToken()
         Tok.Kind = TokenKind::EndOfParagraph;
       }
 
-      Tok.LineNumber = LineNumber;
       Tok.ColumnNumber = ColumnNumber;
       Tok.End = CurrentPos;
       return Tok;
