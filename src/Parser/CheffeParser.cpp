@@ -78,8 +78,11 @@ bool CheffeParser::expectToken(const T& Kind)
   if (CurrentToken.isNot(Kind))
   {
     std::ostringstream os;
-    os << "Error while parsing source file: expected " << Kind << ", got " << CurrentToken;
-    Diagnostic.Report(os.str());
+    os << "Expected " << Kind << ", got " << CurrentToken;
+    Diagnostic.Report(os.str(), CurrentToken.getLineNumber(), CurrentToken.getColumnNumber());
+
+    Diagnostic.PrintLine(CurrentToken.getLineNumber(), CurrentToken.getBegin(),
+                         CurrentToken.getEnd());
     return true;
   }
 
@@ -400,7 +403,7 @@ CheffeErrorCode CheffeParser::parseMethodStatement()
   {
     std::ostringstream os;
     os << "Invalid Method Keyword: '" << MethodKeyword.c_str() << "'\n";
-    Diagnostic.Report(os.str());
+    Diagnostic.Report(os.str(), CurrentToken.getLineNumber(), CurrentToken.getColumnNumber());
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
@@ -474,7 +477,8 @@ CheffeErrorCode CheffeParser::parseServesStatement()
     getNextToken();
     if (CurrentToken.isNotAnyOf(TokenKind::EndOfParagraph, TokenKind::EndOfFile))
     {
-      Diagnostic.Report("Invalid Serves Statement");
+      Diagnostic.Report("Invalid Serves Statement", CurrentToken.getLineNumber(),
+                        CurrentToken.getColumnNumber());
       return CheffeErrorCode::CHEFFE_ERROR;
     }
   }
