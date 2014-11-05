@@ -9,7 +9,7 @@ AllowShortBlocksOnASingleLine: false
 AllowShortCaseLabelsOnASingleLine: false
 AllowShortIfStatementsOnASingleLine: false
 AllowShortLoopsOnASingleLine: false
-AllowShortFunctionsOnASingleLine: All
+AllowShortFunctionsOnASingleLine: None
 AlwaysBreakAfterDefinitionReturnType: false
 AlwaysBreakTemplateDeclarations: false
 AlwaysBreakBeforeMultilineStrings: false
@@ -45,7 +45,7 @@ Standard:        Cpp11
 IndentWidth:     2
 TabWidth:        8
 UseTab:          Never
-BreakBeforeBraces: Attach
+BreakBeforeBraces: Allman
 SpacesInParentheses: false
 SpacesInSquareBrackets: false
 SpacesInAngles:  false
