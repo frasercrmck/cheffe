@@ -16,12 +16,12 @@ struct CheffeSourceFile
   std::string Name;
   std::string Source;
 
-  char& operator[] (std::size_t Pos)
+  char &operator[](std::size_t Pos)
   {
     return Source[Pos];
   }
 
-  const char& operator[] (std::size_t Pos) const
+  const char &operator[](std::size_t Pos) const
   {
     return Source[Pos];
   }

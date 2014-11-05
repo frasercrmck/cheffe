@@ -33,7 +33,8 @@ int CheffeLexer::peekNextChar()
   return File[CurrentPos];
 }
 
-std::string CheffeLexer::getTextSpan(const std::size_t Begin, const std::size_t End)
+std::string CheffeLexer::getTextSpan(const std::size_t Begin,
+                                     const std::size_t End)
 {
   assert(Begin >= 0 && Begin <= End && "");
   return File.Source.substr(Begin, End - Begin);
@@ -91,7 +92,7 @@ Token CheffeLexer::getToken()
 
   if (isalpha(Char))
   {
-    std::string IdentifierString{ (char)Char };
+    std::string IdentifierString{(char)Char};
     while (isalpha(peekNextChar()))
     {
       IdentifierString += getNextChar();
@@ -106,7 +107,7 @@ Token CheffeLexer::getToken()
 
   if (isdigit(Char))
   {
-    std::string NumStr = { (char)Char };
+    std::string NumStr = {(char)Char};
     while (isdigit(peekNextChar()))
     {
       NumStr += getNextChar();

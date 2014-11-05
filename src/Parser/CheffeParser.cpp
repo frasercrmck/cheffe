@@ -64,22 +64,21 @@ CheffeErrorCode CheffeParser::parseRecipe()
 }
 
 // Return true if token didn't match, false otherwise.
-template <typename T>
-bool CheffeParser::consumeAndExpectToken(const T& Kind)
+template <typename T> bool CheffeParser::consumeAndExpectToken(const T &Kind)
 {
   getNextToken();
   return expectToken(Kind);
 }
 
 // Return true if token didn't match, false otherwise.
-template <typename T>
-bool CheffeParser::expectToken(const T& Kind)
+template <typename T> bool CheffeParser::expectToken(const T &Kind)
 {
   if (CurrentToken.isNot(Kind))
   {
     std::ostringstream os;
     os << "Expected " << Kind << ", got " << CurrentToken;
-    Diagnostic.Report(os.str(), CurrentToken.getLineNumber(), CurrentToken.getColumnNumber());
+    Diagnostic.Report(os.str(), CurrentToken.getLineNumber(),
+                      CurrentToken.getColumnNumber());
 
     Diagnostic.PrintLine(CurrentToken.getLineNumber(), CurrentToken.getBegin(),
                          CurrentToken.getEnd());
@@ -95,7 +94,8 @@ CheffeErrorCode CheffeParser::parseRecipeTitle()
   const std::size_t BeginTitlePos = CurrentToken.getBegin();
 
   // Parse the Recipe Title.
-  while (CurrentToken.isNotAnyOf(TokenKind::FullStop, TokenKind::EndOfParagraph, TokenKind::EndOfFile))
+  while (CurrentToken.isNotAnyOf(TokenKind::FullStop, TokenKind::EndOfParagraph,
+                                 TokenKind::EndOfFile))
   {
     getNextToken();
   }
@@ -108,7 +108,6 @@ CheffeErrorCode CheffeParser::parseRecipeTitle()
 
   const std::string RecipeTitle = Lexer.getTextSpan(BeginTitlePos, EndTitlePos);
   CHEFFE_DEBUG("RECIPE TITLE:\n\"" << RecipeTitle.c_str() << "\"\n\n");
-
 
   if (consumeAndExpectToken(TokenKind::EndOfParagraph))
   {
@@ -131,7 +130,8 @@ CheffeErrorCode CheffeParser::parseCommentBlock()
 
   getNextToken();
   const std::size_t CommentsBeginPos = CurrentToken.getBegin();
-  while (CurrentToken.isNotAnyOf(TokenKind::EndOfParagraph, TokenKind::EndOfFile))
+  while (
+      CurrentToken.isNotAnyOf(TokenKind::EndOfParagraph, TokenKind::EndOfFile))
   {
     getNextToken();
   }
@@ -141,7 +141,8 @@ CheffeErrorCode CheffeParser::parseCommentBlock()
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
-  std::string Comments = Lexer.getTextSpan(CommentsBeginPos, CurrentToken.getBegin());
+  std::string Comments =
+      Lexer.getTextSpan(CommentsBeginPos, CurrentToken.getBegin());
   CHEFFE_DEBUG("COMMENTS:\n\"" << Comments.c_str() << "\"\n\n");
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
@@ -165,16 +166,19 @@ CheffeErrorCode CheffeParser::parseIngredientsList()
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
-  while (CurrentToken.isNotAnyOf(TokenKind::EndOfParagraph, TokenKind::EndOfFile))
+  while (
+      CurrentToken.isNotAnyOf(TokenKind::EndOfParagraph, TokenKind::EndOfFile))
   {
     getNextToken();
     const std::size_t BeginIngredientPos = CurrentToken.getBegin();
-    while (CurrentToken.isNotAnyOf(TokenKind::NewLine, TokenKind::EndOfParagraph, TokenKind::EndOfFile))
+    while (CurrentToken.isNotAnyOf(
+        TokenKind::NewLine, TokenKind::EndOfParagraph, TokenKind::EndOfFile))
     {
       getNextToken();
     }
     const std::size_t EndIngredientPos = CurrentToken.getBegin();
-    std::string Ingredient = Lexer.getTextSpan(BeginIngredientPos, EndIngredientPos);
+    std::string Ingredient =
+        Lexer.getTextSpan(BeginIngredientPos, EndIngredientPos);
     CHEFFE_DEBUG("INGREDIENT: \"" << Ingredient.c_str() << "\"\n");
   }
   CHEFFE_DEBUG("\n");
@@ -220,7 +224,8 @@ CheffeErrorCode CheffeParser::parseCookingTime()
   }
   const std::string TimeUnit = CurrentToken.getIdentifierString();
 
-  auto FindResult = std::find(std::begin(ValidTimeUnits), std::end(ValidTimeUnits), TimeUnit);
+  auto FindResult =
+      std::find(std::begin(ValidTimeUnits), std::end(ValidTimeUnits), TimeUnit);
   if (FindResult == std::end(ValidTimeUnits))
   {
     return CheffeErrorCode::CHEFFE_ERROR;
@@ -363,7 +368,8 @@ CheffeErrorCode CheffeParser::parseMethodList()
 
   getNextToken();
   CHEFFE_DEBUG("\nMETHOD LIST:\n");
-  while (CurrentToken.isNotAnyOf(TokenKind::EndOfParagraph, TokenKind::EndOfFile))
+  while (
+      CurrentToken.isNotAnyOf(TokenKind::EndOfParagraph, TokenKind::EndOfFile))
   {
     CheffeErrorCode Success = parseMethodStatement();
     if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
@@ -384,16 +390,16 @@ CheffeErrorCode CheffeParser::parseMethodStatement()
   }
 
   const std::string MethodKeyword = CurrentToken.getIdentifierString();
-  auto FindResult =
-      std::find(std::begin(ValidMethodKeywords), std::end(ValidMethodKeywords), MethodKeyword);
+  auto FindResult = std::find(std::begin(ValidMethodKeywords),
+                              std::end(ValidMethodKeywords), MethodKeyword);
 
   bool IsKnownVerb = false;
   const bool IsValidMethodKeyword = FindResult != std::end(ValidMethodKeywords);
 
   if (!IsValidMethodKeyword)
   {
-    FindResult =
-        std::find(std::begin(ValidVerbKeywords), std::end(ValidVerbKeywords), MethodKeyword);
+    FindResult = std::find(std::begin(ValidVerbKeywords),
+                           std::end(ValidVerbKeywords), MethodKeyword);
 
     IsKnownVerb = FindResult != std::end(ValidVerbKeywords);
   }
@@ -402,7 +408,8 @@ CheffeErrorCode CheffeParser::parseMethodStatement()
   {
     std::ostringstream os;
     os << "Invalid Method Keyword: '" << MethodKeyword.c_str() << "'\n";
-    Diagnostic.Report(os.str(), CurrentToken.getLineNumber(), CurrentToken.getColumnNumber());
+    Diagnostic.Report(os.str(), CurrentToken.getLineNumber(),
+                      CurrentToken.getColumnNumber());
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
@@ -419,8 +426,9 @@ CheffeErrorCode CheffeParser::parseMethodStatement()
   const std::size_t EndMethodPos = CurrentToken.getEnd();
   std::string MethodStatement = Lexer.getTextSpan(BeginMethodPos, EndMethodPos);
   // Pretty-print the method statement - strip out any new lines.
-  MethodStatement.erase(std::remove(std::begin(MethodStatement), std::end(MethodStatement), '\n'),
-                        std::end(MethodStatement));
+  MethodStatement.erase(
+      std::remove(std::begin(MethodStatement), std::end(MethodStatement), '\n'),
+      std::end(MethodStatement));
   CHEFFE_DEBUG("\"" << MethodStatement.c_str() << "\"\n");
 
   getNextToken();
@@ -474,9 +482,11 @@ CheffeErrorCode CheffeParser::parseServesStatement()
     }
 
     getNextToken();
-    if (CurrentToken.isNotAnyOf(TokenKind::EndOfParagraph, TokenKind::EndOfFile))
+    if (CurrentToken.isNotAnyOf(TokenKind::EndOfParagraph,
+                                TokenKind::EndOfFile))
     {
-      Diagnostic.Report("Invalid Serves Statement", CurrentToken.getLineNumber(),
+      Diagnostic.Report("Invalid Serves Statement",
+                        CurrentToken.getLineNumber(),
                         CurrentToken.getColumnNumber());
       return CheffeErrorCode::CHEFFE_ERROR;
     }

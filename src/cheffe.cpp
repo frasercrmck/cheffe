@@ -8,7 +8,7 @@
 
 using namespace cheffe;
 
-static CheffeErrorCode readFile(CheffeSourceFile& File)
+static CheffeErrorCode readFile(CheffeSourceFile &File)
 {
   std::ifstream InStream(File.Name, std::ios::in | std::ios::binary);
 
@@ -29,7 +29,7 @@ static CheffeErrorCode readFile(CheffeSourceFile& File)
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
   std::string FileName;
   for (int i = 1; i < argc; ++i)
@@ -47,7 +47,7 @@ int main(int argc, char** argv)
     return 1;
   }
 
-  CheffeSourceFile InFile = { FileName, "" };
+  CheffeSourceFile InFile = {FileName, ""};
   const CheffeErrorCode Ret = readFile(InFile);
 
   if (Ret != CheffeErrorCode::CHEFFE_SUCCESS)

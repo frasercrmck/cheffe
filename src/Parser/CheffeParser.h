@@ -11,18 +11,16 @@
 namespace cheffe
 {
 
-const std::unordered_set<std::string> ValidTimeUnits = {
-  "hour", "hours", "minute", "minutes"
-};
+const std::unordered_set<std::string> ValidTimeUnits = {"hour", "hours",
+                                                        "minute", "minutes"};
 
 const std::unordered_set<std::string> ValidMethodKeywords = {
-  "Take",    "Put",  "Fold", "Add",   "Remove", "Combine", "Divide", "Liquefy",
-  "Liquify", "Stir", "Mix",  "Clean", "Pour",   "Set",     "Serve",  "Refrigerate"
-};
+    "Take",   "Put",     "Fold",    "Add",        "Remove", "Combine",
+    "Divide", "Liquefy", "Liquify", "Stir",       "Mix",    "Clean",
+    "Pour",   "Set",     "Serve",   "Refrigerate"};
 
 const std::unordered_set<std::string> ValidVerbKeywords = {
-  "Sift", "Rub", "Melt", "Caramelise", "Cook", "Heat"
-};
+    "Sift", "Rub", "Melt", "Caramelise", "Cook", "Heat"};
 
 class CheffeParser
 {
@@ -33,7 +31,7 @@ private:
   CheffeDiagnosticHandler Diagnostic;
 
 public:
-  CheffeParser(const CheffeSourceFile& SrcFile)
+  CheffeParser(const CheffeSourceFile &SrcFile)
       : Lexer(SrcFile), CurrentToken(), Diagnostic(SrcFile)
   {
   }
@@ -52,11 +50,9 @@ public:
   Token getNextToken();
 
   // Return true if token didn't match, false otherwise.
-  template <typename T>
-  bool expectToken(const T& Tok);
+  template <typename T> bool expectToken(const T &Tok);
 
-  template <typename T>
-  bool consumeAndExpectToken(const T& Tok);
+  template <typename T> bool consumeAndExpectToken(const T &Tok);
 };
 
 } // end namespace cheffe

@@ -54,7 +54,7 @@ static std::string TokenKindToString(const TokenKind Kind)
   }
 }
 
-static std::ostream& operator<<(std::ostream& stream, const TokenKind& Kind)
+static std::ostream &operator<<(std::ostream &stream, const TokenKind &Kind)
 {
   stream << TokenKindToString(Kind);
   return stream;
@@ -80,11 +80,14 @@ private:
 
 public:
   // Constructors
-  Token() : Kind(TokenKind::EndOfFile), Begin(0), End(0), LineNumber(1), ColumnNumber(0), NumVal(0)
+  Token()
+      : Kind(TokenKind::EndOfFile), Begin(0), End(0), LineNumber(1),
+        ColumnNumber(0), NumVal(0)
   {
   }
 
-  Token(TokenKind Tok) : Kind(Tok), Begin(0), End(0), LineNumber(1), ColumnNumber(0), NumVal(0)
+  Token(TokenKind Tok)
+      : Kind(Tok), Begin(0), End(0), LineNumber(1), ColumnNumber(0), NumVal(0)
   {
   }
 
@@ -94,30 +97,30 @@ public:
   }
 
   Token(std::string Str)
-      : Kind(TokenKind::Identifier), Begin(0), End(0), LineNumber(1), ColumnNumber(0), NumVal(0),
-        IdentifierString(Str)
+      : Kind(TokenKind::Identifier), Begin(0), End(0), LineNumber(1),
+        ColumnNumber(0), NumVal(0), IdentifierString(Str)
   {
   }
 
   Token(const char *Str)
-      : Kind(TokenKind::Identifier), Begin(0), End(0), LineNumber(1), ColumnNumber(0), NumVal(0),
-        IdentifierString(Str)
+      : Kind(TokenKind::Identifier), Begin(0), End(0), LineNumber(1),
+        ColumnNumber(0), NumVal(0), IdentifierString(Str)
   {
   }
 
-
   // Copy constructor
-  Token(const Token& Other)
-      : Kind(Other.Kind), Begin(Other.Begin), End(Other.End), LineNumber(Other.LineNumber),
-        ColumnNumber(Other.ColumnNumber), NumVal(Other.NumVal),
-        IdentifierString(Other.IdentifierString)
+  Token(const Token &Other)
+      : Kind(Other.Kind), Begin(Other.Begin), End(Other.End),
+        LineNumber(Other.LineNumber), ColumnNumber(Other.ColumnNumber),
+        NumVal(Other.NumVal), IdentifierString(Other.IdentifierString)
   {
   }
 
   // Move constructor
-  Token(Token&& Other)
-      : Kind(Other.Kind), Begin(Other.Begin), End(Other.End), LineNumber(Other.LineNumber),
-        ColumnNumber(Other.ColumnNumber), NumVal(Other.NumVal),
+  Token(Token &&Other)
+      : Kind(Other.Kind), Begin(Other.Begin), End(Other.End),
+        LineNumber(Other.LineNumber), ColumnNumber(Other.ColumnNumber),
+        NumVal(Other.NumVal),
         IdentifierString(std::move(Other.IdentifierString))
 
   {
@@ -130,7 +133,7 @@ public:
   }
 
   // Copy assignment operator
-  Token& operator=(const Token& Other)
+  Token &operator=(const Token &Other)
   {
     Kind = Other.Kind;
     Begin = Other.Begin;
@@ -143,7 +146,7 @@ public:
   }
 
   // Move assignment operator
-  Token& operator=(Token&& Other)
+  Token &operator=(Token &&Other)
   {
     Kind = Other.Kind;
     Begin = Other.Begin;
@@ -166,11 +169,11 @@ public:
   {
     return Kind == Tok;
   }
-  bool is(const std::string& Str)
+  bool is(const std::string &Str)
   {
     return is(TokenKind::Identifier) && !IdentifierString.compare(Str);
   }
-  bool is(std::string&& Str)
+  bool is(std::string &&Str)
   {
     return is(TokenKind::Identifier) && !IdentifierString.compare(Str);
   }
@@ -179,8 +182,7 @@ public:
   {
     return true;
   }
-  template <typename... Tail>
-  bool isAllOf(TokenKind&& Tok, Tail&&... Toks)
+  template <typename... Tail> bool isAllOf(TokenKind &&Tok, Tail &&... Toks)
   {
     if (isNot(std::forward<TokenKind>(Tok)))
     {
@@ -188,8 +190,7 @@ public:
     }
     return isAllOf(std::forward<Tail>(Toks)...);
   }
-  template <typename... Tail>
-  bool isAllOf(std::string&& Str, Tail&&... Toks)
+  template <typename... Tail> bool isAllOf(std::string &&Str, Tail &&... Toks)
   {
     if (isNot(std::forward<std::string>(Str)))
     {
@@ -202,11 +203,11 @@ public:
   {
     return Kind != Tok;
   }
-  bool isNot(const std::string& Str)
+  bool isNot(const std::string &Str)
   {
     return !is(Str);
   }
-  bool isNot(std::string&& Str)
+  bool isNot(std::string &&Str)
   {
     return !is(Str);
   }
@@ -215,8 +216,7 @@ public:
   {
     return true;
   }
-  template <typename... Tail>
-  bool isNotAnyOf(TokenKind&& Tok, Tail&&... Toks)
+  template <typename... Tail> bool isNotAnyOf(TokenKind &&Tok, Tail &&... Toks)
   {
     if (is(std::forward<TokenKind>(Tok)))
     {
@@ -225,7 +225,7 @@ public:
     return isNotAnyOf(std::forward<Tail>(Toks)...);
   }
   template <typename... Tail>
-  bool isNotAnyOf(std::string&& Str, Tail&&... Toks)
+  bool isNotAnyOf(std::string &&Str, Tail &&... Toks)
   {
     if (is(std::forward<std::string>(Str)))
     {
@@ -274,7 +274,7 @@ public:
     return NumVal;
   }
 
-  friend std::ostream& operator<<(std::ostream& stream, const Token& Tok)
+  friend std::ostream &operator<<(std::ostream &stream, const Token &Tok)
   {
     if (Tok.Kind == TokenKind::Identifier)
     {

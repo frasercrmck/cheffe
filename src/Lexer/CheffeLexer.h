@@ -19,7 +19,7 @@ private:
   unsigned ColumnNumber;
 
 public:
-  CheffeLexer(const CheffeSourceFile& SrcFile)
+  CheffeLexer(const CheffeSourceFile &SrcFile)
       : CurrentPos(0), File(SrcFile), LineNumber(1), ColumnNumber(0)
   {
   }

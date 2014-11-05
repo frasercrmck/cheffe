@@ -3,7 +3,8 @@
 namespace cheffe
 {
 
-void CheffeDiagnosticHandler::Report(const std::string& Msg, const unsigned LineNo,
+void CheffeDiagnosticHandler::Report(const std::string &Msg,
+                                     const unsigned LineNo,
                                      const unsigned ColumnNo)
 {
   std::string Message = Msg;
@@ -21,12 +22,14 @@ void CheffeDiagnosticHandler::Report(const std::string& Msg, const unsigned Line
   std::cerr << Message << std::endl;
 }
 
-void CheffeDiagnosticHandler::PrintLine(const unsigned LineNo, const std::size_t Begin,
+void CheffeDiagnosticHandler::PrintLine(const unsigned LineNo,
+                                        const std::size_t Begin,
                                         const std::size_t End)
 {
   unsigned LineCount = 1;
   std::size_t FilePos = 0;
-  for (FilePos = 0; FilePos < File.Source.size() && LineCount != LineNo; ++FilePos)
+  for (FilePos = 0; FilePos < File.Source.size() && LineCount != LineNo;
+       ++FilePos)
   {
     if (File.Source[FilePos] == '\n')
     {
@@ -37,7 +40,8 @@ void CheffeDiagnosticHandler::PrintLine(const unsigned LineNo, const std::size_t
   const std::size_t TokenLength = End - Begin;
   const std::size_t TokenOffsetFromLineBegin = Begin - FilePos;
 
-  std::string Line = File.Source.substr(FilePos, File.Source.find('\n', FilePos) - FilePos);
+  std::string Line =
+      File.Source.substr(FilePos, File.Source.find('\n', FilePos) - FilePos);
 
   std::cerr << Line << std::endl;
 
@@ -47,8 +51,8 @@ void CheffeDiagnosticHandler::PrintLine(const unsigned LineNo, const std::size_t
   std::cerr << Padding << UnderlineToken << std::endl;
 }
 
-void CheffeDiagnosticHandler::PrintFileAndLineNumberInformation(const unsigned LineNo,
-                                                                const unsigned ColumnNo)
+void CheffeDiagnosticHandler::PrintFileAndLineNumberInformation(
+    const unsigned LineNo, const unsigned ColumnNo)
 {
   std::cerr << File.Name << ":" << LineNo << ":" << ColumnNo;
 }
