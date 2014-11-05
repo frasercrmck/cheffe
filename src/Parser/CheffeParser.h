@@ -45,7 +45,7 @@ public:
   CheffeErrorCode parseIngredientsList();
   CheffeErrorCode parseCookingTime();
   CheffeErrorCode parseOvenTemperature();
-  CheffeErrorCode parseMethod();
+  CheffeErrorCode parseMethodList();
   CheffeErrorCode parseMethodStatement();
   CheffeErrorCode parseServesStatement();
 

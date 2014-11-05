@@ -47,7 +47,7 @@ CheffeErrorCode CheffeParser::parseRecipe()
       return Success;
     }
 
-    Success = parseMethod();
+    Success = parseMethodList();
     if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
     {
       return Success;
@@ -343,7 +343,7 @@ CheffeErrorCode CheffeParser::parseOvenTemperature()
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
 
-CheffeErrorCode CheffeParser::parseMethod()
+CheffeErrorCode CheffeParser::parseMethodList()
 {
   // Eat the 'Method' token
   if (consumeAndExpectToken("Method"))
