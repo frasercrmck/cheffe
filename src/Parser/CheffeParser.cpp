@@ -256,7 +256,6 @@ CheffeErrorCode CheffeParser::parseOvenTemperature()
   {
     return CheffeErrorCode::CHEFFE_ERROR;
   }
-  const std::size_t OvenTempBeginPos = CurrentToken.getBegin();
 
   if (consumeAndExpectToken(TokenKind::Hyphen))
   {
