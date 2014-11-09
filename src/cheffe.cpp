@@ -1,33 +1,11 @@
+#include "cheffe.h"
 #include "Parser/CheffeParser.h"
+#include "Utils/CheffeFileHandler.h"
 
 #include <string>
-#include <fstream>
-#include <cerrno>
-#include <stdio.h>
 #include <iostream>
 
 using namespace cheffe;
-
-static CheffeErrorCode readFile(CheffeSourceFile &File)
-{
-  std::ifstream InStream(File.Name, std::ios::in | std::ios::binary);
-
-  if (!InStream)
-  {
-    return CheffeErrorCode::CHEFFE_ERROR;
-  }
-
-  InStream.seekg(0, std::ios::end);
-
-  File.Source.resize(InStream.tellg());
-
-  InStream.seekg(0, std::ios::beg);
-  InStream.read(&File[0], File.Source.size());
-
-  InStream.close();
-
-  return CheffeErrorCode::CHEFFE_SUCCESS;
-}
 
 int main(int argc, char **argv)
 {
@@ -48,7 +26,7 @@ int main(int argc, char **argv)
   }
 
   CheffeSourceFile InFile = {FileName, ""};
-  const CheffeErrorCode Ret = readFile(InFile);
+  const CheffeErrorCode Ret = CheffeFileHandler::readFile(InFile);
 
   if (Ret != CheffeErrorCode::CHEFFE_SUCCESS)
   {
