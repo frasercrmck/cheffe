@@ -1,5 +1,6 @@
 set(
   cheffe-src-files
+  CheffeDebugUtils.cpp
   CheffeFileHandler.cpp
   CheffeDiagnosticHandler.cpp
 )

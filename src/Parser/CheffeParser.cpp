@@ -4,6 +4,8 @@
 #include <sstream>
 #include <algorithm>
 
+#define DEBUG_TYPE "parser"
+
 namespace cheffe
 {
 Token CheffeParser::getNextToken()

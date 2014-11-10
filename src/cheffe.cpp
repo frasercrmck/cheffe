@@ -1,5 +1,6 @@
 #include "cheffe.h"
 #include "Parser/CheffeParser.h"
+#include "Utils/CheffeDebugUtils.h"
 #include "Utils/CheffeFileHandler.h"
 
 #include <string>
@@ -12,6 +13,14 @@ int main(int argc, char **argv)
   std::string FileName;
   for (int i = 1; i < argc; ++i)
   {
+    if (!strcmp(argv[i], "-debug-only"))
+    {
+      if (i != argc - 1)
+      {
+        setCurrentDebugType(argv[++i]);
+        continue;
+      }
+    }
     // Input file is last in argument list
     if (i == argc - 1)
     {
