@@ -12,6 +12,8 @@ class CheffeDiagnosticHandler
 private:
   CheffeSourceFile File;
 
+  std::ostream& errs();
+
 public:
   CheffeDiagnosticHandler(const CheffeSourceFile &File) : File(File)
   {

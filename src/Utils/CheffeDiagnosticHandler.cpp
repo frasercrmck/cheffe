@@ -3,6 +3,11 @@
 namespace cheffe
 {
 
+std::ostream &CheffeDiagnosticHandler::errs()
+{
+  return std::cerr;
+}
+
 void CheffeDiagnosticHandler::Report(const std::string &Msg,
                                      const unsigned LineNo,
                                      const unsigned ColumnNo)
@@ -15,11 +20,11 @@ void CheffeDiagnosticHandler::Report(const std::string &Msg,
     Message = Message.substr(0, MessageLength - 1);
   }
 
-  std::cerr << "Error while processing source file ";
+  errs() << "Error while processing source file ";
   PrintFileAndLineNumberInformation(LineNo, ColumnNo);
-  std::cerr << std::endl;
+  errs() << std::endl;
 
-  std::cerr << Message << std::endl;
+  errs() << Message << std::endl;
 }
 
 void CheffeDiagnosticHandler::PrintLine(const unsigned LineNo,
@@ -43,18 +48,18 @@ void CheffeDiagnosticHandler::PrintLine(const unsigned LineNo,
   std::string Line =
       File.Source.substr(FilePos, File.Source.find('\n', FilePos) - FilePos);
 
-  std::cerr << Line << std::endl;
+  errs() << Line << std::endl;
 
   const std::string Padding = std::string(TokenOffsetFromLineBegin, ' ');
   const std::string UnderlineToken = std::string(TokenLength, '~');
 
-  std::cerr << Padding << UnderlineToken << std::endl;
+  errs() << Padding << UnderlineToken << std::endl;
 }
 
 void CheffeDiagnosticHandler::PrintFileAndLineNumberInformation(
     const unsigned LineNo, const unsigned ColumnNo)
 {
-  std::cerr << File.Name << ":" << LineNo << ":" << ColumnNo;
+  errs() << File.Name << ":" << LineNo << ":" << ColumnNo;
 }
 
 } // end namespace cheffe
