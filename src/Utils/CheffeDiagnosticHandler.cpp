@@ -8,7 +8,7 @@ std::ostream &CheffeDiagnosticHandler::errs()
   return std::cerr;
 }
 
-void CheffeDiagnosticHandler::Report(const std::string &Msg,
+void CheffeDiagnosticHandler::report(const std::string &Msg,
                                      const unsigned LineNo,
                                      const unsigned ColumnNo)
 {
@@ -21,13 +21,13 @@ void CheffeDiagnosticHandler::Report(const std::string &Msg,
   }
 
   errs() << "Error while processing source file ";
-  PrintFileAndLineNumberInformation(LineNo, ColumnNo);
+  printFileAndLineNumberInformation(LineNo, ColumnNo);
   errs() << std::endl;
 
   errs() << Message << std::endl;
 }
 
-void CheffeDiagnosticHandler::PrintLine(const unsigned LineNo,
+void CheffeDiagnosticHandler::printLine(const unsigned LineNo,
                                         const std::size_t Begin,
                                         const std::size_t End)
 {
@@ -56,7 +56,7 @@ void CheffeDiagnosticHandler::PrintLine(const unsigned LineNo,
   errs() << Padding << UnderlineToken << std::endl;
 }
 
-void CheffeDiagnosticHandler::PrintFileAndLineNumberInformation(
+void CheffeDiagnosticHandler::printFileAndLineNumberInformation(
     const unsigned LineNo, const unsigned ColumnNo)
 {
   errs() << File.Name << ":" << LineNo << ":" << ColumnNo;

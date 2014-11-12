@@ -23,12 +23,12 @@ public:
   {
   }
 
-  void Report(const std::string &Message, const unsigned LineNo,
+  void report(const std::string &Message, const unsigned LineNo,
               const unsigned ColumnNo);
 
-  void PrintLine(const unsigned LineNo, const std::size_t Begin,
+  void printLine(const unsigned LineNo, const std::size_t Begin,
                  const std::size_t End);
-  void PrintFileAndLineNumberInformation(const unsigned LineNo,
+  void printFileAndLineNumberInformation(const unsigned LineNo,
                                          const unsigned ColumnNo);
 };
 
