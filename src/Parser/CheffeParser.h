@@ -38,6 +38,7 @@ public:
 
   CheffeErrorCode parseRecipe();
 
+private:
   CheffeErrorCode parseRecipeTitle();
   CheffeErrorCode parseCommentBlock();
   CheffeErrorCode parseIngredientsList();
