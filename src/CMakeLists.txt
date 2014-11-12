@@ -15,3 +15,6 @@ add_subdirectory( Parser )
 add_subdirectory( Utils )
 
 target_link_libraries ( cheffe CheffeParser CheffeLexer CheffeUtils )
+
+add_library( cheffe_test_lib INTERFACE )
+target_link_libraries( cheffe_test_lib INTERFACE CheffeParser CheffeLexer CheffeUtils )
