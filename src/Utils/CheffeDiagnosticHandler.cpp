@@ -36,8 +36,7 @@ void CheffeDiagnosticHandler::printLine(const unsigned LineNo,
   assert(LineNo != 0 && "Lines must be indexed from 1");
   unsigned LineCount = 1;
   std::size_t FilePos = 0;
-  for (FilePos = 0; FilePos < File.Source.size() && LineCount != LineNo;
-       ++FilePos)
+  for (; FilePos < File.Source.size() && LineCount != LineNo; ++FilePos)
   {
     if (File.Source[FilePos] == '\n')
     {
