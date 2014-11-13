@@ -1,7 +1,6 @@
 #include "Parser/CheffeParser.h"
 #include "Utils/CheffeDebugUtils.h"
 
-#include <sstream>
 #include <algorithm>
 
 #define DEBUG_TYPE "parser"
@@ -77,8 +76,6 @@ template <typename T> bool CheffeParser::expectToken(const T &Kind)
 {
   if (CurrentToken.isNot(Kind))
   {
-    std::ostringstream os;
-    os << "Expected " << Kind << ", got " << CurrentToken;
     Diagnostic.report(CurrentToken.getLineNumber(),
                       CurrentToken.getColumnNumber())
         << "Expected " << Kind << ", got " << CurrentToken << std::endl;
@@ -409,8 +406,6 @@ CheffeErrorCode CheffeParser::parseMethodStatement()
 
   if (!IsValidMethodKeyword && !IsKnownVerb)
   {
-    std::ostringstream os;
-    os << "Invalid Method Keyword: '" << MethodKeyword.c_str() << "'\n";
     Diagnostic.report(CurrentToken.getLineNumber(),
                       CurrentToken.getColumnNumber())
         << "Invalid Method Keyword: '" << MethodKeyword.c_str() << "'"
