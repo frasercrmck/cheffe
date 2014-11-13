@@ -47,7 +47,7 @@ void CheffeDiagnosticHandler::printLine(const unsigned LineNo,
   const std::size_t TokenLength = End - Begin;
   const std::size_t TokenOffsetFromLineBegin = Begin - FilePos;
 
-  std::string Line =
+  const std::string Line =
       File.Source.substr(FilePos, File.Source.find('\n', FilePos) - FilePos);
 
   errs() << Line << std::endl;
