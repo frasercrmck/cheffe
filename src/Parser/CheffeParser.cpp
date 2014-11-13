@@ -412,6 +412,8 @@ CheffeErrorCode CheffeParser::parseMethodStatement()
     os << "Invalid Method Keyword: '" << MethodKeyword.c_str() << "'\n";
     Diagnostic.report(os.str(), CurrentToken.getLineNumber(),
                       CurrentToken.getColumnNumber());
+    Diagnostic.printLine(CurrentToken.getLineNumber(), CurrentToken.getBegin(),
+                         CurrentToken.getEnd());
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
