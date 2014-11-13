@@ -79,8 +79,9 @@ template <typename T> bool CheffeParser::expectToken(const T &Kind)
   {
     std::ostringstream os;
     os << "Expected " << Kind << ", got " << CurrentToken;
-    Diagnostic.report(os.str(), CurrentToken.getLineNumber(),
-                      CurrentToken.getColumnNumber());
+    Diagnostic.report(CurrentToken.getLineNumber(),
+                      CurrentToken.getColumnNumber())
+        << "Expected " << Kind << ", got " << CurrentToken << std::endl;
 
     Diagnostic.printLine(CurrentToken.getLineNumber(), CurrentToken.getBegin(),
                          CurrentToken.getEnd());
@@ -410,8 +411,10 @@ CheffeErrorCode CheffeParser::parseMethodStatement()
   {
     std::ostringstream os;
     os << "Invalid Method Keyword: '" << MethodKeyword.c_str() << "'\n";
-    Diagnostic.report(os.str(), CurrentToken.getLineNumber(),
-                      CurrentToken.getColumnNumber());
+    Diagnostic.report(CurrentToken.getLineNumber(),
+                      CurrentToken.getColumnNumber())
+        << "Invalid Method Keyword: '" << MethodKeyword.c_str() << "'"
+        << std::endl;
     Diagnostic.printLine(CurrentToken.getLineNumber(), CurrentToken.getBegin(),
                          CurrentToken.getEnd());
     return CheffeErrorCode::CHEFFE_ERROR;
@@ -489,9 +492,9 @@ CheffeErrorCode CheffeParser::parseServesStatement()
     if (CurrentToken.isNotAnyOf(TokenKind::EndOfParagraph,
                                 TokenKind::EndOfFile))
     {
-      Diagnostic.report("Invalid Serves Statement",
-                        CurrentToken.getLineNumber(),
-                        CurrentToken.getColumnNumber());
+      Diagnostic.report(CurrentToken.getLineNumber(),
+                        CurrentToken.getColumnNumber())
+          << "Invalid Serves Statement" << std::endl;
       return CheffeErrorCode::CHEFFE_ERROR;
     }
   }

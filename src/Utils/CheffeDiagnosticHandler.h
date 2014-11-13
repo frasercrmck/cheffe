@@ -23,8 +23,7 @@ public:
   {
   }
 
-  void report(const std::string &Message, const unsigned LineNo,
-              const unsigned ColumnNo);
+  std::ostream &report(const unsigned LineNo, const unsigned ColumnNo);
 
   void printLine(const unsigned LineNo, const std::size_t Begin,
                  const std::size_t End);

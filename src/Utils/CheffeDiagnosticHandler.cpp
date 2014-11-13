@@ -10,23 +10,14 @@ std::ostream &CheffeDiagnosticHandler::errs()
   return std::cerr;
 }
 
-void CheffeDiagnosticHandler::report(const std::string &Msg,
-                                     const unsigned LineNo,
-                                     const unsigned ColumnNo)
+std::ostream &CheffeDiagnosticHandler::report(const unsigned LineNo,
+                                              const unsigned ColumnNo)
 {
-  std::string Message = Msg;
-  const std::size_t MessageLength = Message.length();
-  // Strip off the final trailing newline
-  if (Message.length() != 0 && Message[MessageLength - 1] == '\n')
-  {
-    Message = Message.substr(0, MessageLength - 1);
-  }
-
   errs() << "Error while processing source file ";
   printFileAndLineNumberInformation(LineNo, ColumnNo);
   errs() << std::endl;
 
-  errs() << Message << std::endl;
+  return errs();
 }
 
 void CheffeDiagnosticHandler::printLine(const unsigned LineNo,
