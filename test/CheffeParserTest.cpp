@@ -88,3 +88,8 @@ TEST_F(BadParserTest, BadTitle)
 {
   TestParse("/Parser/bad-title.ch");
 }
+
+TEST_F(BadParserTest, IllegalMethodKeyword)
+{
+  TestParse("/Parser/illegal-method-keyword.ch");
+}
