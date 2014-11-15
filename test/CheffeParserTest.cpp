@@ -79,6 +79,16 @@ TEST_F(GoodParserTest, NoComments)
   TestParse("/Parser/no-comments.ch");
 }
 
+TEST_F(GoodParserTest, IngredientNoInitialValue)
+{
+  TestParse("/Parser/ingredient-no-initial-value.ch");
+}
+
+TEST_F(GoodParserTest, IngredientNoMeasure)
+{
+  TestParse("/Parser/ingredient-no-measure.ch");
+}
+
 TEST_F(BadParserTest, BadComments)
 {
   TestParse("/Parser/bad-comments.ch");
@@ -87,6 +97,21 @@ TEST_F(BadParserTest, BadComments)
 TEST_F(BadParserTest, BadTitle)
 {
   TestParse("/Parser/bad-title.ch");
+}
+
+TEST_F(BadParserTest, IllegalIngredient)
+{
+  TestParse("/Parser/illegal-ingredient.ch");
+}
+
+TEST_F(BadParserTest, IllegalIngredientNoName)
+{
+  TestParse("/Parser/illegal-ingredient-no-name.ch");
+}
+
+TEST_F(BadParserTest, IllegalIngredientNoName2)
+{
+  TestParse("/Parser/illegal-ingredient-no-name-2.ch");
 }
 
 TEST_F(BadParserTest, IllegalMethodKeyword)
