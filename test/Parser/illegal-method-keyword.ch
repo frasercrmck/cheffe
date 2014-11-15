@@ -9,4 +9,3 @@ Method.
 Test illegal method keyboard.
 
 Serves 1.
-
