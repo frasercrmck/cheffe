@@ -237,18 +237,6 @@ CheffeErrorCode CheffeParser::parseIngredient(IngredientInfoTy &IngredientInfo)
     IngredientInfo.HasInitialValue = true;
     IngredientInfo.InitialValue = CurrentToken.getNumVal();
     getNextToken();
-
-    if (CurrentToken.isAnyOf(TokenKind::NewLine, TokenKind::EndOfParagraph,
-                             TokenKind::EndOfFile))
-    {
-      Diagnostic.report(CurrentToken.getLineNumber(),
-                        CurrentToken.getColumnNumber())
-          << "Unexpected " << CurrentToken.getKind() << std::endl;
-
-      Diagnostic.printLine(CurrentToken.getLineNumber(),
-                           CurrentToken.getBegin(), CurrentToken.getEnd());
-      return CheffeErrorCode::CHEFFE_ERROR;
-    }
   }
 
   if (expectToken(TokenKind::Identifier))
