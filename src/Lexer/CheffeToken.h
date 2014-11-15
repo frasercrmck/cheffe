@@ -165,6 +165,7 @@ public:
     return *this;
   }
 
+  //==== is() ====//
   bool is(TokenKind Tok)
   {
     return Kind == Tok;
@@ -177,7 +178,9 @@ public:
   {
     return is(TokenKind::Identifier) && !IdentifierString.compare(Str);
   }
+  //==== is() ====//
 
+  //==== isNot() ====//
   bool isNot(TokenKind Tok)
   {
     return Kind != Tok;
@@ -190,7 +193,9 @@ public:
   {
     return !is(Str);
   }
+  //==== isNot() ====//
 
+  //==== isAnyOf() ====//
   bool isAnyOf()
   {
     return false;
@@ -212,7 +217,9 @@ public:
     }
     return isAnyOf(std::forward<Tail>(Toks)...);
   }
+  //==== isAnyOf() ====//
 
+  //==== isNotAnyOf() ====//
   bool isNotAnyOf()
   {
     return true;
@@ -234,6 +241,7 @@ public:
     }
     return isNotAnyOf(std::forward<Tail>(Toks)...);
   }
+  //==== isNotAnyOf() ====//
 
   TokenKind getKind() const
   {
