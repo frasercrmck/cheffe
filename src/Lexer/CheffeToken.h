@@ -191,6 +191,28 @@ public:
     return !is(Str);
   }
 
+  bool isAnyOf()
+  {
+    return false;
+  }
+  template <typename... Tail> bool isAnyOf(TokenKind &&Tok, Tail &&... Toks)
+  {
+    if (is(std::forward<TokenKind>(Tok)))
+    {
+      return true;
+    }
+    return isAnyOf(std::forward<Tail>(Toks)...);
+  }
+  template <typename... Tail>
+  bool isAnyOf(std::string &&Str, Tail &&... Toks)
+  {
+    if (is(std::forward<std::string>(Str)))
+    {
+      return true;
+    }
+    return isAnyOf(std::forward<Tail>(Toks)...);
+  }
+
   bool isNotAnyOf()
   {
     return true;
