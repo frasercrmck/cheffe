@@ -178,27 +178,6 @@ public:
     return is(TokenKind::Identifier) && !IdentifierString.compare(Str);
   }
 
-  bool isAllOf()
-  {
-    return true;
-  }
-  template <typename... Tail> bool isAllOf(TokenKind &&Tok, Tail &&... Toks)
-  {
-    if (isNot(std::forward<TokenKind>(Tok)))
-    {
-      return false;
-    }
-    return isAllOf(std::forward<Tail>(Toks)...);
-  }
-  template <typename... Tail> bool isAllOf(std::string &&Str, Tail &&... Toks)
-  {
-    if (isNot(std::forward<std::string>(Str)))
-    {
-      return false;
-    }
-    return isAllOf(std::forward<Tail>(Toks)...);
-  }
-
   bool isNot(TokenKind Tok)
   {
     return Kind != Tok;
