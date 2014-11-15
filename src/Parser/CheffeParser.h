@@ -22,6 +22,38 @@ const std::unordered_set<std::string> ValidMethodKeywords = {
 const std::unordered_set<std::string> ValidVerbKeywords = {
     "Sift", "Rub", "Melt", "Caramelise", "Cook", "Heat"};
 
+const std::unordered_set<std::string> ValidMeasureTypes = {"heaped", "level"};
+
+const std::unordered_set<std::string> ValidDryMeasures = {"g", "kg", "pinch",
+                                                          "pinches"};
+
+const std::unordered_set<std::string> ValidWetMeasures = {"ml", "l", "dash",
+                                                          "dashes"};
+
+const std::unordered_set<std::string> ValidUnspecifiedMeasures = {
+    "cup", "cups", "teaspoon", "teaspoons", "tablespoon", "tablespoons"};
+
+struct IngredientInfoTy
+{
+  public:
+    bool HasInitialValue = false;
+    int InitialValue = 0;
+    bool IsDry = true;
+    std::string MeasureType = "";
+    std::string Measure = "";
+    std::string Name = "";
+};
+
+std::ostream &operator<<(std::ostream &stream, const IngredientInfoTy &Info);
+
+enum class MeasureKindTy
+{
+  Dry,
+  Wet,
+  Unspecified,
+  Invalid
+};
+
 class CheffeParser
 {
 private:
@@ -42,11 +74,14 @@ private:
   CheffeErrorCode parseRecipeTitle();
   CheffeErrorCode parseCommentBlock();
   CheffeErrorCode parseIngredientsList();
+  CheffeErrorCode parseIngredient(IngredientInfoTy &IngredientInfo);
   CheffeErrorCode parseCookingTime();
   CheffeErrorCode parseOvenTemperature();
   CheffeErrorCode parseMethodList();
   CheffeErrorCode parseMethodStatement();
   CheffeErrorCode parseServesStatement();
+
+  std::tuple<bool, MeasureKindTy> isValidMeasure(const std::string &Measure);
 
   Token getNextToken();
 

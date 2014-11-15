@@ -7,6 +7,24 @@
 
 namespace cheffe
 {
+
+std::ostream &operator<<(std::ostream &stream, const IngredientInfoTy &Info)
+{
+  if (Info.HasInitialValue)
+  {
+    stream << Info.InitialValue;
+  }
+  else
+  {
+    stream << "<none>";
+  }
+  stream << " - ";
+  stream << (Info.IsDry ? "dry" : "wet");
+  stream << " - ";
+  stream << "\"" << Info.Name << "\"";
+  return stream;
+}
+
 Token CheffeParser::getNextToken()
 {
   return CurrentToken = Lexer.getToken();
@@ -148,6 +166,33 @@ CheffeErrorCode CheffeParser::parseCommentBlock()
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
 
+std::tuple<bool, MeasureKindTy>
+CheffeParser::isValidMeasure(const std::string &Measure)
+{
+  auto MeasureFindResult = std::find(std::begin(ValidDryMeasures),
+                                     std::end(ValidDryMeasures), Measure);
+  if (MeasureFindResult != std::end(ValidDryMeasures))
+  {
+    return std::make_tuple(true, MeasureKindTy::Dry);
+  }
+
+  MeasureFindResult = std::find(std::begin(ValidWetMeasures),
+                                std::end(ValidWetMeasures), Measure);
+  if (MeasureFindResult != std::end(ValidWetMeasures))
+  {
+    return std::make_tuple(true, MeasureKindTy::Wet);
+  }
+
+  MeasureFindResult = std::find(std::begin(ValidUnspecifiedMeasures),
+                                std::end(ValidUnspecifiedMeasures), Measure);
+  if (MeasureFindResult != std::end(ValidUnspecifiedMeasures))
+  {
+    return std::make_tuple(true, MeasureKindTy::Unspecified);
+  }
+
+  return std::make_tuple(false, MeasureKindTy::Invalid);
+}
+
 CheffeErrorCode CheffeParser::parseIngredientsList()
 {
   // Eat the 'Ingredients' token
@@ -169,19 +214,104 @@ CheffeErrorCode CheffeParser::parseIngredientsList()
   while (
       CurrentToken.isNotAnyOf(TokenKind::EndOfParagraph, TokenKind::EndOfFile))
   {
-    getNextToken();
-    const std::size_t BeginIngredientPos = CurrentToken.getBegin();
-    while (CurrentToken.isNotAnyOf(
-        TokenKind::NewLine, TokenKind::EndOfParagraph, TokenKind::EndOfFile))
-    {
-      getNextToken();
+    IngredientInfoTy IngredientInfo;
+    CheffeErrorCode Success = parseIngredient(IngredientInfo);
+    if (Success != CheffeErrorCode::CHEFFE_SUCCESS) {
+      return Success;
     }
-    const std::size_t EndIngredientPos = CurrentToken.getBegin();
-    std::string Ingredient =
-        Lexer.getTextSpan(BeginIngredientPos, EndIngredientPos);
-    CHEFFE_DEBUG("INGREDIENT: \"" << Ingredient.c_str() << "\"\n");
+    CHEFFE_DEBUG("INGREDIENT: " << IngredientInfo << std::endl);
   }
   CHEFFE_DEBUG("\n");
+
+  return CheffeErrorCode::CHEFFE_SUCCESS;
+}
+
+CheffeErrorCode CheffeParser::parseIngredient(IngredientInfoTy &IngredientInfo)
+{
+  getNextToken();
+
+  if (CurrentToken.is(TokenKind::Number))
+  {
+    // Initial value
+    IngredientInfo.HasInitialValue = true;
+    IngredientInfo.InitialValue = CurrentToken.getNumVal();
+    getNextToken();
+
+    if (CurrentToken.isAnyOf(TokenKind::NewLine, TokenKind::EndOfParagraph,
+                             TokenKind::EndOfFile))
+    {
+      Diagnostic.report(CurrentToken.getLineNumber(),
+                        CurrentToken.getColumnNumber())
+          << "Unexpected " << CurrentToken.getKind() << std::endl;
+
+      Diagnostic.printLine(CurrentToken.getLineNumber(),
+                           CurrentToken.getBegin(), CurrentToken.getEnd());
+      return CheffeErrorCode::CHEFFE_ERROR;
+    }
+  }
+
+  if (expectToken(TokenKind::Identifier))
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
+  std::string IdentifierString = CurrentToken.getIdentifierString();
+  auto MeasureTypeFindResult =
+      std::find(std::begin(ValidMeasureTypes), std::end(ValidMeasureTypes),
+                IdentifierString);
+
+  const bool IsValidMeasureType =
+      MeasureTypeFindResult != std::end(ValidMeasureTypes);
+
+  bool IsIngredientDefinedDry = false;
+  if (IsValidMeasureType)
+  {
+    IsIngredientDefinedDry = true;
+    IngredientInfo.MeasureType = IdentifierString;
+
+    if (consumeAndExpectToken(TokenKind::Identifier))
+    {
+      return CheffeErrorCode::CHEFFE_ERROR;
+    }
+
+    IdentifierString = CurrentToken.getIdentifierString();
+  }
+
+  bool IsValidMeasure;
+  MeasureKindTy MeasureKind;
+  std::tie(IsValidMeasure, MeasureKind) = isValidMeasure(IdentifierString);
+
+  if (IsValidMeasure)
+  {
+    if (IsIngredientDefinedDry && MeasureKind == MeasureKindTy::Wet)
+    {
+      Diagnostic.report(CurrentToken.getLineNumber(),
+                        CurrentToken.getColumnNumber())
+          << "Wet measure used when dry measure kind specified" << std::endl;
+      Diagnostic.printLine(CurrentToken.getLineNumber(),
+                           CurrentToken.getBegin(), CurrentToken.getEnd());
+      return CheffeErrorCode::CHEFFE_ERROR;
+    }
+
+    IngredientInfo.IsDry = MeasureKind != MeasureKindTy::Wet;
+
+    IngredientInfo.Measure = IdentifierString;
+
+    if (consumeAndExpectToken(TokenKind::Identifier))
+    {
+      return CheffeErrorCode::CHEFFE_ERROR;
+    }
+  }
+
+  const std::size_t BeginIngredientNamePos = CurrentToken.getBegin();
+  while (CurrentToken.isNotAnyOf(TokenKind::NewLine, TokenKind::EndOfParagraph,
+                                 TokenKind::EndOfFile))
+  {
+    getNextToken();
+  }
+  const std::size_t EndIngredientNamePos = CurrentToken.getBegin();
+  IngredientInfo.Name =
+      Lexer.getTextSpan(BeginIngredientNamePos, EndIngredientNamePos);
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
