@@ -216,7 +216,8 @@ CheffeErrorCode CheffeParser::parseIngredientsList()
   {
     IngredientInfoTy IngredientInfo;
     CheffeErrorCode Success = parseIngredient(IngredientInfo);
-    if (Success != CheffeErrorCode::CHEFFE_SUCCESS) {
+    if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
+    {
       return Success;
     }
     CHEFFE_DEBUG("INGREDIENT: " << IngredientInfo << std::endl);

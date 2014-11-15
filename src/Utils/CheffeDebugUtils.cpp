@@ -6,7 +6,8 @@ bool cheffe::DebugFlag;
 
 static std::string DebugType;
 
-void cheffe::setCurrentDebugType(const char *Type) {
+void cheffe::setCurrentDebugType(const char *Type)
+{
   DebugType = Type;
   DebugFlag |= !DebugType.empty();
 }
@@ -16,7 +17,8 @@ bool cheffe::isCurrentDebugType(const char *Type)
   return DebugType.empty() || !DebugType.compare(Type);
 }
 
-std::ostream& cheffe::dbgs() {
+std::ostream &cheffe::dbgs()
+{
   return std::cout;
 }
 
