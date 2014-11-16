@@ -166,31 +166,35 @@ CheffeErrorCode CheffeParser::parseCommentBlock()
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
 
-std::tuple<bool, MeasureKindTy>
-CheffeParser::isValidMeasure(const std::string &Measure)
+bool CheffeParser::isValidMeasure(const std::string &Measure,
+                                  MeasureKindTy &Kind)
 {
+  Kind = MeasureKindTy::Invalid;
   auto MeasureFindResult = std::find(std::begin(ValidDryMeasures),
                                      std::end(ValidDryMeasures), Measure);
   if (MeasureFindResult != std::end(ValidDryMeasures))
   {
-    return std::make_tuple(true, MeasureKindTy::Dry);
+    Kind = MeasureKindTy::Dry;
+    return true;
   }
 
   MeasureFindResult = std::find(std::begin(ValidWetMeasures),
                                 std::end(ValidWetMeasures), Measure);
   if (MeasureFindResult != std::end(ValidWetMeasures))
   {
-    return std::make_tuple(true, MeasureKindTy::Wet);
+    Kind = MeasureKindTy::Wet;
+    return true;
   }
 
   MeasureFindResult = std::find(std::begin(ValidUnspecifiedMeasures),
                                 std::end(ValidUnspecifiedMeasures), Measure);
   if (MeasureFindResult != std::end(ValidUnspecifiedMeasures))
   {
-    return std::make_tuple(true, MeasureKindTy::Unspecified);
+    Kind = MeasureKindTy::Unspecified;
+    return true;
   }
 
-  return std::make_tuple(false, MeasureKindTy::Invalid);
+  return false;
 }
 
 CheffeErrorCode CheffeParser::parseIngredientsList()
@@ -266,9 +270,8 @@ CheffeErrorCode CheffeParser::parseIngredient(IngredientInfoTy &IngredientInfo)
     IdentifierString = CurrentToken.getIdentifierString();
   }
 
-  bool IsValidMeasure;
   MeasureKindTy MeasureKind;
-  std::tie(IsValidMeasure, MeasureKind) = isValidMeasure(IdentifierString);
+  const bool IsValidMeasure = isValidMeasure(IdentifierString, MeasureKind);
 
   if (IsValidMeasure)
   {

@@ -81,7 +81,7 @@ private:
   CheffeErrorCode parseMethodStatement();
   CheffeErrorCode parseServesStatement();
 
-  std::tuple<bool, MeasureKindTy> isValidMeasure(const std::string &Measure);
+  bool isValidMeasure(const std::string &Measure, MeasureKindTy &Kind);
 
   Token getNextToken();
 
