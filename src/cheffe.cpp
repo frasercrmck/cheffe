@@ -1,4 +1,5 @@
 #include "cheffe.h"
+#include "Driver/CheffeDriver.h"
 #include "Parser/CheffeParser.h"
 #include "Utils/CheffeDebugUtils.h"
 #include "Utils/CheffeFileHandler.h"
@@ -48,6 +49,9 @@ int main(int argc, char **argv)
     std::cerr << "Error: empty input file '" << InFile.Name << "'\n";
     return 1;
   }
+
+  CheffeDriver Driver;
+  Driver.addSourceFile(InFile);
 
   CheffeParser Parser(InFile);
 
