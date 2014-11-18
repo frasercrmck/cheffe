@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 
 #include "cheffe.h"
+#include "Driver/CheffeDriver.h"
 #include "Parser/CheffeParser.h"
 #include "Utils/CheffeFileHandler.h"
 
@@ -20,15 +21,17 @@ public:
   {
     std::string DirPath = std::string(TEST_ROOT_PATH);
     CheffeSourceFile InFile = {DirPath.append(name), ""};
+
     const CheffeErrorCode Ret = CheffeFileHandler::readFile(InFile);
 
     ASSERT_EQ(Ret, CheffeErrorCode::CHEFFE_SUCCESS);
 
     ASSERT_FALSE(InFile.Source.empty());
 
-    CheffeParser Parser(InFile);
+    CheffeDriver Driver;
+    Driver.addSourceFile(InFile);
 
-    Error = Parser.parseRecipe();
+    Error = Driver.compileRecipe();
   }
 };
 

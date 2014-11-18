@@ -53,9 +53,7 @@ int main(int argc, char **argv)
   CheffeDriver Driver;
   Driver.addSourceFile(InFile);
 
-  CheffeParser Parser(InFile);
-
-  CheffeErrorCode Success = Parser.parseRecipe();
+  const CheffeErrorCode Success = Driver.compileRecipe();
 
   if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
   {

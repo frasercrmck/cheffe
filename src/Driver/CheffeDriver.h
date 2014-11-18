@@ -14,6 +14,8 @@ public:
   {
   }
 
+  CheffeErrorCode compileRecipe();
+
   void addSourceFile(const CheffeSourceFile &File);
 
 private:
