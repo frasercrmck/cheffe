@@ -20,7 +20,7 @@ CheffeErrorCode CheffeDriver::compileRecipe()
   auto Diagnostics = std::make_shared<CheffeDiagnosticHandler>(File);
   CheffeParser Parser(File, Diagnostics);
 
-  CheffeErrorCode Success = Parser.parseRecipe();
+  const CheffeErrorCode Success = Parser.parseRecipe();
 
   return Success;
 }
