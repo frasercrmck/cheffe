@@ -94,12 +94,12 @@ template <typename T> bool CheffeParser::expectToken(const T &Kind)
 {
   if (CurrentToken.isNot(Kind))
   {
-    Diagnostic->report(CurrentToken.getLineNumber(),
-                       CurrentToken.getColumnNumber())
+    Diagnostics->report(CurrentToken.getLineNumber(),
+                        CurrentToken.getColumnNumber())
         << "Expected " << Kind << ", got " << CurrentToken << std::endl;
 
-    Diagnostic->printLine(CurrentToken.getLineNumber(), CurrentToken.getBegin(),
-                          CurrentToken.getEnd());
+    Diagnostics->printLine(CurrentToken.getLineNumber(),
+                           CurrentToken.getBegin(), CurrentToken.getEnd());
     return true;
   }
 
@@ -277,11 +277,11 @@ CheffeErrorCode CheffeParser::parseIngredient(IngredientInfoTy &IngredientInfo)
   {
     if (IsIngredientDefinedDry && MeasureKind == MeasureKindTy::Wet)
     {
-      Diagnostic->report(CurrentToken.getLineNumber(),
-                         CurrentToken.getColumnNumber())
+      Diagnostics->report(CurrentToken.getLineNumber(),
+                          CurrentToken.getColumnNumber())
           << "Wet measure used when dry measure kind specified" << std::endl;
-      Diagnostic->printLine(CurrentToken.getLineNumber(),
-                            CurrentToken.getBegin(), CurrentToken.getEnd());
+      Diagnostics->printLine(CurrentToken.getLineNumber(),
+                             CurrentToken.getBegin(), CurrentToken.getEnd());
       return CheffeErrorCode::CHEFFE_ERROR;
     }
 
@@ -528,12 +528,12 @@ CheffeErrorCode CheffeParser::parseMethodStatement()
 
   if (!IsValidMethodKeyword && !IsKnownVerb)
   {
-    Diagnostic->report(CurrentToken.getLineNumber(),
-                       CurrentToken.getColumnNumber())
+    Diagnostics->report(CurrentToken.getLineNumber(),
+                        CurrentToken.getColumnNumber())
         << "Invalid Method Keyword: '" << MethodKeyword.c_str() << "'"
         << std::endl;
-    Diagnostic->printLine(CurrentToken.getLineNumber(), CurrentToken.getBegin(),
-                          CurrentToken.getEnd());
+    Diagnostics->printLine(CurrentToken.getLineNumber(),
+                           CurrentToken.getBegin(), CurrentToken.getEnd());
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
@@ -609,8 +609,8 @@ CheffeErrorCode CheffeParser::parseServesStatement()
     if (CurrentToken.isNotAnyOf(TokenKind::EndOfParagraph,
                                 TokenKind::EndOfFile))
     {
-      Diagnostic->report(CurrentToken.getLineNumber(),
-                         CurrentToken.getColumnNumber())
+      Diagnostics->report(CurrentToken.getLineNumber(),
+                          CurrentToken.getColumnNumber())
           << "Invalid Serves Statement" << std::endl;
       return CheffeErrorCode::CHEFFE_ERROR;
     }
