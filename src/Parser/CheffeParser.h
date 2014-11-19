@@ -60,11 +60,12 @@ private:
   CheffeLexer Lexer;
   Token CurrentToken;
 
-  CheffeDiagnosticHandler Diagnostic;
+  std::shared_ptr<CheffeDiagnosticHandler> Diagnostic;
 
 public:
-  CheffeParser(const CheffeSourceFile &SrcFile)
-      : Lexer(SrcFile), CurrentToken(), Diagnostic(SrcFile)
+  CheffeParser(const CheffeSourceFile &SrcFile,
+               std::shared_ptr<CheffeDiagnosticHandler> Diags)
+      : Lexer(SrcFile), CurrentToken(), Diagnostic(Diags)
   {
   }
 

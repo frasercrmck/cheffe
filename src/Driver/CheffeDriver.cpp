@@ -17,7 +17,8 @@ CheffeErrorCode CheffeDriver::compileRecipe()
 
   const CheffeSourceFile File = SourceFiles[0];
 
-  CheffeParser Parser(File);
+  auto Diagnostics = std::make_shared<CheffeDiagnosticHandler>(File);
+  CheffeParser Parser(File, Diagnostics);
 
   CheffeErrorCode Success = Parser.parseRecipe();
 
