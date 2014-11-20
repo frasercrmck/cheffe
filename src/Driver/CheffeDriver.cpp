@@ -8,6 +8,12 @@ void CheffeDriver::setSourceFile(const CheffeSourceFile &SrcFile)
   File = SrcFile;
 }
 
+void CheffeDriver::setDiagnosticHandler(
+    std::shared_ptr<CheffeDiagnosticHandler> Diags)
+{
+  Diagnostics = Diags;
+}
+
 CheffeErrorCode CheffeDriver::compileRecipe()
 {
   if (File.Source.empty())
@@ -15,7 +21,12 @@ CheffeErrorCode CheffeDriver::compileRecipe()
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
-  auto Diagnostics = std::make_shared<CheffeDiagnosticHandler>(File);
+  if (!Diagnostics)
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
+  Diagnostics->setSourceFile(File);
   CheffeParser Parser(File, Diagnostics);
 
   const CheffeErrorCode Success = Parser.parseRecipe();

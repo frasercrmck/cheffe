@@ -2,6 +2,7 @@
 #define CHEFFE_DRIVER
 
 #include "cheffe.h"
+#include "Utils/CheffeDiagnosticHandler.h"
 
 #include <vector>
 
@@ -18,8 +19,11 @@ public:
 
   void setSourceFile(const CheffeSourceFile &File);
 
+  void setDiagnosticHandler(std::shared_ptr<CheffeDiagnosticHandler> Diags);
+
 private:
   CheffeSourceFile File;
+  std::shared_ptr<CheffeDiagnosticHandler> Diagnostics;
 };
 }; // end namespace cheffe
 

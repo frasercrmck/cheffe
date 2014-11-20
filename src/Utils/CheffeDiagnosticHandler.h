@@ -15,12 +15,17 @@ private:
   std::ostream& errs();
 
 public:
-  CheffeDiagnosticHandler(const CheffeSourceFile &File) : File(File)
+  CheffeDiagnosticHandler()
   {
   }
 
   ~CheffeDiagnosticHandler()
   {
+  }
+
+  void setSourceFile(const CheffeSourceFile &SrcFile)
+  {
+    File = SrcFile;
   }
 
   std::ostream &report(const unsigned LineNo, const unsigned ColumnNo);

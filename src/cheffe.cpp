@@ -3,6 +3,7 @@
 #include "Parser/CheffeParser.h"
 #include "Utils/CheffeDebugUtils.h"
 #include "Utils/CheffeFileHandler.h"
+#include "Utils/CheffeDiagnosticHandler.h"
 
 #include <string>
 #include <iostream>
@@ -52,6 +53,10 @@ int main(int argc, char **argv)
 
   CheffeDriver Driver;
   Driver.setSourceFile(InFile);
+
+  auto Diagnostics = std::make_shared<CheffeDiagnosticHandler>();
+
+  Driver.setDiagnosticHandler(Diagnostics);
 
   const CheffeErrorCode Success = Driver.compileRecipe();
 

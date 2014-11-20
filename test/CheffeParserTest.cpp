@@ -31,6 +31,10 @@ public:
     CheffeDriver Driver;
     Driver.setSourceFile(InFile);
 
+    auto Diagnostics = std::make_shared<CheffeDiagnosticHandler>();
+
+    Driver.setDiagnosticHandler(Diagnostics);
+
     Error = Driver.compileRecipe();
   }
 };
