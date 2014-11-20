@@ -29,7 +29,7 @@ public:
     ASSERT_FALSE(InFile.Source.empty());
 
     CheffeDriver Driver;
-    Driver.addSourceFile(InFile);
+    Driver.setSourceFile(InFile);
 
     Error = Driver.compileRecipe();
   }

@@ -16,10 +16,10 @@ public:
 
   CheffeErrorCode compileRecipe();
 
-  void addSourceFile(const CheffeSourceFile &File);
+  void setSourceFile(const CheffeSourceFile &File);
 
 private:
-  std::vector<CheffeSourceFile> SourceFiles;
+  CheffeSourceFile File;
 };
 }; // end namespace cheffe
 

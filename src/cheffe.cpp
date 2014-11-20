@@ -51,7 +51,7 @@ int main(int argc, char **argv)
   }
 
   CheffeDriver Driver;
-  Driver.addSourceFile(InFile);
+  Driver.setSourceFile(InFile);
 
   const CheffeErrorCode Success = Driver.compileRecipe();
 

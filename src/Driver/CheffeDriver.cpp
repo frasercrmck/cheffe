@@ -3,19 +3,17 @@
 
 namespace cheffe
 {
-void CheffeDriver::addSourceFile(const CheffeSourceFile &File)
+void CheffeDriver::setSourceFile(const CheffeSourceFile &SrcFile)
 {
-  SourceFiles.push_back(File);
+  File = SrcFile;
 }
 
 CheffeErrorCode CheffeDriver::compileRecipe()
 {
-  if (SourceFiles.empty())
+  if (File.Source.empty())
   {
     return CheffeErrorCode::CHEFFE_ERROR;
   }
-
-  const CheffeSourceFile File = SourceFiles[0];
 
   auto Diagnostics = std::make_shared<CheffeDiagnosticHandler>(File);
   CheffeParser Parser(File, Diagnostics);
