@@ -10,16 +10,6 @@ std::ostream &CheffeDiagnosticHandler::errs()
   return std::cerr;
 }
 
-std::ostream &CheffeDiagnosticHandler::report(const unsigned LineNo,
-                                              const unsigned ColumnNo)
-{
-  errs() << "Error while processing source file ";
-  printFileAndLineNumberInformation(LineNo, ColumnNo);
-  errs() << std::endl;
-
-  return errs();
-}
-
 void CheffeDiagnosticHandler::printLine(const unsigned LineNo,
                                         const std::size_t Begin,
                                         const std::size_t End)

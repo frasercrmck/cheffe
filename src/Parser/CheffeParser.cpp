@@ -96,7 +96,7 @@ template <typename T> bool CheffeParser::expectToken(const T &Kind)
   {
     Diagnostics->report(CurrentToken.getLineNumber(),
                         CurrentToken.getColumnNumber())
-        << "Expected " << Kind << ", got " << CurrentToken << std::endl;
+        << "Expected " << Kind << ", got " << CurrentToken;
 
     Diagnostics->printLine(CurrentToken.getLineNumber(),
                            CurrentToken.getBegin(), CurrentToken.getEnd());
@@ -279,7 +279,7 @@ CheffeErrorCode CheffeParser::parseIngredient(IngredientInfoTy &IngredientInfo)
     {
       Diagnostics->report(CurrentToken.getLineNumber(),
                           CurrentToken.getColumnNumber())
-          << "Wet measure used when dry measure kind specified" << std::endl;
+          << "Wet measure used when dry measure kind specified";
       Diagnostics->printLine(CurrentToken.getLineNumber(),
                              CurrentToken.getBegin(), CurrentToken.getEnd());
       return CheffeErrorCode::CHEFFE_ERROR;
@@ -530,8 +530,7 @@ CheffeErrorCode CheffeParser::parseMethodStatement()
   {
     Diagnostics->report(CurrentToken.getLineNumber(),
                         CurrentToken.getColumnNumber())
-        << "Invalid Method Keyword: '" << MethodKeyword.c_str() << "'"
-        << std::endl;
+        << "Invalid Method Keyword: '" << MethodKeyword.c_str() << "'";
     Diagnostics->printLine(CurrentToken.getLineNumber(),
                            CurrentToken.getBegin(), CurrentToken.getEnd());
     return CheffeErrorCode::CHEFFE_ERROR;
@@ -611,7 +610,7 @@ CheffeErrorCode CheffeParser::parseServesStatement()
     {
       Diagnostics->report(CurrentToken.getLineNumber(),
                           CurrentToken.getColumnNumber())
-          << "Invalid Serves Statement" << std::endl;
+          << "Invalid Serves Statement";
       return CheffeErrorCode::CHEFFE_ERROR;
     }
   }
