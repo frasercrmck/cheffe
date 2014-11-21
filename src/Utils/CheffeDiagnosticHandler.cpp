@@ -58,6 +58,17 @@ std::string CheffeDiagnosticHandler::getLineAsString(const unsigned LineNo)
   return Line;
 }
 
+std::string CheffeDiagnosticHandler::getContextAsString(const unsigned ColumnNo,
+                                                        const unsigned Length)
+{
+  const std::string Padding = std::string(ColumnNo, ' ');
+  const std::string UnderlineToken = std::string(Length, '~');
+
+  std::stringstream ss;
+  ss << Padding << UnderlineToken;
+  return ss.str();
+}
+
 void CheffeDiagnosticHandler::printFileAndLineNumberInformation(
     const unsigned LineNo, const unsigned ColumnNo)
 {

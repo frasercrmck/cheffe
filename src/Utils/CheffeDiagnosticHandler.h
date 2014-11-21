@@ -49,6 +49,8 @@ public:
                                         const unsigned ColumnNo);
 
   std::string getLineAsString(const unsigned LineNo);
+  std::string getContextAsString(const unsigned ColumnNo,
+                                 const unsigned Length);
   void printLine(const unsigned LineNo, const std::size_t Begin,
                  const std::size_t End);
   void printFileAndLineNumberInformation(const unsigned LineNo,
