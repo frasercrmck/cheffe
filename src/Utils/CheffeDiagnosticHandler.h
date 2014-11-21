@@ -36,13 +36,14 @@ public:
                            const unsigned ColumnNo, const unsigned Length,
                            const LineContext Context)
   {
-    // TODO: Store in vector 'Errors' for flushing later
-    errs() << Message << std::endl;
+    std::stringstream ss;
+    ss << Message << std::endl;
     if (Context == LineContext::WithContext)
     {
-      errs() << getLineAsString(LineNo) << std::endl;
-      errs() << getContextAsString(ColumnNo, Length) << std::endl;
+      ss << getLineAsString(LineNo) << std::endl;
+      ss << getContextAsString(ColumnNo, Length) << std::endl;
     }
+    Errors.push_back(ss.str());
   }
 
   void flushDiagnostics()

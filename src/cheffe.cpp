@@ -60,6 +60,8 @@ int main(int argc, char **argv)
 
   const CheffeErrorCode Success = Driver.compileRecipe();
 
+  Diagnostics->flushDiagnostics();
+
   if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
   {
     std::cerr << "Error: could not parse input file\n";
