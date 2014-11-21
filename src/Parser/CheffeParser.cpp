@@ -95,12 +95,9 @@ template <typename T> bool CheffeParser::expectToken(const T &Kind)
   if (CurrentToken.isNot(Kind))
   {
     Diagnostics->report(CurrentToken.getLineNumber(),
-                        CurrentToken.getColumnNumber())
+                        CurrentToken.getColumnNumber(), CurrentToken.getLen(),
+                        LineContext::WithContext)
         << "Expected " << Kind << ", got " << CurrentToken;
-
-    Diagnostics->printLine(CurrentToken.getLineNumber(),
-                           CurrentToken.getColumnNumber(),
-                           CurrentToken.getLen());
     return true;
   }
 
@@ -279,11 +276,9 @@ CheffeErrorCode CheffeParser::parseIngredient(IngredientInfoTy &IngredientInfo)
     if (IsIngredientDefinedDry && MeasureKind == MeasureKindTy::Wet)
     {
       Diagnostics->report(CurrentToken.getLineNumber(),
-                          CurrentToken.getColumnNumber())
+                          CurrentToken.getColumnNumber(), CurrentToken.getLen(),
+                          LineContext::WithContext)
           << "Wet measure used when dry measure kind specified";
-      Diagnostics->printLine(CurrentToken.getLineNumber(),
-                             CurrentToken.getColumnNumber(),
-                             CurrentToken.getLen());
       return CheffeErrorCode::CHEFFE_ERROR;
     }
 
@@ -531,11 +526,9 @@ CheffeErrorCode CheffeParser::parseMethodStatement()
   if (!IsValidMethodKeyword && !IsKnownVerb)
   {
     Diagnostics->report(CurrentToken.getLineNumber(),
-                        CurrentToken.getColumnNumber())
+                        CurrentToken.getColumnNumber(), CurrentToken.getLen(),
+                        LineContext::WithContext)
         << "Invalid Method Keyword: '" << MethodKeyword.c_str() << "'";
-    Diagnostics->printLine(CurrentToken.getLineNumber(),
-                           CurrentToken.getColumnNumber(),
-                           CurrentToken.getLen());
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
@@ -612,7 +605,8 @@ CheffeErrorCode CheffeParser::parseServesStatement()
                                 TokenKind::EndOfFile))
     {
       Diagnostics->report(CurrentToken.getLineNumber(),
-                          CurrentToken.getColumnNumber())
+                          CurrentToken.getColumnNumber(), CurrentToken.getLen(),
+                          LineContext::WithoutContext)
           << "Invalid Serves Statement";
       return CheffeErrorCode::CHEFFE_ERROR;
     }

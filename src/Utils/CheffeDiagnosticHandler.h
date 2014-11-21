@@ -10,6 +10,12 @@
 namespace cheffe
 {
 
+enum class LineContext
+{
+  WithContext,
+  WithoutContext
+};
+
 class CheffeDiagnosticBuilder;
 
 class CheffeDiagnosticHandler
@@ -26,10 +32,17 @@ public:
   {
   }
 
-  void formatAndLogMessage(const std::string &Message)
+  void formatAndLogMessage(const std::string &Message, const unsigned LineNo,
+                           const unsigned ColumnNo, const unsigned Length,
+                           const LineContext Context)
   {
     // TODO: Store in vector 'Errors' for flushing later
     errs() << Message << std::endl;
+    if (Context == LineContext::WithContext)
+    {
+      errs() << getLineAsString(LineNo) << std::endl;
+      errs() << getContextAsString(ColumnNo, Length) << std::endl;
+    }
   }
 
   void flushDiagnostics()
@@ -46,7 +59,9 @@ public:
   }
 
   inline CheffeDiagnosticBuilder report(const unsigned LineNo,
-                                        const unsigned ColumnNo);
+                                        const unsigned ColumnNo,
+                                        const unsigned Length,
+                                        const LineContext Context);
 
   std::string getLineAsString(const unsigned LineNo);
   std::string getContextAsString(const unsigned ColumnNo,
@@ -63,12 +78,16 @@ private:
   CheffeDiagnosticHandler *Handler;
   unsigned LineNo;
   unsigned ColumnNo;
+  unsigned Length;
+  LineContext Context;
   std::stringstream MessageStream;
 
 public:
   CheffeDiagnosticBuilder(CheffeDiagnosticHandler *Diags, const unsigned Line,
-                          const unsigned Column)
-      : Handler(Diags), LineNo(Line), ColumnNo(Column), MessageStream()
+                          const unsigned Column, const unsigned Length,
+                          const LineContext Context)
+      : Handler(Diags), LineNo(Line), ColumnNo(Column), Length(Length),
+        Context(Context), MessageStream()
   {
   }
 
@@ -77,13 +96,15 @@ public:
     Handler = Builder.Handler;
     LineNo = Builder.LineNo;
     ColumnNo = Builder.ColumnNo;
+    Length = Builder.Length;
+    Context = Builder.Context;
     MessageStream << Builder.MessageStream.rdbuf();
   }
 
   ~CheffeDiagnosticBuilder()
   {
     const std::string Message = MessageStream.str();
-    Handler->formatAndLogMessage(Message);
+    Handler->formatAndLogMessage(Message, LineNo, ColumnNo, Length, Context);
   }
 
   inline CheffeDiagnosticBuilder &operator<<(const char *Str)
@@ -106,9 +127,10 @@ inline CheffeDiagnosticBuilder &operator<<(Token Tok)
 };
 
 inline CheffeDiagnosticBuilder
-CheffeDiagnosticHandler::report(const unsigned LineNo, const unsigned ColumnNo)
+CheffeDiagnosticHandler::report(const unsigned LineNo, const unsigned ColumnNo,
+                                const unsigned Length, const LineContext Context)
 {
-  return CheffeDiagnosticBuilder(this, LineNo, ColumnNo);
+  return CheffeDiagnosticBuilder(this, LineNo, ColumnNo, Length, Context);
 }
 
 } // end namespace cheffe
