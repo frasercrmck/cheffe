@@ -99,7 +99,8 @@ template <typename T> bool CheffeParser::expectToken(const T &Kind)
         << "Expected " << Kind << ", got " << CurrentToken;
 
     Diagnostics->printLine(CurrentToken.getLineNumber(),
-                           CurrentToken.getBegin(), CurrentToken.getEnd());
+                           CurrentToken.getColumnNumber(),
+                           CurrentToken.getLen());
     return true;
   }
 
@@ -281,7 +282,8 @@ CheffeErrorCode CheffeParser::parseIngredient(IngredientInfoTy &IngredientInfo)
                           CurrentToken.getColumnNumber())
           << "Wet measure used when dry measure kind specified";
       Diagnostics->printLine(CurrentToken.getLineNumber(),
-                             CurrentToken.getBegin(), CurrentToken.getEnd());
+                             CurrentToken.getColumnNumber(),
+                             CurrentToken.getLen());
       return CheffeErrorCode::CHEFFE_ERROR;
     }
 
@@ -532,7 +534,8 @@ CheffeErrorCode CheffeParser::parseMethodStatement()
                         CurrentToken.getColumnNumber())
         << "Invalid Method Keyword: '" << MethodKeyword.c_str() << "'";
     Diagnostics->printLine(CurrentToken.getLineNumber(),
-                           CurrentToken.getBegin(), CurrentToken.getEnd());
+                           CurrentToken.getColumnNumber(),
+                           CurrentToken.getLen());
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
