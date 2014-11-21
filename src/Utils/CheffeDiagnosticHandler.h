@@ -48,6 +48,7 @@ public:
   inline CheffeDiagnosticBuilder report(const unsigned LineNo,
                                         const unsigned ColumnNo);
 
+  std::string getLineAsString(const unsigned LineNo);
   void printLine(const unsigned LineNo, const std::size_t Begin,
                  const std::size_t End);
   void printFileAndLineNumberInformation(const unsigned LineNo,
