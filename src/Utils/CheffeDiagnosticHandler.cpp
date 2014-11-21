@@ -10,14 +10,6 @@ std::ostream &CheffeDiagnosticHandler::errs()
   return std::cerr;
 }
 
-void CheffeDiagnosticHandler::printLine(const unsigned LineNo,
-                                        const std::size_t ColumnNo,
-                                        const std::size_t Length)
-{
-  errs() << getLineAsString(LineNo) << std::endl;
-  errs() << getContextAsString(ColumnNo, Length) << std::endl;
-}
-
 std::string CheffeDiagnosticHandler::getLineAsString(const unsigned LineNo)
 {
   assert(LineNo != 0 && "Lines must be indexed from 1");
