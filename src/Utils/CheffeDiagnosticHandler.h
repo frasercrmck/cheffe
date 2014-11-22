@@ -51,7 +51,7 @@ public:
   {
     for (auto &Message : Errors)
     {
-      std::cout << Message << std::endl;
+      errs() << Message << std::endl;
     }
   }
 
