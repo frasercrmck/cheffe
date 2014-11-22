@@ -37,6 +37,7 @@ public:
                            const LineContext Context)
   {
     std::stringstream ss;
+    ss << getFileAndLineNumberInfoAsString(LineNo, ColumnNo) << std::endl;
     ss << Message << std::endl;
     if (Context == LineContext::WithContext)
     {
@@ -67,8 +68,8 @@ public:
   std::string getLineAsString(const unsigned LineNo);
   std::string getContextAsString(const unsigned ColumnNo,
                                  const unsigned Length);
-  void printFileAndLineNumberInformation(const unsigned LineNo,
-                                         const unsigned ColumnNo);
+  std::string getFileAndLineNumberInfoAsString(const unsigned LineNo,
+                                               const unsigned ColumnNo);
 };
 
 class CheffeDiagnosticBuilder

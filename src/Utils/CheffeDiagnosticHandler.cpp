@@ -40,10 +40,12 @@ std::string CheffeDiagnosticHandler::getContextAsString(const unsigned ColumnNo,
   return ss.str();
 }
 
-void CheffeDiagnosticHandler::printFileAndLineNumberInformation(
+std::string CheffeDiagnosticHandler::getFileAndLineNumberInfoAsString(
     const unsigned LineNo, const unsigned ColumnNo)
 {
-  errs() << File.Name << ":" << LineNo << ":" << ColumnNo;
+  std::stringstream ss;
+  ss << File.Name << ":" << LineNo << ":" << ColumnNo;
+  return ss.str();
 }
 
 } // end namespace cheffe
