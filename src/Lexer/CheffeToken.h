@@ -82,13 +82,28 @@ public:
   {
   }
 
-  std::size_t getBegin() const { return Begin; }
-  std::size_t getEnd() const { return End; }
+  std::size_t getBegin() const
+  {
+    return Begin;
+  }
+  std::size_t getEnd() const
+  {
+    return End;
+  }
 
-  std::size_t getLength() const { return End - Begin; }
+  std::size_t getLength() const
+  {
+    return End - Begin;
+  }
 
-  unsigned getLineNo() const { return LineNo; }
-  unsigned getColumnNo() const { return ColumnNo; }
+  unsigned getLineNo() const
+  {
+    return LineNo;
+  }
+  unsigned getColumnNo() const
+  {
+    return ColumnNo;
+  }
 };
 
 class Token
