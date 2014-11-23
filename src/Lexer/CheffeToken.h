@@ -190,41 +190,42 @@ public:
   }
 
   //==== is() ====//
-  bool is(TokenKind Tok)
+  bool is(TokenKind Tok) const
   {
     return Kind == Tok;
   }
-  bool is(const std::string &Str)
+  bool is(const std::string &Str) const
   {
     return is(TokenKind::Identifier) && !IdentifierString.compare(Str);
   }
-  bool is(std::string &&Str)
+  bool is(std::string &&Str) const
   {
     return is(TokenKind::Identifier) && !IdentifierString.compare(Str);
   }
   //==== is() ====//
 
   //==== isNot() ====//
-  bool isNot(TokenKind Tok)
+  bool isNot(TokenKind Tok) const
   {
     return Kind != Tok;
   }
-  bool isNot(const std::string &Str)
+  bool isNot(const std::string &Str) const
   {
     return !is(Str);
   }
-  bool isNot(std::string &&Str)
+  bool isNot(std::string &&Str) const
   {
     return !is(Str);
   }
   //==== isNot() ====//
 
   //==== isAnyOf() ====//
-  bool isAnyOf()
+  bool isAnyOf() const
   {
     return false;
   }
-  template <typename... Tail> bool isAnyOf(TokenKind &&Tok, Tail &&... Toks)
+  template <typename... Tail>
+  bool isAnyOf(TokenKind &&Tok, Tail &&... Toks) const
   {
     if (is(std::forward<TokenKind>(Tok)))
     {
@@ -233,7 +234,7 @@ public:
     return isAnyOf(std::forward<Tail>(Toks)...);
   }
   template <typename... Tail>
-  bool isAnyOf(std::string &&Str, Tail &&... Toks)
+  bool isAnyOf(std::string &&Str, Tail &&... Toks) const
   {
     if (is(std::forward<std::string>(Str)))
     {
@@ -244,11 +245,12 @@ public:
   //==== isAnyOf() ====//
 
   //==== isNotAnyOf() ====//
-  bool isNotAnyOf()
+  bool isNotAnyOf() const
   {
     return true;
   }
-  template <typename... Tail> bool isNotAnyOf(TokenKind &&Tok, Tail &&... Toks)
+  template <typename... Tail>
+  bool isNotAnyOf(TokenKind &&Tok, Tail &&... Toks) const
   {
     if (is(std::forward<TokenKind>(Tok)))
     {
@@ -257,7 +259,7 @@ public:
     return isNotAnyOf(std::forward<Tail>(Toks)...);
   }
   template <typename... Tail>
-  bool isNotAnyOf(std::string &&Str, Tail &&... Toks)
+  bool isNotAnyOf(std::string &&Str, Tail &&... Toks) const
   {
     if (is(std::forward<std::string>(Str)))
     {
