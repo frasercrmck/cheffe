@@ -52,7 +52,7 @@ Token CheffeLexer::getToken()
 {
   Token Tok(TokenKind::Unknown);
 
-  Tok.Begin = CurrentPos;
+  Tok.SourceLoc.Begin = CurrentPos;
 
   // Skip any whitespace.
   while (isspace(peekNextChar()))
@@ -60,8 +60,8 @@ Token CheffeLexer::getToken()
     if (peekNextChar() == '\n')
     {
       Tok.Kind = TokenKind::NewLine;
-      Tok.LineNumber = LineNumber;
-      Tok.ColumnNumber = ColumnNumber;
+      Tok.SourceLoc.LineNo = LineNumber;
+      Tok.SourceLoc.ColumnNo = ColumnNumber;
 
       getNextChar();
       if (peekNextChar() == '\n')
@@ -70,22 +70,22 @@ Token CheffeLexer::getToken()
         Tok.Kind = TokenKind::EndOfParagraph;
       }
 
-      Tok.End = CurrentPos;
+      Tok.SourceLoc.End = CurrentPos;
       return Tok;
     }
 
     getNextChar();
   }
 
-  Tok.Begin = CurrentPos;
-  Tok.LineNumber = LineNumber;
-  Tok.ColumnNumber = ColumnNumber;
+  Tok.SourceLoc.Begin = CurrentPos;
+  Tok.SourceLoc.LineNo = LineNumber;
+  Tok.SourceLoc.ColumnNo = ColumnNumber;
 
   const int Char = getNextChar();
 
   if (Char == -1)
   {
-    Tok.End = CurrentPos;
+    Tok.SourceLoc.End = CurrentPos;
     Tok.Kind = TokenKind::EndOfFile;
     return Tok;
   }
@@ -100,7 +100,7 @@ Token CheffeLexer::getToken()
 
     Tok.IdentifierString = std::move(IdentifierString);
 
-    Tok.End = CurrentPos;
+    Tok.SourceLoc.End = CurrentPos;
     Tok.Kind = TokenKind::Identifier;
     return Tok;
   }
@@ -115,14 +115,14 @@ Token CheffeLexer::getToken()
 
     Tok.NumVal = strtod(NumStr.c_str(), 0);
 
-    Tok.End = CurrentPos;
+    Tok.SourceLoc.End = CurrentPos;
     Tok.Kind = TokenKind::Number;
     return Tok;
   }
 
   if (ispunct(Char))
   {
-    Tok.End = CurrentPos;
+    Tok.SourceLoc.End = CurrentPos;
     Tok.Kind = TokenKind::Unknown;
 
     switch (Char)
@@ -149,7 +149,7 @@ Token CheffeLexer::getToken()
     return Tok;
   }
 
-  Tok.End = CurrentPos;
+  Tok.SourceLoc.End = CurrentPos;
   Tok.Kind = TokenKind::Unknown;
   return Tok;
 }

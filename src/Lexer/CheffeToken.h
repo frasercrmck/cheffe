@@ -60,6 +60,37 @@ static std::ostream &operator<<(std::ostream &stream, const TokenKind &Kind)
   return stream;
 }
 
+struct SourceLocation
+{
+public:
+  friend class CheffeLexer;
+
+private:
+  std::size_t Begin;
+  std::size_t End;
+
+  unsigned LineNo;
+  unsigned ColumnNo;
+
+public:
+  SourceLocation() : Begin(0), End(0), LineNo(1), ColumnNo(0)
+  {
+  }
+
+  SourceLocation(const std::size_t B, const std::size_t E)
+      : Begin(B), End(E), LineNo(1), ColumnNo(0)
+  {
+  }
+
+  std::size_t getBegin() const { return Begin; }
+  std::size_t getEnd() const { return End; }
+
+  std::size_t getLength() const { return End - Begin; }
+
+  unsigned getLineNo() const { return LineNo; }
+  unsigned getColumnNo() const { return ColumnNo; }
+};
+
 class Token
 {
 public:
@@ -69,66 +100,53 @@ private:
   TokenKind Kind;
 
   // Position information
-  std::size_t Begin;
-  std::size_t End;
-
-  unsigned LineNumber;
-  unsigned ColumnNumber;
+  SourceLocation SourceLoc;
 
   int NumVal;
   std::string IdentifierString;
 
 public:
   // Constructors
-  Token()
-      : Kind(TokenKind::EndOfFile), Begin(0), End(0), LineNumber(1),
-        ColumnNumber(0), NumVal(0)
+  Token() : Kind(TokenKind::EndOfFile), SourceLoc(), NumVal(0)
   {
   }
 
-  Token(TokenKind Tok)
-      : Kind(Tok), Begin(0), End(0), LineNumber(1), ColumnNumber(0), NumVal(0)
+  Token(TokenKind Tok) : Kind(Tok), SourceLoc(), NumVal(0)
   {
   }
 
   Token(TokenKind Tok, std::size_t B, std::size_t E, int Val)
-      : Kind(Tok), Begin(B), End(E), LineNumber(1), ColumnNumber(0), NumVal(Val)
+      : Kind(Tok), SourceLoc(B, E), NumVal(Val)
   {
   }
 
   Token(std::string Str)
-      : Kind(TokenKind::Identifier), Begin(0), End(0), LineNumber(1),
-        ColumnNumber(0), NumVal(0), IdentifierString(Str)
+      : Kind(TokenKind::Identifier), SourceLoc(), NumVal(0),
+        IdentifierString(Str)
   {
   }
 
   Token(const char *Str)
-      : Kind(TokenKind::Identifier), Begin(0), End(0), LineNumber(1),
-        ColumnNumber(0), NumVal(0), IdentifierString(Str)
+      : Kind(TokenKind::Identifier), SourceLoc(), NumVal(0),
+        IdentifierString(Str)
   {
   }
 
   // Copy constructor
   Token(const Token &Other)
-      : Kind(Other.Kind), Begin(Other.Begin), End(Other.End),
-        LineNumber(Other.LineNumber), ColumnNumber(Other.ColumnNumber),
-        NumVal(Other.NumVal), IdentifierString(Other.IdentifierString)
+      : Kind(Other.Kind), SourceLoc(Other.SourceLoc), NumVal(Other.NumVal),
+        IdentifierString(Other.IdentifierString)
   {
   }
 
   // Move constructor
   Token(Token &&Other)
-      : Kind(Other.Kind), Begin(Other.Begin), End(Other.End),
-        LineNumber(Other.LineNumber), ColumnNumber(Other.ColumnNumber),
-        NumVal(Other.NumVal),
+      : Kind(Other.Kind), SourceLoc(Other.SourceLoc), NumVal(Other.NumVal),
         IdentifierString(std::move(Other.IdentifierString))
 
   {
     Other.Kind = TokenKind::Unknown;
-    Other.Begin = 0;
-    Other.End = 0;
-    Other.LineNumber = 0;
-    Other.ColumnNumber = 0;
+    Other.SourceLoc = SourceLocation();
     Other.NumVal = 0;
   }
 
@@ -136,10 +154,7 @@ public:
   Token &operator=(const Token &Other)
   {
     Kind = Other.Kind;
-    Begin = Other.Begin;
-    End = Other.End;
-    LineNumber = Other.LineNumber;
-    ColumnNumber = Other.ColumnNumber;
+    SourceLoc = Other.SourceLoc;
     IdentifierString = Other.IdentifierString;
     NumVal = Other.NumVal;
     return *this;
@@ -149,18 +164,12 @@ public:
   Token &operator=(Token &&Other)
   {
     Kind = Other.Kind;
-    Begin = Other.Begin;
-    End = Other.End;
-    LineNumber = Other.LineNumber;
-    ColumnNumber = Other.ColumnNumber;
+    SourceLoc = Other.SourceLoc;
     IdentifierString = std::move(Other.IdentifierString);
     NumVal = Other.NumVal;
 
     Other.Kind = TokenKind::Unknown;
-    Other.Begin = 0;
-    Other.End = 0;
-    Other.LineNumber = 0;
-    Other.ColumnNumber = 0;
+    Other.SourceLoc = SourceLocation();
     Other.NumVal = 0;
     return *this;
   }
@@ -248,29 +257,9 @@ public:
     return Kind;
   }
 
-  std::size_t getBegin() const
+  SourceLocation getSourceLoc() const
   {
-    return Begin;
-  }
-
-  std::size_t getEnd() const
-  {
-    return End;
-  }
-
-  std::size_t getLen() const
-  {
-    return End - Begin;
-  }
-
-  unsigned getLineNumber() const
-  {
-    return LineNumber;
-  }
-
-  unsigned getColumnNumber() const
-  {
-    return ColumnNumber;
+    return SourceLoc;
   }
 
   std::string getIdentifierString() const
