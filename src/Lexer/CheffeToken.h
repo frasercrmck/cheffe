@@ -92,7 +92,7 @@ public:
   }
 
   Token(TokenKind Tok, std::size_t B, std::size_t E, int Val)
-      : Kind(Tok), Begin(B), End(E), NumVal(Val)
+      : Kind(Tok), Begin(B), End(E), LineNumber(1), ColumnNumber(0), NumVal(Val)
   {
   }
 
