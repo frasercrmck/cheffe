@@ -135,3 +135,8 @@ TEST_F(BadParserTest, IllegalMethodKeyword)
 {
   TestParse("/Parser/illegal-method-keyword.ch");
 }
+
+TEST_F(BadParserTest, IllegalCookingTime)
+{
+  TestParse("/Parser/illegal-cooking-time.ch");
+}
