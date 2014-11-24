@@ -12,7 +12,7 @@ namespace cheffe
 {
 
 const std::unordered_set<std::string> ValidSingularTimeUnits = {"hour",
-                                                                "minutes"};
+                                                                "minute"};
 const std::unordered_set<std::string> ValidPluralTimeUnits = {"hours",
                                                               "minutes"};
 
