@@ -2,6 +2,7 @@ set(
   cheffe-src-files
   CheffeDebugUtils.cpp
   CheffeFileHandler.cpp
+  CheffeErrorHandling.cpp
   CheffeDiagnosticHandler.cpp
 )
 
