@@ -11,8 +11,10 @@
 namespace cheffe
 {
 
-const std::unordered_set<std::string> ValidTimeUnits = {"hour", "hours",
-                                                        "minute", "minutes"};
+const std::unordered_set<std::string> ValidSingularTimeUnits = {"hour",
+                                                                "minutes"};
+const std::unordered_set<std::string> ValidPluralTimeUnits = {"hours",
+                                                              "minutes"};
 
 const std::unordered_set<std::string> ValidMethodKeywords = {
     "Take",   "Put",     "Fold",    "Add",        "Remove", "Combine",
@@ -45,6 +47,13 @@ struct IngredientInfoTy
 };
 
 std::ostream &operator<<(std::ostream &stream, const IngredientInfoTy &Info);
+
+enum class TimeUnitKindTy
+{
+  Singular,
+  Plural,
+  Invalid
+};
 
 enum class MeasureKindTy
 {
@@ -82,6 +91,7 @@ private:
   CheffeErrorCode parseMethodStatement();
   CheffeErrorCode parseServesStatement();
 
+  bool isValidTimeUnit(const std::string &TimeUnit, TimeUnitKindTy &Kind);
   bool isValidMeasure(const std::string &Measure, MeasureKindTy &Kind);
 
   Token getNextToken();

@@ -304,6 +304,30 @@ CheffeErrorCode CheffeParser::parseIngredient(IngredientInfoTy &IngredientInfo)
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
 
+bool CheffeParser::isValidTimeUnit(const std::string &TimeUnit,
+                                   TimeUnitKindTy &Kind)
+{
+  Kind = TimeUnitKindTy::Invalid;
+  auto TimeUnitFindResult =
+      std::find(std::begin(ValidSingularTimeUnits),
+                std::end(ValidSingularTimeUnits), TimeUnit);
+  if (TimeUnitFindResult != std::end(ValidSingularTimeUnits))
+  {
+    Kind = TimeUnitKindTy::Singular;
+    return true;
+  }
+
+  TimeUnitFindResult = std::find(std::begin(ValidPluralTimeUnits),
+                                 std::end(ValidPluralTimeUnits), TimeUnit);
+  if (TimeUnitFindResult != std::end(ValidPluralTimeUnits))
+  {
+    Kind = TimeUnitKindTy::Plural;
+    return true;
+  }
+
+  return false;
+}
+
 CheffeErrorCode CheffeParser::parseCookingTime()
 {
   const std::string CookingTimeStr = "Cooking time:";
@@ -342,11 +366,24 @@ CheffeErrorCode CheffeParser::parseCookingTime()
   }
   const std::string TimeUnit = CurrentToken.getIdentifierString();
 
-  auto FindResult =
-      std::find(std::begin(ValidTimeUnits), std::end(ValidTimeUnits), TimeUnit);
-  if (FindResult == std::end(ValidTimeUnits))
+  TimeUnitKindTy TimeUnitKind;
+  const bool IsValidTimeUnit = isValidTimeUnit(TimeUnit, TimeUnitKind);
+  if (!IsValidTimeUnit)
   {
     return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
+  if (Time == 1 && TimeUnitKind == TimeUnitKindTy::Plural)
+  {
+    Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Warning,
+                        LineContext::WithContext)
+        << "Singular cooking time specified with plural time unit";
+  }
+  else if (Time != 1 && TimeUnitKind == TimeUnitKindTy::Singular)
+  {
+    Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Warning,
+                        LineContext::WithContext)
+        << "Plural cooking time specified with singular time unit";
   }
 
   if (consumeAndExpectToken(TokenKind::FullStop))
