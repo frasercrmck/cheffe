@@ -32,7 +32,8 @@ std::string CheffeDiagnosticHandler::getLineAsString(const unsigned LineNo)
 std::string CheffeDiagnosticHandler::getContextAsString(const unsigned ColumnNo,
                                                         const unsigned Length)
 {
-  const std::string Padding = std::string(ColumnNo, ' ');
+  assert(ColumnNo != 0 && "Columns must be indexed from 1");
+  const std::string Padding = std::string(ColumnNo - 1, ' ');
   const std::string UnderlineToken = std::string(Length, '~');
 
   std::stringstream ss;

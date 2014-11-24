@@ -20,7 +20,7 @@ private:
 
 public:
   CheffeLexer(const CheffeSourceFile &SrcFile)
-      : CurrentPos(0), File(SrcFile), LineNumber(1), ColumnNumber(0)
+      : CurrentPos(0), File(SrcFile), LineNumber(1), ColumnNumber(1)
   {
   }
 

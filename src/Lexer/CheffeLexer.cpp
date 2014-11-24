@@ -15,7 +15,7 @@ int CheffeLexer::getNextChar()
   if (Char == '\n')
   {
     ++LineNumber;
-    ColumnNumber = 0;
+    ColumnNumber = 1;
   }
   else
   {
