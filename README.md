@@ -9,3 +9,7 @@ BUILDING:
 RUNNING:
 
     ./build/bin/cheffe <INPUT_FILE>
+    
+TESTING:
+
+    ./build/test/cheffe_test
