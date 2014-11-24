@@ -3,12 +3,19 @@
 
 #include "cheffe.h"
 #include "Lexer/CheffeToken.h"
+#include "Utils/CheffeErrorHandling.h"
 #include <iostream>
 #include <sstream>
 #include <vector>
 
 namespace cheffe
 {
+
+enum class DiagnosticKind
+{
+  Warning,
+  Error
+};
 
 enum class LineContext
 {
@@ -26,6 +33,7 @@ private:
   std::ostream &errs();
 
   std::vector<std::string> Errors;
+  std::vector<std::string> Warnings;
 
 public:
   CheffeDiagnosticHandler()
@@ -34,6 +42,7 @@ public:
 
   void formatAndLogMessage(const std::string &Message,
                            const SourceLocation SourceLoc,
+                           const DiagnosticKind Kind,
                            const LineContext Context)
   {
     std::stringstream ss;
@@ -46,11 +55,27 @@ public:
       ss << getContextAsString(SourceLoc.getColumnNo(), SourceLoc.getLength())
          << std::endl;
     }
-    Errors.push_back(ss.str());
+
+    switch (Kind)
+    {
+      default:
+        cheffe_unreachable("Impossible enum value");
+        break;
+      case DiagnosticKind::Error:
+        Errors.push_back(ss.str());
+        break;
+      case DiagnosticKind::Warning:
+        Warnings.push_back(ss.str());
+        break;
+    }
   }
 
   void flushDiagnostics()
   {
+    for (auto &Message : Warnings)
+    {
+      errs() << Message << std::endl;
+    }
     for (auto &Message : Errors)
     {
       errs() << Message << std::endl;
@@ -63,6 +88,7 @@ public:
   }
 
   inline CheffeDiagnosticBuilder report(const SourceLocation SourceLoc,
+                                        const DiagnosticKind Kind,
                                         const LineContext Context);
 
   std::string getLineAsString(const unsigned LineNo);
@@ -77,14 +103,16 @@ class CheffeDiagnosticBuilder
 private:
   CheffeDiagnosticHandler *Handler;
   SourceLocation SourceLoc;
+  DiagnosticKind Kind;
   LineContext Context;
   std::stringstream MessageStream;
 
 public:
   CheffeDiagnosticBuilder(CheffeDiagnosticHandler *Diags,
                           const SourceLocation SourceLoc,
-                          const LineContext Context)
-      : Handler(Diags), SourceLoc(SourceLoc), Context(Context), MessageStream()
+                          const DiagnosticKind Kind, const LineContext Context)
+      : Handler(Diags), SourceLoc(SourceLoc), Kind(Kind), Context(Context),
+        MessageStream()
   {
   }
 
@@ -92,6 +120,7 @@ public:
   {
     Handler = Builder.Handler;
     SourceLoc = Builder.SourceLoc;
+    Kind = Builder.Kind;
     Context = Builder.Context;
     MessageStream << Builder.MessageStream.rdbuf();
   }
@@ -99,7 +128,7 @@ public:
   ~CheffeDiagnosticBuilder()
   {
     const std::string Message = MessageStream.str();
-    Handler->formatAndLogMessage(Message, SourceLoc, Context);
+    Handler->formatAndLogMessage(Message, SourceLoc, Kind, Context);
   }
 
   inline CheffeDiagnosticBuilder &operator<<(const char *Str)
@@ -123,9 +152,10 @@ inline CheffeDiagnosticBuilder &operator<<(Token Tok)
 
 inline CheffeDiagnosticBuilder
 CheffeDiagnosticHandler::report(const SourceLocation SourceLoc,
+                                const DiagnosticKind Kind,
                                 const LineContext Context)
 {
-  return CheffeDiagnosticBuilder(this, SourceLoc, Context);
+  return CheffeDiagnosticBuilder(this, SourceLoc, Kind, Context);
 }
 
 } // end namespace cheffe

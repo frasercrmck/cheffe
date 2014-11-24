@@ -94,7 +94,8 @@ template <typename T> bool CheffeParser::expectToken(const T &Kind)
 {
   if (CurrentToken.isNot(Kind))
   {
-    Diagnostics->report(CurrentToken.getSourceLoc(), LineContext::WithContext)
+    Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Error,
+                        LineContext::WithContext)
         << "Expected " << Kind << ", got " << CurrentToken;
     return true;
   }
@@ -273,7 +274,8 @@ CheffeErrorCode CheffeParser::parseIngredient(IngredientInfoTy &IngredientInfo)
   {
     if (IsIngredientDefinedDry && MeasureKind == MeasureKindTy::Wet)
     {
-      Diagnostics->report(CurrentToken.getSourceLoc(), LineContext::WithContext)
+      Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Error,
+                          LineContext::WithContext)
           << "Wet measure used when dry measure kind specified";
       return CheffeErrorCode::CHEFFE_ERROR;
     }
@@ -522,7 +524,8 @@ CheffeErrorCode CheffeParser::parseMethodStatement()
 
   if (!IsValidMethodKeyword && !IsKnownVerb)
   {
-    Diagnostics->report(CurrentToken.getSourceLoc(), LineContext::WithContext)
+    Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Error,
+                        LineContext::WithContext)
         << "Invalid Method Keyword: '" << MethodKeyword.c_str() << "'";
     return CheffeErrorCode::CHEFFE_ERROR;
   }
@@ -599,7 +602,7 @@ CheffeErrorCode CheffeParser::parseServesStatement()
     if (CurrentToken.isNotAnyOf(TokenKind::EndOfParagraph,
                                 TokenKind::EndOfFile))
     {
-      Diagnostics->report(CurrentToken.getSourceLoc(),
+      Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Error,
                           LineContext::WithoutContext)
           << "Invalid Serves Statement";
       return CheffeErrorCode::CHEFFE_ERROR;
