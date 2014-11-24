@@ -37,13 +37,13 @@ const std::unordered_set<std::string> ValidUnspecifiedMeasures = {
 
 struct IngredientInfoTy
 {
-  public:
-    bool HasInitialValue = false;
-    int InitialValue = 0;
-    bool IsDry = true;
-    std::string MeasureType = "";
-    std::string Measure = "";
-    std::string Name = "";
+public:
+  bool HasInitialValue = false;
+  int InitialValue = 0;
+  bool IsDry = true;
+  std::string MeasureType = "";
+  std::string Measure = "";
+  std::string Name = "";
 };
 
 std::ostream &operator<<(std::ostream &stream, const IngredientInfoTy &Info);

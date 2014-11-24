@@ -42,8 +42,7 @@ public:
 
   void formatAndLogMessage(const std::string &Message,
                            const SourceLocation SourceLoc,
-                           const DiagnosticKind Kind,
-                           const LineContext Context)
+                           const DiagnosticKind Kind, const LineContext Context)
   {
     std::stringstream ss;
     ss << getFileAndLineNumberInfoAsString(
@@ -58,15 +57,15 @@ public:
 
     switch (Kind)
     {
-      default:
-        cheffe_unreachable("Impossible enum value");
-        break;
-      case DiagnosticKind::Error:
-        Errors.push_back(ss.str());
-        break;
-      case DiagnosticKind::Warning:
-        Warnings.push_back(ss.str());
-        break;
+    default:
+      cheffe_unreachable("Impossible enum value");
+      break;
+    case DiagnosticKind::Error:
+      Errors.push_back(ss.str());
+      break;
+    case DiagnosticKind::Warning:
+      Warnings.push_back(ss.str());
+      break;
     }
   }
 
@@ -137,17 +136,17 @@ public:
     return *this;
   }
 
-inline CheffeDiagnosticBuilder &operator<<( std::string Str)
-{
-  MessageStream << Str;
-  return *this;
-}
+  inline CheffeDiagnosticBuilder &operator<<(std::string Str)
+  {
+    MessageStream << Str;
+    return *this;
+  }
 
-inline CheffeDiagnosticBuilder &operator<<(Token Tok)
-{
-  MessageStream << Tok;
-  return *this;
-}
+  inline CheffeDiagnosticBuilder &operator<<(Token Tok)
+  {
+    MessageStream << Tok;
+    return *this;
+  }
 };
 
 inline CheffeDiagnosticBuilder

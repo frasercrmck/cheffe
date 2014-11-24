@@ -297,7 +297,8 @@ CheffeErrorCode CheffeParser::parseIngredient(IngredientInfoTy &IngredientInfo)
   {
     getNextToken();
   }
-  const std::size_t EndIngredientNamePos = CurrentToken.getSourceLoc().getBegin();
+  const std::size_t EndIngredientNamePos =
+      CurrentToken.getSourceLoc().getBegin();
   IngredientInfo.Name =
       Lexer.getTextSpan(BeginIngredientNamePos, EndIngredientNamePos);
 

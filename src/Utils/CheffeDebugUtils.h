@@ -16,7 +16,7 @@ extern bool DebugFlag;
 bool isCurrentDebugType(const char *Type);
 void setCurrentDebugType(const char *Type);
 
-std::ostream& dbgs();
+std::ostream &dbgs();
 
 #define CHEFFE_DEBUG_WITH_TYPE(TYPE, EXPR)                                     \
   do                                                                           \
