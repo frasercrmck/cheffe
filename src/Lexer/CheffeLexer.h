@@ -12,7 +12,7 @@ namespace cheffe
 class CheffeLexer
 {
 private:
-  int CurrentPos;
+  std::size_t CurrentPos;
   CheffeSourceFile File;
 
   unsigned LineNumber;
