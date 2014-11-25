@@ -15,6 +15,11 @@ int main(int argc, char **argv)
   std::string FileName;
   for (int i = 1; i < argc; ++i)
   {
+    if (!strcmp(argv[i], "-debug"))
+    {
+      setDebugFlag(true);
+      continue;
+    }
     if (!strcmp(argv[i], "-debug-only"))
     {
       if (i != argc - 1)
@@ -23,6 +28,7 @@ int main(int argc, char **argv)
         continue;
       }
     }
+
     // Input file is last in argument list
     if (i == argc - 1)
     {

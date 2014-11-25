@@ -6,6 +6,11 @@ bool cheffe::DebugFlag;
 
 static std::string DebugType;
 
+void cheffe::setDebugFlag(const bool Flag)
+{
+  DebugFlag = Flag;
+}
+
 void cheffe::setCurrentDebugType(const char *Type)
 {
   DebugType = Type;

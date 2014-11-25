@@ -13,6 +13,8 @@ namespace cheffe
 
 extern bool DebugFlag;
 
+void setDebugFlag(const bool Flag);
+
 bool isCurrentDebugType(const char *Type);
 void setCurrentDebugType(const char *Type);
 
