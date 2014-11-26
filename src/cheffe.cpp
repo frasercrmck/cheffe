@@ -10,11 +10,34 @@
 
 using namespace cheffe;
 
+static void printUsage()
+{
+// clang-format off
+  std::cout << "OVERVIEW: cheffe Chef Compiler" << std::endl << std::endl
+            << "usage: cheffe [compile-flags] <input-file>" << std::endl
+            << std::endl
+            << "COMPILE FLAGS" << std::endl
+            << "  -debug               Enable debug output" << std::endl
+            << "  -debug-only <value>  Enable only the debug output associated "
+                                       "with <value>" << std::endl
+            << "                       Examples:" << std::endl
+            << "                         - \"parser\"" << std::endl
+            << "  -help                Print usage and exit" << std::endl
+            << std::endl;
+  // clang-format on
+  return;
+}
+
 int main(int argc, char **argv)
 {
   std::string FileName;
   for (int i = 1; i < argc; ++i)
   {
+    if (!strcmp(argv[i], "-help"))
+    {
+      printUsage();
+      return 0;
+    }
     if (!strcmp(argv[i], "-debug"))
     {
       setDebugFlag(true);
