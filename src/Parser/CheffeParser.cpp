@@ -568,6 +568,13 @@ CheffeErrorCode CheffeParser::parseMethodStatement()
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
+  if (MethodKeyword.compare("Liquify") == 0)
+  {
+    Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Warning,
+                        LineContext::WithContext)
+        << "'Liquify' keyword is deprecated: use 'Liquefy' instead";
+  }
+
   const std::size_t BeginMethodPos = CurrentToken.getSourceLoc().getBegin();
   while (CurrentToken.isNotAnyOf(TokenKind::FullStop, TokenKind::EndOfFile))
   {
