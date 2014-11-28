@@ -42,7 +42,8 @@ public:
   {
   }
 
-  void DoTest(const char *Name)
+  void DoTest(const char *Name,
+              const std::pair<unsigned, unsigned> ExpectedDiagnosticCount)
   {
     std::string DirPath = std::string(TEST_ROOT_PATH);
     CheffeSourceFile InFile = {DirPath.append(Name), ""};
@@ -62,6 +63,12 @@ public:
 
     Driver.compileRecipe();
 
+    ASSERT_EQ(ExpectedDiagnosticCount.first, Diagnostics->getErrorCount())
+        << "Expected " << ExpectedDiagnosticCount.first << " errors, found "
+        << Diagnostics->getErrorCount() << "!";
+    ASSERT_EQ(ExpectedDiagnosticCount.second, Diagnostics->getWarningCount())
+        << "Expected " << ExpectedDiagnosticCount.second << " warnings, found "
+        << Diagnostics->getWarningCount() << "!";
     Diagnostics->flushDiagnostics();
   }
 
@@ -92,7 +99,7 @@ private:
 TEST_F(DiagnosticsTest, MismatchedTimeUnit)
 {
   const std::string FileName = "/Parser/mismatched-cooking-time.ch";
-  DoTest(FileName.c_str());
+  DoTest(FileName.c_str(), std::make_pair(0u, 1u));
 
   const std::string Warnings = getStandardError();
 
@@ -107,7 +114,7 @@ TEST_F(DiagnosticsTest, MismatchedTimeUnit)
 TEST_F(DiagnosticsTest, MismatchedTimeUnit2)
 {
   const std::string FileName = "/Parser/mismatched-cooking-time-2.ch";
-  DoTest(FileName.c_str());
+  DoTest(FileName.c_str(), std::make_pair(0u, 1u));
 
   const std::string Warnings = getStandardError();
 
