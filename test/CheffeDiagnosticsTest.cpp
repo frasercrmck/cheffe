@@ -125,3 +125,20 @@ TEST_F(DiagnosticsTest, MismatchedTimeUnit2)
 
   ASSERT_TRUE(std::regex_search(Warnings, DiagnosticRegex));
 }
+
+TEST_F(DiagnosticsTest, IllegalMethodKeyword)
+{
+  const std::string FileName = "/Parser/illegal-method-keyword.ch";
+  DoTest(FileName.c_str(), std::make_pair(1u, 0u));
+
+  const std::string Errors = getStandardError();
+
+  CheckFileNameDiagnostic(Errors, FileName, "9", "1");
+
+  std::regex DiagnosticRegex("Invalid Method Keyword: '(\\w+)'");
+
+  std::smatch KeywordMatch;
+  ASSERT_TRUE(std::regex_search(Errors, KeywordMatch, DiagnosticRegex));
+
+  ASSERT_EQ(KeywordMatch.str(1), "Test");
+}
