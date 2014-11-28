@@ -42,44 +42,10 @@ public:
 
   void formatAndLogMessage(const std::string &Message,
                            const SourceLocation SourceLoc,
-                           const DiagnosticKind Kind, const LineContext Context)
-  {
-    std::stringstream ss;
-    ss << getFileAndLineNumberInfoAsString(
-              SourceLoc.getLineNo(), SourceLoc.getColumnNo()) << std::endl;
-    ss << Message << std::endl;
-    if (Context == LineContext::WithContext)
-    {
-      ss << getLineAsString(SourceLoc.getLineNo()) << std::endl;
-      ss << getContextAsString(SourceLoc.getColumnNo(), SourceLoc.getLength())
-         << std::endl;
-    }
+                           const DiagnosticKind Kind,
+                           const LineContext Context);
 
-    switch (Kind)
-    {
-    default:
-      cheffe_unreachable("Impossible enum value");
-      break;
-    case DiagnosticKind::Error:
-      Errors.push_back(ss.str());
-      break;
-    case DiagnosticKind::Warning:
-      Warnings.push_back(ss.str());
-      break;
-    }
-  }
-
-  void flushDiagnostics()
-  {
-    for (auto &Message : Warnings)
-    {
-      errs() << Message << std::endl;
-    }
-    for (auto &Message : Errors)
-    {
-      errs() << Message << std::endl;
-    }
-  }
+  void flushDiagnostics();
 
   unsigned getErrorCount() const;
   unsigned getWarningCount() const;
