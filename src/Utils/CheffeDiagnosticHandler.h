@@ -81,6 +81,9 @@ public:
     }
   }
 
+  unsigned getErrorCount() const;
+  unsigned getWarningCount() const;
+
   void setSourceFile(const CheffeSourceFile &SrcFile)
   {
     File = SrcFile;

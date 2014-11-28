@@ -8,6 +8,16 @@ namespace cheffe
 std::ostream &CheffeDiagnosticHandler::errs()
 {
   return std::cerr;
+
+}
+unsigned CheffeDiagnosticHandler::getErrorCount() const
+{
+  return Errors.size();
+}
+
+unsigned CheffeDiagnosticHandler::getWarningCount() const
+{
+  return Warnings.size();
 }
 
 std::string CheffeDiagnosticHandler::getLineAsString(const unsigned LineNo)
