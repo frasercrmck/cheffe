@@ -82,6 +82,12 @@ public:
   {
   }
 
+  SourceLocation(const std::size_t B, const std::size_t E, const unsigned Line,
+                 const unsigned Column)
+      : Begin(B), End(E), LineNo(Line), ColumnNo(Column)
+  {
+  }
+
   std::size_t getBegin() const
   {
     return Begin;
