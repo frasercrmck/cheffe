@@ -140,3 +140,8 @@ TEST_F(BadParserTest, IllegalCookingTime)
 {
   TestParse("/Parser/illegal-cooking-time.ch");
 }
+
+TEST_F(BadParserTest, RecipeDefinedTwice)
+{
+  TestParse("/Parser/recipe-defined-twice.ch");
+}
