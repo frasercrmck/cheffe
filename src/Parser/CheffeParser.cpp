@@ -8,23 +8,6 @@
 namespace cheffe
 {
 
-std::ostream &operator<<(std::ostream &stream, const IngredientInfoTy &Info)
-{
-  if (Info.HasInitialValue)
-  {
-    stream << Info.InitialValue;
-  }
-  else
-  {
-    stream << "<none>";
-  }
-  stream << " - ";
-  stream << (Info.IsDry ? "dry" : "wet");
-  stream << " - ";
-  stream << "\"" << Info.Name << "\"";
-  return stream;
-}
-
 Token CheffeParser::getNextToken()
 {
   return CurrentToken = Lexer.getToken();
@@ -215,28 +198,28 @@ CheffeErrorCode CheffeParser::parseIngredientsList()
   while (
       CurrentToken.isNotAnyOf(TokenKind::EndOfParagraph, TokenKind::EndOfFile))
   {
-    IngredientInfoTy IngredientInfo;
-    CheffeErrorCode Success = parseIngredient(IngredientInfo);
+    CheffeIngredient Ingredient;
+    CheffeErrorCode Success = parseIngredient(Ingredient);
     if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
     {
       return Success;
     }
-    CHEFFE_DEBUG("INGREDIENT: " << IngredientInfo << std::endl);
+    CHEFFE_DEBUG("INGREDIENT: " << Ingredient<< std::endl);
   }
   CHEFFE_DEBUG("\n");
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
 
-CheffeErrorCode CheffeParser::parseIngredient(IngredientInfoTy &IngredientInfo)
+CheffeErrorCode CheffeParser::parseIngredient(CheffeIngredient &Ingredient)
 {
   getNextToken();
 
   if (CurrentToken.is(TokenKind::Number))
   {
     // Initial value
-    IngredientInfo.HasInitialValue = true;
-    IngredientInfo.InitialValue = CurrentToken.getNumVal();
+    Ingredient.HasInitialValue = true;
+    Ingredient.InitialValue = CurrentToken.getNumVal();
     getNextToken();
   }
 
@@ -257,7 +240,7 @@ CheffeErrorCode CheffeParser::parseIngredient(IngredientInfoTy &IngredientInfo)
   if (IsValidMeasureType)
   {
     IsIngredientDefinedDry = true;
-    IngredientInfo.MeasureType = IdentifierString;
+    Ingredient.MeasureType = IdentifierString;
 
     if (consumeAndExpectToken(TokenKind::Identifier))
     {
@@ -280,9 +263,9 @@ CheffeErrorCode CheffeParser::parseIngredient(IngredientInfoTy &IngredientInfo)
       return CheffeErrorCode::CHEFFE_ERROR;
     }
 
-    IngredientInfo.IsDry = MeasureKind != MeasureKindTy::Wet;
+    Ingredient.IsDry = MeasureKind != MeasureKindTy::Wet;
 
-    IngredientInfo.Measure = IdentifierString;
+    Ingredient.Measure = IdentifierString;
 
     if (consumeAndExpectToken(TokenKind::Identifier))
     {
@@ -299,7 +282,7 @@ CheffeErrorCode CheffeParser::parseIngredient(IngredientInfoTy &IngredientInfo)
   }
   const std::size_t EndIngredientNamePos =
       CurrentToken.getSourceLoc().getBegin();
-  IngredientInfo.Name =
+  Ingredient.Name =
       Lexer.getTextSpan(BeginIngredientNamePos, EndIngredientNamePos);
 
   return CheffeErrorCode::CHEFFE_SUCCESS;

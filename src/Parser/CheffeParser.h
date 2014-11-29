@@ -3,8 +3,10 @@
 
 #include "cheffe.h"
 #include "Lexer/CheffeLexer.h"
+#include "Parser/CheffeIngredient.h"
 #include "Utils/CheffeDiagnosticHandler.h"
 
+#include <map>
 #include <vector>
 #include <unordered_set>
 
@@ -34,19 +36,6 @@ const std::unordered_set<std::string> ValidWetMeasures = {"ml", "l", "dash",
 
 const std::unordered_set<std::string> ValidUnspecifiedMeasures = {
     "cup", "cups", "teaspoon", "teaspoons", "tablespoon", "tablespoons"};
-
-struct IngredientInfoTy
-{
-public:
-  bool HasInitialValue = false;
-  int InitialValue = 0;
-  bool IsDry = true;
-  std::string MeasureType = "";
-  std::string Measure = "";
-  std::string Name = "";
-};
-
-std::ostream &operator<<(std::ostream &stream, const IngredientInfoTy &Info);
 
 enum class TimeUnitKindTy
 {
@@ -84,7 +73,7 @@ private:
   CheffeErrorCode parseRecipeTitle();
   CheffeErrorCode parseCommentBlock();
   CheffeErrorCode parseIngredientsList();
-  CheffeErrorCode parseIngredient(IngredientInfoTy &IngredientInfo);
+  CheffeErrorCode parseIngredient(CheffeIngredient &Ingredient);
   CheffeErrorCode parseCookingTime();
   CheffeErrorCode parseOvenTemperature();
   CheffeErrorCode parseMethodList();
