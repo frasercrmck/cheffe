@@ -73,12 +73,12 @@ private:
   unsigned ColumnNo;
 
 public:
-  SourceLocation() : Begin(0), End(0), LineNo(1), ColumnNo(0)
+  SourceLocation() : Begin(0), End(0), LineNo(1), ColumnNo(1)
   {
   }
 
   SourceLocation(const std::size_t B, const std::size_t E)
-      : Begin(B), End(E), LineNo(1), ColumnNo(0)
+      : Begin(B), End(E), LineNo(1), ColumnNo(1)
   {
   }
 
