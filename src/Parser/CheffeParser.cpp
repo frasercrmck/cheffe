@@ -1,6 +1,7 @@
 #include "Parser/CheffeParser.h"
 #include "Utils/CheffeDebugUtils.h"
 
+#include <cassert>
 #include <algorithm>
 
 #define DEBUG_TYPE "parser"
@@ -19,11 +20,26 @@ CheffeErrorCode CheffeParser::parseRecipe()
 
   do
   {
-    Success = parseRecipeTitle();
+    std::string RecipeTitle;
+    Success = parseRecipeTitle(RecipeTitle);
     if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
     {
       return Success;
     }
+
+    if (RecipeInfo.find(RecipeTitle) != std::end(RecipeInfo))
+    {
+      Diagnostics->report(SourceLocation(), DiagnosticKind::Error,
+                          LineContext::WithoutContext)
+          << "Recipe '" << RecipeTitle << "' defined more than once!";
+      return CheffeErrorCode::CHEFFE_ERROR;
+    }
+
+    auto Recipe =
+        std::unique_ptr<CheffeRecipeInfo>(new CheffeRecipeInfo(RecipeTitle));
+
+    CurrentRecipe = Recipe.get();
+    RecipeInfo[RecipeTitle] = std::move(Recipe);
 
     Success = parseCommentBlock();
     if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
@@ -86,7 +102,7 @@ template <typename T> bool CheffeParser::expectToken(const T &Kind)
   return false;
 }
 
-CheffeErrorCode CheffeParser::parseRecipeTitle()
+CheffeErrorCode CheffeParser::parseRecipeTitle(std::string &RecipeTitle)
 {
   getNextToken();
   const std::size_t BeginTitlePos = CurrentToken.getSourceLoc().getBegin();
@@ -104,7 +120,7 @@ CheffeErrorCode CheffeParser::parseRecipeTitle()
   }
   const std::size_t EndTitlePos = CurrentToken.getSourceLoc().getBegin();
 
-  const std::string RecipeTitle = Lexer.getTextSpan(BeginTitlePos, EndTitlePos);
+  RecipeTitle = Lexer.getTextSpan(BeginTitlePos, EndTitlePos);
   CHEFFE_DEBUG("RECIPE TITLE:\n\"" << RecipeTitle.c_str() << "\"\n\n");
 
   if (consumeAndExpectToken(TokenKind::EndOfParagraph))
@@ -179,6 +195,8 @@ bool CheffeParser::isValidMeasure(const std::string &Measure,
 
 CheffeErrorCode CheffeParser::parseIngredientsList()
 {
+  assert(CurrentRecipe != nullptr &&
+         "We should already have set a current recipe by now!");
   // Eat the 'Ingredients' token
   if (consumeAndExpectToken("Ingredients"))
   {
@@ -205,6 +223,8 @@ CheffeErrorCode CheffeParser::parseIngredientsList()
       return Success;
     }
     CHEFFE_DEBUG("INGREDIENT: " << Ingredient<< std::endl);
+
+    CurrentRecipe->addIngredient(Ingredient);
   }
   CHEFFE_DEBUG("\n");
 

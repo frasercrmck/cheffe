@@ -3,7 +3,7 @@
 
 #include "cheffe.h"
 #include "Lexer/CheffeLexer.h"
-#include "Parser/CheffeIngredient.h"
+#include "Parser/CheffeRecipeInfo.h"
 #include "Utils/CheffeDiagnosticHandler.h"
 
 #include <map>
@@ -60,17 +60,22 @@ private:
 
   std::shared_ptr<CheffeDiagnosticHandler> Diagnostics;
 
+  std::map<std::string, std::unique_ptr<CheffeRecipeInfo>> RecipeInfo;
+
 public:
   CheffeParser(const CheffeSourceFile &SrcFile,
                std::shared_ptr<CheffeDiagnosticHandler> Diags)
-      : Lexer(SrcFile), CurrentToken(), Diagnostics(Diags)
+      : Lexer(SrcFile), CurrentToken(), Diagnostics(Diags),
+        CurrentRecipe(nullptr)
   {
   }
 
   CheffeErrorCode parseRecipe();
 
 private:
-  CheffeErrorCode parseRecipeTitle();
+  CheffeRecipeInfo *CurrentRecipe;
+
+  CheffeErrorCode parseRecipeTitle(std::string &RecipeTitle);
   CheffeErrorCode parseCommentBlock();
   CheffeErrorCode parseIngredientsList();
   CheffeErrorCode parseIngredient(CheffeIngredient &Ingredient);
