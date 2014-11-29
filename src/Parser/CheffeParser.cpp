@@ -21,7 +21,8 @@ CheffeErrorCode CheffeParser::parseRecipe()
   do
   {
     std::string RecipeTitle;
-    Success = parseRecipeTitle(RecipeTitle);
+    SourceLocation RecipeTitleLoc;
+    Success = parseRecipeTitle(RecipeTitle, RecipeTitleLoc);
     if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
     {
       return Success;
@@ -29,8 +30,8 @@ CheffeErrorCode CheffeParser::parseRecipe()
 
     if (RecipeInfo.find(RecipeTitle) != std::end(RecipeInfo))
     {
-      Diagnostics->report(SourceLocation(), DiagnosticKind::Error,
-                          LineContext::WithoutContext)
+      Diagnostics->report(RecipeTitleLoc, DiagnosticKind::Error,
+                          LineContext::WithContext)
           << "Recipe '" << RecipeTitle << "' defined more than once!";
       return CheffeErrorCode::CHEFFE_ERROR;
     }
@@ -102,10 +103,11 @@ template <typename T> bool CheffeParser::expectToken(const T &Kind)
   return false;
 }
 
-CheffeErrorCode CheffeParser::parseRecipeTitle(std::string &RecipeTitle)
+CheffeErrorCode CheffeParser::parseRecipeTitle(std::string &RecipeTitle,
+                                               SourceLocation &RecipeTitleLoc)
 {
   getNextToken();
-  const std::size_t BeginTitlePos = CurrentToken.getSourceLoc().getBegin();
+  const SourceLocation BeginTitleLoc = CurrentToken.getSourceLoc();
 
   // Parse the Recipe Title.
   while (CurrentToken.isNotAnyOf(TokenKind::FullStop, TokenKind::EndOfParagraph,
@@ -120,7 +122,12 @@ CheffeErrorCode CheffeParser::parseRecipeTitle(std::string &RecipeTitle)
   }
   const std::size_t EndTitlePos = CurrentToken.getSourceLoc().getBegin();
 
-  RecipeTitle = Lexer.getTextSpan(BeginTitlePos, EndTitlePos);
+  RecipeTitle =
+      Lexer.getTextSpan(BeginTitleLoc.getBegin(), EndTitlePos);
+  RecipeTitleLoc =
+      SourceLocation(BeginTitleLoc.getBegin(), EndTitlePos,
+                     BeginTitleLoc.getLineNo(), BeginTitleLoc.getColumnNo());
+
   CHEFFE_DEBUG("RECIPE TITLE:\n\"" << RecipeTitle.c_str() << "\"\n\n");
 
   if (consumeAndExpectToken(TokenKind::EndOfParagraph))

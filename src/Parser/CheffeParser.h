@@ -75,7 +75,8 @@ public:
 private:
   CheffeRecipeInfo *CurrentRecipe;
 
-  CheffeErrorCode parseRecipeTitle(std::string &RecipeTitle);
+  CheffeErrorCode parseRecipeTitle(std::string &RecipeTitle,
+                                   SourceLocation &RecipeTitleLoc);
   CheffeErrorCode parseCommentBlock();
   CheffeErrorCode parseIngredientsList();
   CheffeErrorCode parseIngredient(CheffeIngredient &Ingredient);
