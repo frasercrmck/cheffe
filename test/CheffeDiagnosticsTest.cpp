@@ -135,7 +135,7 @@ TEST_F(DiagnosticsTest, IllegalMethodKeyword)
 
   CheckFileNameDiagnostic(Errors, FileName, "9", "1");
 
-  std::regex DiagnosticRegex("Invalid Method Keyword: '(\\w+)'");
+  std::regex DiagnosticRegex("Invalid Method Step Keyword: '(\\w+)'");
 
   std::smatch KeywordMatch;
   ASSERT_TRUE(std::regex_search(Errors, KeywordMatch, DiagnosticRegex));

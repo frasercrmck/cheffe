@@ -66,7 +66,7 @@ CheffeErrorCode CheffeParser::parseRecipe()
       return Success;
     }
 
-    Success = parseMethodList();
+    Success = parseMethod();
     if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
     {
       return Success;
@@ -513,7 +513,7 @@ CheffeErrorCode CheffeParser::parseOvenTemperature()
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
 
-CheffeErrorCode CheffeParser::parseMethodList()
+CheffeErrorCode CheffeParser::parseMethod()
 {
   // Eat the 'Method' token
   if (consumeAndExpectToken("Method"))
@@ -536,7 +536,7 @@ CheffeErrorCode CheffeParser::parseMethodList()
   while (
       CurrentToken.isNotAnyOf(TokenKind::EndOfParagraph, TokenKind::EndOfFile))
   {
-    CheffeErrorCode Success = parseMethodStatement();
+    CheffeErrorCode Success = parseMethodStep();
     if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
     {
       return Success;
@@ -547,44 +547,45 @@ CheffeErrorCode CheffeParser::parseMethodList()
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
 
-CheffeErrorCode CheffeParser::parseMethodStatement()
+CheffeErrorCode CheffeParser::parseMethodStep()
 {
   if (expectToken(TokenKind::Identifier))
   {
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
-  const std::string MethodKeyword = CurrentToken.getIdentifierString();
-  auto FindResult = std::find(std::begin(ValidMethodKeywords),
-                              std::end(ValidMethodKeywords), MethodKeyword);
+  const std::string MethodStepKeyword = CurrentToken.getIdentifierString();
+  auto FindResult = std::find(std::begin(ValidMethodSteps),
+                              std::end(ValidMethodSteps), MethodStepKeyword);
 
   bool IsKnownVerb = false;
-  const bool IsValidMethodKeyword = FindResult != std::end(ValidMethodKeywords);
+  const bool IsValidMethodStepKeyword =
+      FindResult != std::end(ValidMethodSteps);
 
-  if (!IsValidMethodKeyword)
+  if (!IsValidMethodStepKeyword)
   {
     FindResult = std::find(std::begin(ValidVerbKeywords),
-                           std::end(ValidVerbKeywords), MethodKeyword);
+                           std::end(ValidVerbKeywords), MethodStepKeyword);
 
     IsKnownVerb = FindResult != std::end(ValidVerbKeywords);
   }
 
-  if (!IsValidMethodKeyword && !IsKnownVerb)
+  if (!IsValidMethodStepKeyword && !IsKnownVerb)
   {
     Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Error,
                         LineContext::WithContext)
-        << "Invalid Method Keyword: '" << MethodKeyword.c_str() << "'";
+        << "Invalid Method Step Keyword: '" << MethodStepKeyword.c_str() << "'";
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
-  if (MethodKeyword.compare("Liquify") == 0)
+  if (MethodStepKeyword.compare("Liquify") == 0)
   {
     Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Warning,
                         LineContext::WithContext)
         << "'Liquify' keyword is deprecated: use 'Liquefy' instead";
   }
 
-  const std::size_t BeginMethodPos = CurrentToken.getSourceLoc().getBegin();
+  const std::size_t BeginMethodStepPos = CurrentToken.getSourceLoc().getBegin();
   while (CurrentToken.isNotAnyOf(TokenKind::FullStop, TokenKind::EndOfFile))
   {
     getNextToken();
@@ -594,13 +595,14 @@ CheffeErrorCode CheffeParser::parseMethodStatement()
   {
     return CheffeErrorCode::CHEFFE_ERROR;
   }
-  const std::size_t EndMethodPos = CurrentToken.getSourceLoc().getEnd();
-  std::string MethodStatement = Lexer.getTextSpan(BeginMethodPos, EndMethodPos);
-  // Pretty-print the method statement - strip out any new lines.
-  MethodStatement.erase(
-      std::remove(std::begin(MethodStatement), std::end(MethodStatement), '\n'),
-      std::end(MethodStatement));
-  CHEFFE_DEBUG("\"" << MethodStatement.c_str() << "\"\n");
+  const std::size_t EndMethodStepPos = CurrentToken.getSourceLoc().getEnd();
+  std::string MethodStep =
+      Lexer.getTextSpan(BeginMethodStepPos, EndMethodStepPos);
+  // Pretty-print the method step - strip out any new lines.
+  MethodStep.erase(
+      std::remove(std::begin(MethodStep), std::end(MethodStep), '\n'),
+      std::end(MethodStep));
+  CHEFFE_DEBUG("\"" << MethodStep.c_str() << "\"\n");
 
   getNextToken();
   while (CurrentToken.is(TokenKind::NewLine))

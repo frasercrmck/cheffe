@@ -18,7 +18,7 @@ const std::unordered_set<std::string> ValidSingularTimeUnits = {"hour",
 const std::unordered_set<std::string> ValidPluralTimeUnits = {"hours",
                                                               "minutes"};
 
-const std::unordered_set<std::string> ValidMethodKeywords = {
+const std::unordered_set<std::string> ValidMethodSteps = {
     "Take",   "Put",     "Fold",    "Add",        "Remove", "Combine",
     "Divide", "Liquefy", "Liquify", "Stir",       "Mix",    "Clean",
     "Pour",   "Set",     "Serve",   "Refrigerate"};
@@ -82,8 +82,8 @@ private:
   CheffeErrorCode parseIngredient(CheffeIngredient &Ingredient);
   CheffeErrorCode parseCookingTime();
   CheffeErrorCode parseOvenTemperature();
-  CheffeErrorCode parseMethodList();
-  CheffeErrorCode parseMethodStatement();
+  CheffeErrorCode parseMethod();
+  CheffeErrorCode parseMethodStep();
   CheffeErrorCode parseServesStatement();
 
   bool isValidTimeUnit(const std::string &TimeUnit, TimeUnitKindTy &Kind);
