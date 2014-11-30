@@ -143,7 +143,7 @@ CheffeErrorCode CheffeParser::parseCommentBlock()
 
   // Look ahead to see if we in fact have no comment block in this recipe.
   std::string LookAhead = Lexer.lookAhead(Ingredients.size());
-  if (!LookAhead.compare(Ingredients))
+  if (LookAhead == Ingredients)
   {
     return CheffeErrorCode::CHEFFE_SUCCESS;
   }
@@ -344,7 +344,7 @@ CheffeErrorCode CheffeParser::parseCookingTime()
 
   // Look ahead to see if we in fact have no comment block in this recipe.
   std::string LookAhead = Lexer.lookAhead(CookingTimeStr.size());
-  if (LookAhead.compare(CookingTimeStr))
+  if (LookAhead != CookingTimeStr)
   {
     return CheffeErrorCode::CHEFFE_SUCCESS;
   }
@@ -417,7 +417,7 @@ CheffeErrorCode CheffeParser::parseOvenTemperature()
 
   // Look ahead to see if we in fact have no comment block in this recipe.
   std::string LookAhead = Lexer.lookAhead(OvenTemperature.size());
-  if (LookAhead.compare(OvenTemperature))
+  if (LookAhead != OvenTemperature)
   {
     return CheffeErrorCode::CHEFFE_SUCCESS;
   }
@@ -578,7 +578,7 @@ CheffeErrorCode CheffeParser::parseMethodStep()
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
-  if (MethodStepKeyword.compare("Liquify") == 0)
+  if (MethodStepKeyword == "Liquify")
   {
     Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Warning,
                         LineContext::WithContext)
@@ -623,7 +623,7 @@ CheffeErrorCode CheffeParser::parseServesStatement()
 
   // Look ahead to see if we in fact have no serves statement in this recipe.
   std::string LookAhead = Lexer.lookAhead(ServesStr.size());
-  if (LookAhead.compare(ServesStr))
+  if (LookAhead != ServesStr)
   {
     return CheffeErrorCode::CHEFFE_SUCCESS;
   }

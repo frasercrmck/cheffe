@@ -19,7 +19,7 @@ void cheffe::setCurrentDebugType(const char *Type)
 
 bool cheffe::isCurrentDebugType(const char *Type)
 {
-  return DebugType.empty() || !DebugType.compare(Type);
+  return DebugType.empty() || DebugType == Type;
 }
 
 std::ostream &cheffe::dbgs()

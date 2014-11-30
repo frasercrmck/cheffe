@@ -202,11 +202,11 @@ public:
   }
   bool is(const std::string &Str) const
   {
-    return is(TokenKind::Identifier) && !IdentifierString.compare(Str);
+    return is(TokenKind::Identifier) && IdentifierString == Str;
   }
   bool is(std::string &&Str) const
   {
-    return is(TokenKind::Identifier) && !IdentifierString.compare(Str);
+    return is(TokenKind::Identifier) && IdentifierString == Str;
   }
   //==== is() ====//
 
