@@ -122,8 +122,7 @@ CheffeErrorCode CheffeParser::parseRecipeTitle(std::string &RecipeTitle,
   }
   const std::size_t EndTitlePos = CurrentToken.getSourceLoc().getBegin();
 
-  RecipeTitle =
-      Lexer.getTextSpan(BeginTitleLoc.getBegin(), EndTitlePos);
+  RecipeTitle = Lexer.getTextSpan(BeginTitleLoc.getBegin(), EndTitlePos);
   RecipeTitleLoc =
       SourceLocation(BeginTitleLoc.getBegin(), EndTitlePos,
                      BeginTitleLoc.getLineNo(), BeginTitleLoc.getColumnNo());
@@ -229,7 +228,7 @@ CheffeErrorCode CheffeParser::parseIngredientsList()
     {
       return Success;
     }
-    CHEFFE_DEBUG("INGREDIENT: " << Ingredient<< std::endl);
+    CHEFFE_DEBUG("INGREDIENT: " << Ingredient << std::endl);
 
     CurrentRecipe->addIngredient(Ingredient);
   }

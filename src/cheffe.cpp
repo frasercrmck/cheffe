@@ -12,7 +12,7 @@ using namespace cheffe;
 
 static void printUsage()
 {
-// clang-format off
+  // clang-format off
   std::cout << "OVERVIEW: cheffe Chef Compiler" << std::endl << std::endl
             << "usage: cheffe [compile-flags] <input-file>" << std::endl
             << std::endl

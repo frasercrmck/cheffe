@@ -38,5 +38,4 @@ inline std::ostream &operator<<(std::ostream &stream,
   return stream;
 }
 
-
 #endif // CHEFFE_INGREDIENT
