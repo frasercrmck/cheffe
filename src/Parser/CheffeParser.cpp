@@ -108,11 +108,13 @@ CheffeErrorCode CheffeParser::parseRecipeTitle(std::string &RecipeTitle,
 {
   getNextToken();
   const SourceLocation BeginTitleLoc = CurrentToken.getSourceLoc();
+  SourceLocation EndTitleLoc = BeginTitleLoc;
 
   // Parse the Recipe Title.
   while (CurrentToken.isNotAnyOf(TokenKind::FullStop, TokenKind::EndOfParagraph,
                                  TokenKind::EndOfFile))
   {
+    EndTitleLoc = CurrentToken.getSourceLoc();
     getNextToken();
   }
 
@@ -120,12 +122,17 @@ CheffeErrorCode CheffeParser::parseRecipeTitle(std::string &RecipeTitle,
   {
     return CheffeErrorCode::CHEFFE_ERROR;
   }
-  const std::size_t EndTitlePos = CurrentToken.getSourceLoc().getBegin();
 
-  RecipeTitle = Lexer.getTextSpan(BeginTitleLoc.getBegin(), EndTitlePos);
-  RecipeTitleLoc =
-      SourceLocation(BeginTitleLoc.getBegin(), EndTitlePos,
-                     BeginTitleLoc.getLineNo(), BeginTitleLoc.getColumnNo());
+  if (EndTitleLoc.getEnd() == BeginTitleLoc.getBegin())
+  {
+    Diagnostics->report(BeginTitleLoc, DiagnosticKind::Error,
+                        LineContext::WithContext)
+        << "Could not find a title";
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
+  RecipeTitle = Lexer.getTextSpan(BeginTitleLoc.getBegin(), EndTitleLoc.getEnd());
+  RecipeTitleLoc = SourceLocation(BeginTitleLoc, EndTitleLoc);
 
   CHEFFE_DEBUG("RECIPE TITLE:\n\"" << RecipeTitle.c_str() << "\"\n\n");
 
