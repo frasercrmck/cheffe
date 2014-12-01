@@ -88,6 +88,14 @@ public:
   {
   }
 
+  // Constructs a SourceLocation from the beginning of the first
+  // SourceLocation, to the end of the second.
+  SourceLocation(const SourceLocation Begin, const SourceLocation End)
+      : Begin(Begin.getBegin()), End(End.getEnd()), LineNo(Begin.getLineNo()),
+        ColumnNo(Begin.getColumnNo())
+  {
+  }
+
   std::size_t getBegin() const
   {
     return Begin;
