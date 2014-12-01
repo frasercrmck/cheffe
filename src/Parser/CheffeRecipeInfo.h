@@ -23,6 +23,11 @@ public:
     Ingredients[Ingredient.Name] = Ingredient;
   }
 
+  bool wasIngredientDefined(const std::string &Ingredient)
+  {
+    return Ingredients.find(Ingredient) != std::end(Ingredients);
+  }
+
 private:
   std::string RecipeTitle;
   std::map<std::string, CheffeIngredient> Ingredients;
