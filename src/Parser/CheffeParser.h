@@ -86,6 +86,9 @@ private:
   CheffeErrorCode parseMethodStep();
   CheffeErrorCode parseServesStatement();
 
+  void emitDiagnosticIfIngredientUndefined(const std::string &Ingredient,
+                                           const SourceLocation IngredientLoc);
+
   bool isValidTimeUnit(const std::string &TimeUnit, TimeUnitKindTy &Kind);
   bool isValidMeasure(const std::string &Measure, MeasureKindTy &Kind);
 

@@ -14,6 +14,19 @@ Token CheffeParser::getNextToken()
   return CurrentToken = Lexer.getToken();
 }
 
+void CheffeParser::emitDiagnosticIfIngredientUndefined(
+    const std::string &Ingredient, const SourceLocation IngredientLoc)
+{
+  if (CurrentRecipe->wasIngredientDefined(Ingredient))
+  {
+    return;
+  }
+  Diagnostics->report(IngredientLoc, DiagnosticKind::Warning,
+                      LineContext::WithContext)
+      << "Ingredient '" << Ingredient
+      << "' was not defined in the Ingredients paragraph";
+}
+
 CheffeErrorCode CheffeParser::parseRecipe()
 {
   CheffeErrorCode Success = CheffeErrorCode::CHEFFE_SUCCESS;
