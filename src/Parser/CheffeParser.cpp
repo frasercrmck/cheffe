@@ -606,9 +606,25 @@ CheffeErrorCode CheffeParser::parseMethodStep()
   }
 
   const std::size_t BeginMethodStepPos = CurrentToken.getSourceLoc().getBegin();
-  while (CurrentToken.isNotAnyOf(TokenKind::FullStop, TokenKind::EndOfFile))
+
+  CheffeErrorCode Success = CheffeErrorCode::CHEFFE_SUCCESS;
+  if (MethodStepKeyword == "Take")
   {
-    getNextToken();
+    Success = parseTakeMethodStep();
+  }
+  else
+  {
+    // Haven't defined a parse function for this method step yet. Consume until
+    // the full stop.
+    while (CurrentToken.isNotAnyOf(TokenKind::FullStop, TokenKind::EndOfFile))
+    {
+      getNextToken();
+    }
+  }
+
+  if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
+  {
+    return Success;
   }
 
   if (expectToken(TokenKind::FullStop))
@@ -629,6 +645,44 @@ CheffeErrorCode CheffeParser::parseMethodStep()
   {
     getNextToken();
   }
+  return CheffeErrorCode::CHEFFE_SUCCESS;
+}
+
+CheffeErrorCode CheffeParser::parseTakeMethodStep()
+{
+  getNextToken();
+
+  const SourceLocation BeginIngredientLoc = CurrentToken.getSourceLoc();
+  SourceLocation EndIngredientLoc = BeginIngredientLoc;
+  while (CurrentToken.isNotAnyOf("from", TokenKind::FullStop,
+                                 TokenKind::EndOfFile))
+  {
+    EndIngredientLoc = CurrentToken.getSourceLoc();
+    getNextToken();
+  }
+
+  if (CurrentToken.isNot("from"))
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
+  const std::string Ingredient = Lexer.getTextSpan(
+      BeginIngredientLoc.getBegin(), EndIngredientLoc.getEnd());
+
+  const SourceLocation IngredientLoc(BeginIngredientLoc, EndIngredientLoc);
+
+  emitDiagnosticIfIngredientUndefined(Ingredient, IngredientLoc);
+
+  if (consumeAndExpectToken("refrigerator"))
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
+  if (consumeAndExpectToken(TokenKind::FullStop))
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
 
