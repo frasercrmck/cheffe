@@ -144,7 +144,8 @@ CheffeErrorCode CheffeParser::parseRecipeTitle(std::string &RecipeTitle,
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
-  RecipeTitle = Lexer.getTextSpan(BeginTitleLoc.getBegin(), EndTitleLoc.getEnd());
+  RecipeTitle =
+      Lexer.getTextSpan(BeginTitleLoc.getBegin(), EndTitleLoc.getEnd());
   RecipeTitleLoc = SourceLocation(BeginTitleLoc, EndTitleLoc);
 
   CHEFFE_DEBUG("RECIPE TITLE:\n\"" << RecipeTitle.c_str() << "\"\n\n");
