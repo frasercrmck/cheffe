@@ -145,3 +145,128 @@ TEST_F(BadParserTest, RecipeDefinedTwice)
 {
   TestParse("/Parser/recipe-defined-twice.ch");
 }
+
+TEST_F(ParserTest, TestOrdinalSuffixes)
+{
+  ASSERT_EQ(CheffeErrorCode::CHEFFE_ERROR,
+            CheffeParser::parseOrdinalIdentifier("test"));
+  ASSERT_EQ(CheffeErrorCode::CHEFFE_ERROR,
+            CheffeParser::parseOrdinalIdentifier("100test"));
+  ASSERT_EQ(CheffeErrorCode::CHEFFE_ERROR,
+            CheffeParser::parseOrdinalIdentifier("a100test"));
+
+  ASSERT_EQ(CheffeErrorCode::CHEFFE_SUCCESS,
+            CheffeParser::parseOrdinalIdentifier("1st"));
+  ASSERT_EQ(CheffeErrorCode::CHEFFE_SUCCESS,
+            CheffeParser::parseOrdinalIdentifier("01st"));
+  ASSERT_EQ(CheffeErrorCode::CHEFFE_SUCCESS,
+            CheffeParser::parseOrdinalIdentifier("2nd"));
+  ASSERT_EQ(CheffeErrorCode::CHEFFE_SUCCESS,
+            CheffeParser::parseOrdinalIdentifier("02nd"));
+  ASSERT_EQ(CheffeErrorCode::CHEFFE_SUCCESS,
+            CheffeParser::parseOrdinalIdentifier("03rd"));
+  ASSERT_EQ(CheffeErrorCode::CHEFFE_SUCCESS,
+            CheffeParser::parseOrdinalIdentifier("3rd"));
+  ASSERT_EQ(CheffeErrorCode::CHEFFE_SUCCESS,
+            CheffeParser::parseOrdinalIdentifier("4th"));
+  ASSERT_EQ(CheffeErrorCode::CHEFFE_SUCCESS,
+            CheffeParser::parseOrdinalIdentifier("04th"));
+
+  ASSERT_EQ(CheffeErrorCode::CHEFFE_SUCCESS,
+            CheffeParser::parseOrdinalIdentifier("11th"));
+  ASSERT_EQ(CheffeErrorCode::CHEFFE_SUCCESS,
+            CheffeParser::parseOrdinalIdentifier("12th"));
+  ASSERT_EQ(CheffeErrorCode::CHEFFE_SUCCESS,
+            CheffeParser::parseOrdinalIdentifier("13th"));
+
+  ASSERT_EQ(CheffeErrorCode::CHEFFE_ERROR,
+            CheffeParser::parseOrdinalIdentifier("11st"));
+  ASSERT_EQ(CheffeErrorCode::CHEFFE_ERROR,
+            CheffeParser::parseOrdinalIdentifier("12nd"));
+  ASSERT_EQ(CheffeErrorCode::CHEFFE_ERROR,
+            CheffeParser::parseOrdinalIdentifier("13rd"));
+
+  ASSERT_EQ(CheffeErrorCode::CHEFFE_SUCCESS,
+            CheffeParser::parseOrdinalIdentifier("21st"));
+  ASSERT_EQ(CheffeErrorCode::CHEFFE_SUCCESS,
+            CheffeParser::parseOrdinalIdentifier("22nd"));
+  ASSERT_EQ(CheffeErrorCode::CHEFFE_SUCCESS,
+            CheffeParser::parseOrdinalIdentifier("23rd"));
+
+  ASSERT_EQ(CheffeErrorCode::CHEFFE_SUCCESS,
+            CheffeParser::parseOrdinalIdentifier("100th"));
+  ASSERT_EQ(CheffeErrorCode::CHEFFE_SUCCESS,
+            CheffeParser::parseOrdinalIdentifier("101st"));
+  ASSERT_EQ(CheffeErrorCode::CHEFFE_SUCCESS,
+            CheffeParser::parseOrdinalIdentifier("102nd"));
+
+  ASSERT_EQ(CheffeErrorCode::CHEFFE_SUCCESS,
+            CheffeParser::parseOrdinalIdentifier("100th"));
+  ASSERT_EQ(CheffeErrorCode::CHEFFE_SUCCESS,
+            CheffeParser::parseOrdinalIdentifier("101st"));
+  ASSERT_EQ(CheffeErrorCode::CHEFFE_SUCCESS,
+            CheffeParser::parseOrdinalIdentifier("102nd"));
+  ASSERT_EQ(CheffeErrorCode::CHEFFE_SUCCESS,
+            CheffeParser::parseOrdinalIdentifier("103rd"));
+
+  ASSERT_EQ(CheffeErrorCode::CHEFFE_ERROR,
+            CheffeParser::parseOrdinalIdentifier("101th"));
+  ASSERT_EQ(CheffeErrorCode::CHEFFE_ERROR,
+            CheffeParser::parseOrdinalIdentifier("102th"));
+  ASSERT_EQ(CheffeErrorCode::CHEFFE_ERROR,
+            CheffeParser::parseOrdinalIdentifier("103th"));
+
+  ASSERT_EQ(CheffeErrorCode::CHEFFE_SUCCESS,
+            CheffeParser::parseOrdinalIdentifier("111th"));
+  ASSERT_EQ(CheffeErrorCode::CHEFFE_SUCCESS,
+            CheffeParser::parseOrdinalIdentifier("112th"));
+  ASSERT_EQ(CheffeErrorCode::CHEFFE_SUCCESS,
+            CheffeParser::parseOrdinalIdentifier("113th"));
+
+  ASSERT_EQ(CheffeErrorCode::CHEFFE_ERROR,
+            CheffeParser::parseOrdinalIdentifier("1xx"));
+  ASSERT_EQ(CheffeErrorCode::CHEFFE_ERROR,
+            CheffeParser::parseOrdinalIdentifier("2yz"));
+  ASSERT_EQ(CheffeErrorCode::CHEFFE_ERROR,
+            CheffeParser::parseOrdinalIdentifier("3ii"));
+
+  std::stringstream ss;
+  std::string expected_suffix;
+  for (unsigned i = 0, lsd = 0; i < 1000; ++i, lsd = (lsd == 9) ? 0 : ++lsd)
+  {
+    ss << i;
+    switch (lsd)
+    {
+    default:
+      cheffe_unreachable("Impossible digit");
+      break;
+    case 1:
+    case 2:
+    case 3:
+    {
+      if ((i % 100) > 10 && (i % 100) < 14)
+      {
+        expected_suffix = "th";
+        break;
+      }
+      const char *suffixes[] = {"st", "nd", "rd"};
+      expected_suffix = suffixes[lsd - 1];
+      break;
+    }
+    case 4:
+    case 5:
+    case 6:
+    case 7:
+    case 8:
+    case 9:
+    case 0:
+      expected_suffix = "th";
+      break;
+    }
+    ss << expected_suffix;
+    ASSERT_EQ(CheffeErrorCode::CHEFFE_SUCCESS,
+              CheffeParser::parseOrdinalIdentifier(ss.str()));
+    ss.str(std::string());
+    expected_suffix.clear();
+  }
+}
