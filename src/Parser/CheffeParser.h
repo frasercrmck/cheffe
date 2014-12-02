@@ -72,6 +72,8 @@ public:
 
   CheffeErrorCode parseRecipe();
 
+  static CheffeErrorCode parseOrdinalIdentifier(const std::string &Sequence);
+
 private:
   CheffeRecipeInfo *CurrentRecipe;
 

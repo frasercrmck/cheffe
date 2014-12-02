@@ -2,6 +2,7 @@
 #include "Utils/CheffeDebugUtils.h"
 
 #include <cassert>
+#include <array>
 #include <algorithm>
 
 #define DEBUG_TYPE "parser"
@@ -25,6 +26,72 @@ void CheffeParser::emitDiagnosticIfIngredientUndefined(
                       LineContext::WithContext)
       << "Ingredient '" << Ingredient
       << "' was not defined in the Ingredients paragraph";
+}
+
+CheffeErrorCode
+CheffeParser::parseOrdinalIdentifier(const std::string &Sequence)
+{
+  if (Sequence.empty())
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
+  const std::size_t DigitLength = Sequence.find_first_not_of("0123456789");
+
+  if (DigitLength == std::string::npos || DigitLength == 0u)
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
+  const std::string Digits = Sequence.substr(0, DigitLength);
+
+  if (Sequence.length() > DigitLength + 2)
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
+  const std::string SequenceSuffix = Sequence.substr(DigitLength, 2);
+
+  std::string ExpectedSuffix;
+  switch (const char Digit = Digits[Digits.length() - 1])
+  {
+  default:
+    cheffe_unreachable("Invalid digit found in sequence!");
+    break;
+  case '1':
+  case '2':
+  case '3':
+    if (Digits.size() > 1 && Digits[Digits.length() - 2] == '1')
+    {
+      ExpectedSuffix = "th";
+      break;
+    }
+
+    ExpectedSuffix = std::array<std::string, 3>
+    {
+      {
+        "st", "nd", "rd"
+      }
+    }
+    [Digit - '1'];
+    break;
+  case '4':
+  case '5':
+  case '6':
+  case '7':
+  case '8':
+  case '9':
+  case '0':
+    ExpectedSuffix = "th";
+    break;
+  }
+
+  if (SequenceSuffix != ExpectedSuffix)
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
+  return CheffeErrorCode::CHEFFE_SUCCESS;
 }
 
 CheffeErrorCode CheffeParser::parseRecipe()
