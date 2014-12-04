@@ -28,40 +28,24 @@ void CheffeParser::emitDiagnosticIfIngredientUndefined(
       << "' was not defined in the Ingredients paragraph";
 }
 
-CheffeErrorCode
-CheffeParser::parseOrdinalIdentifier(const std::string &Sequence)
+CheffeErrorCode CheffeParser::parseOrdinalIdentifier(const unsigned Number,
+                                                     const std::string &Suffix)
 {
-  if (Sequence.empty())
+  if (Suffix.empty())
   {
     return CheffeErrorCode::CHEFFE_ERROR;
   }
-
-  const std::size_t DigitLength = Sequence.find_first_not_of("0123456789");
-
-  if (DigitLength == std::string::npos || DigitLength == 0u)
-  {
-    return CheffeErrorCode::CHEFFE_ERROR;
-  }
-
-  const std::string Digits = Sequence.substr(0, DigitLength);
-
-  if (Sequence.length() > DigitLength + 2)
-  {
-    return CheffeErrorCode::CHEFFE_ERROR;
-  }
-
-  const std::string SequenceSuffix = Sequence.substr(DigitLength, 2);
 
   std::string ExpectedSuffix;
-  switch (const char Digit = Digits[Digits.length() - 1])
+  switch (const unsigned Digit = Number % 10)
   {
   default:
     cheffe_unreachable("Invalid digit found in sequence!");
     break;
-  case '1':
-  case '2':
-  case '3':
-    if (Digits.size() > 1 && Digits[Digits.length() - 2] == '1')
+  case 1:
+  case 2:
+  case 3:
+    if (Number % 100 > 10 && Number % 100 < 14)
     {
       ExpectedSuffix = "th";
       break;
@@ -73,20 +57,20 @@ CheffeParser::parseOrdinalIdentifier(const std::string &Sequence)
         "st", "nd", "rd"
       }
     }
-    [Digit - '1'];
+    [Digit - 1];
     break;
-  case '4':
-  case '5':
-  case '6':
-  case '7':
-  case '8':
-  case '9':
-  case '0':
+  case 4:
+  case 5:
+  case 6:
+  case 7:
+  case 8:
+  case 9:
+  case 0:
     ExpectedSuffix = "th";
     break;
   }
 
-  if (SequenceSuffix != ExpectedSuffix)
+  if (Suffix != ExpectedSuffix)
   {
     return CheffeErrorCode::CHEFFE_ERROR;
   }
