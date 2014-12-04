@@ -69,6 +69,10 @@ Token CheffeLexer::getToken()
         getNextChar();
         Tok.Kind = TokenKind::EndOfParagraph;
       }
+      else if (IgnoreNewLines)
+      {
+        continue;
+      }
 
       Tok.SourceLoc.End = CurrentPos;
       return Tok;

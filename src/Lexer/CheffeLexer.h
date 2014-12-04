@@ -18,9 +18,12 @@ private:
   unsigned LineNumber;
   unsigned ColumnNumber;
 
+  bool IgnoreNewLines;
+
 public:
   CheffeLexer(const CheffeSourceFile &SrcFile)
-      : CurrentPos(0), File(SrcFile), LineNumber(1), ColumnNumber(1)
+      : CurrentPos(0), File(SrcFile), LineNumber(1), ColumnNumber(1),
+        IgnoreNewLines(false)
   {
   }
 
@@ -38,6 +41,11 @@ public:
 
   // Returns a copy of the span of text from the input file.
   std::string getTextSpan(const std::size_t Begin, const std::size_t End);
+
+  void setIgnoreNewLines(const bool Ignore)
+  {
+    IgnoreNewLines = Ignore;
+  }
 };
 
 } // end namespace cheffe
