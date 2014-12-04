@@ -603,6 +603,20 @@ CheffeErrorCode CheffeParser::parseMethod()
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
+  struct IgnoreNewLineHelper
+  {
+    IgnoreNewLineHelper(CheffeParser *Parser) : Parser(Parser)
+    {
+      Parser->Lexer.setIgnoreNewLines(true);
+    }
+    ~IgnoreNewLineHelper()
+    {
+      Parser->Lexer.setIgnoreNewLines(false);
+    }
+
+    CheffeParser *Parser;
+  } Helper(this);
+
   getNextToken();
   CHEFFE_DEBUG("\nMETHOD LIST:\n");
   while (
