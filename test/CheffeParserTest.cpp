@@ -106,6 +106,11 @@ TEST_F(GoodParserTest, IngredientNoMeasure)
   TestParse("/Parser/ingredient-no-measure.ch");
 }
 
+TEST_F(GoodParserTest, MethodStepPut)
+{
+  TestParse("/Parser/method-step-put.ch");
+}
+
 TEST_F(BadParserTest, BadComments)
 {
   TestParse("/Parser/bad-comments.ch");
