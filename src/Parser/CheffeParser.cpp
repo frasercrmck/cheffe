@@ -712,6 +712,7 @@ CheffeErrorCode CheffeParser::parseMethodStep()
   getNextToken();
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
+
 CheffeErrorCode CheffeParser::parsePutMethodStep()
 {
   getNextToken();
