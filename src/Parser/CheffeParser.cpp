@@ -710,10 +710,6 @@ CheffeErrorCode CheffeParser::parseMethodStep()
   CHEFFE_DEBUG("\"" << MethodStep.c_str() << "\"\n");
 
   getNextToken();
-  while (CurrentToken.is(TokenKind::NewLine))
-  {
-    getNextToken();
-  }
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
 CheffeErrorCode CheffeParser::parsePutMethodStep()
