@@ -52,6 +52,21 @@ enum class MeasureKindTy
   Invalid
 };
 
+enum class ArithmeticMethodStep
+{
+  Add,
+  Remove,
+  Combine,
+  Divide
+};
+
+const std::map<ArithmeticMethodStep, std::string> MethodStepPrepositions = {
+    {ArithmeticMethodStep::Add, "to"},
+    {ArithmeticMethodStep::Remove, "from"},
+    {ArithmeticMethodStep::Combine, "into"},
+    {ArithmeticMethodStep::Divide, "into"},
+};
+
 class CheffeParser
 {
 private:
@@ -91,7 +106,7 @@ private:
 
   CheffeErrorCode parseTakeMethodStep();
   CheffeErrorCode parsePutOrFoldMethodStep();
-  CheffeErrorCode parseAddMethodStep();
+  CheffeErrorCode parseArithmeticMethodStep(const ArithmeticMethodStep Step);
 
   void emitDiagnosticIfIngredientUndefined(const std::string &Ingredient,
                                            const SourceLocation IngredientLoc);

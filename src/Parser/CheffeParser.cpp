@@ -687,7 +687,19 @@ CheffeErrorCode CheffeParser::parseMethodStep()
   }
   else if (MethodStepKeyword == "Add")
   {
-    Success = parseAddMethodStep();
+    Success = parseArithmeticMethodStep(ArithmeticMethodStep::Add);
+  }
+  else if (MethodStepKeyword == "Remove")
+  {
+    Success = parseArithmeticMethodStep(ArithmeticMethodStep::Remove);
+  }
+  else if (MethodStepKeyword == "Combine")
+  {
+    Success = parseArithmeticMethodStep(ArithmeticMethodStep::Combine);
+  }
+  else if (MethodStepKeyword == "Divide")
+  {
+    Success = parseArithmeticMethodStep(ArithmeticMethodStep::Divide);
   }
   else
   {
@@ -793,14 +805,27 @@ CheffeErrorCode CheffeParser::parsePutOrFoldMethodStep()
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
 
-CheffeErrorCode CheffeParser::parseAddMethodStep()
+// Parses either an 'Add', 'Remove', 'Combine', or 'Divide' method step:
+//   Add ingredient [to [nth] mixing bowl].
+//   Remove ingredient [from [nth] mixing bowl].
+//   Combine ingredient [into [nth] mixing bowl].
+//   Divide ingredient [into [nth] mixing bowl].
+// Note: the different prepositions: 'to', 'from', 'into'
+CheffeErrorCode
+CheffeParser::parseArithmeticMethodStep(const ArithmeticMethodStep Step)
 {
   getNextToken();
 
+  if (MethodStepPrepositions.find(Step) == std::end(MethodStepPrepositions))
+  {
+     cheffe_unreachable("Invalid method step kind");
+  }
+  const std::string Preposition = MethodStepPrepositions.find(Step)->second;
+
   const SourceLocation BeginIngredientLoc = CurrentToken.getSourceLoc();
   SourceLocation EndIngredientLoc = BeginIngredientLoc;
-  while (
-      CurrentToken.isNotAnyOf("to", TokenKind::FullStop, TokenKind::EndOfFile))
+  while (CurrentToken.isNotAnyOf(Preposition.c_str(), TokenKind::FullStop,
+                                 TokenKind::EndOfFile))
   {
     EndIngredientLoc = CurrentToken.getSourceLoc();
     getNextToken();
@@ -813,7 +838,7 @@ CheffeErrorCode CheffeParser::parseAddMethodStep()
 
   emitDiagnosticIfIngredientUndefined(Ingredient, IngredientLoc);
 
-  if (CurrentToken.isNot("to"))
+  if (CurrentToken.isNot(Preposition.c_str()))
   {
     return CheffeErrorCode::CHEFFE_SUCCESS;
   }
