@@ -679,7 +679,11 @@ CheffeErrorCode CheffeParser::parseMethodStep()
   }
   else if (MethodStepKeyword == "Put")
   {
-    Success = parsePutMethodStep();
+    Success = parsePutOrFoldMethodStep();
+  }
+  else if (MethodStepKeyword == "Fold")
+  {
+    Success = parsePutOrFoldMethodStep();
   }
   else
   {
@@ -713,7 +717,7 @@ CheffeErrorCode CheffeParser::parseMethodStep()
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
 
-CheffeErrorCode CheffeParser::parsePutMethodStep()
+CheffeErrorCode CheffeParser::parsePutOrFoldMethodStep()
 {
   getNextToken();
 

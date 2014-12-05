@@ -90,7 +90,7 @@ private:
   CheffeErrorCode parseServesStatement();
 
   CheffeErrorCode parseTakeMethodStep();
-  CheffeErrorCode parsePutMethodStep();
+  CheffeErrorCode parsePutOrFoldMethodStep();
 
   void emitDiagnosticIfIngredientUndefined(const std::string &Ingredient,
                                            const SourceLocation IngredientLoc);
