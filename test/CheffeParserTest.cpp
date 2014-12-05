@@ -121,6 +121,21 @@ TEST_F(GoodParserTest, MethodStepAdd)
   TestParse("/Parser/method-step-add.ch");
 }
 
+TEST_F(GoodParserTest, MethodStepRemove)
+{
+  TestParse("/Parser/method-step-remove.ch");
+}
+
+TEST_F(GoodParserTest, MethodStepCombine)
+{
+  TestParse("/Parser/method-step-combine.ch");
+}
+
+TEST_F(GoodParserTest, MethodStepDivide)
+{
+  TestParse("/Parser/method-step-divide.ch");
+}
+
 TEST_F(BadParserTest, BadComments)
 {
   TestParse("/Parser/bad-comments.ch");
