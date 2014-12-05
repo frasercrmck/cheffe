@@ -685,6 +685,10 @@ CheffeErrorCode CheffeParser::parseMethodStep()
   {
     Success = parsePutOrFoldMethodStep();
   }
+  else if (MethodStepKeyword == "Add")
+  {
+    Success = parseAddMethodStep();
+  }
   else
   {
     // Haven't defined a parse function for this method step yet. Consume until
@@ -741,6 +745,78 @@ CheffeErrorCode CheffeParser::parsePutOrFoldMethodStep()
   const SourceLocation IngredientLoc(BeginIngredientLoc, EndIngredientLoc);
 
   emitDiagnosticIfIngredientUndefined(Ingredient, IngredientLoc);
+
+  getNextToken();
+
+  // Not in the spec, but in the "official" examples:
+  //   "Put potatoes into the mixing bowl."
+  if (CurrentToken.is("the"))
+  {
+    getNextToken();
+  }
+
+  if (CurrentToken.is(TokenKind::Number))
+  {
+    const unsigned Number = CurrentToken.getNumVal();
+    if (consumeAndExpectToken(TokenKind::Identifier))
+    {
+      return CheffeErrorCode::CHEFFE_ERROR;
+    }
+    CheffeErrorCode IsValidOrdinal =
+        parseOrdinalIdentifier(Number, CurrentToken.getIdentifierString());
+    if (IsValidOrdinal != CheffeErrorCode::CHEFFE_SUCCESS)
+    {
+      Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Warning,
+                          LineContext::WithContext)
+          << "Incorrect use of ordinal identifier: mismatch between number and "
+             "suffix";
+    }
+
+    getNextToken();
+  }
+
+  if (expectToken("mixing"))
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
+  if (consumeAndExpectToken("bowl"))
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
+  if (consumeAndExpectToken(TokenKind::FullStop))
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
+  return CheffeErrorCode::CHEFFE_SUCCESS;
+}
+
+CheffeErrorCode CheffeParser::parseAddMethodStep()
+{
+  getNextToken();
+
+  const SourceLocation BeginIngredientLoc = CurrentToken.getSourceLoc();
+  SourceLocation EndIngredientLoc = BeginIngredientLoc;
+  while (
+      CurrentToken.isNotAnyOf("to", TokenKind::FullStop, TokenKind::EndOfFile))
+  {
+    EndIngredientLoc = CurrentToken.getSourceLoc();
+    getNextToken();
+  }
+
+  const std::string Ingredient = Lexer.getTextSpan(
+      BeginIngredientLoc.getBegin(), EndIngredientLoc.getEnd());
+
+  const SourceLocation IngredientLoc(BeginIngredientLoc, EndIngredientLoc);
+
+  emitDiagnosticIfIngredientUndefined(Ingredient, IngredientLoc);
+
+  if (CurrentToken.isNot("to"))
+  {
+    return CheffeErrorCode::CHEFFE_SUCCESS;
+  }
 
   getNextToken();
 
