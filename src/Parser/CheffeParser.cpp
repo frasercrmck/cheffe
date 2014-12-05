@@ -156,15 +156,14 @@ template <typename T> bool CheffeParser::consumeAndExpectToken(const T &Kind)
 // Return true if token didn't match, false otherwise.
 template <typename T> bool CheffeParser::expectToken(const T &Kind)
 {
-  if (CurrentToken.isNot(Kind))
+  if (CurrentToken.is(Kind))
   {
-    Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Error,
-                        LineContext::WithContext)
-        << "Expected " << Kind << ", got " << CurrentToken;
-    return true;
+    return false;
   }
-
-  return false;
+  Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Error,
+                      LineContext::WithContext)
+      << "Expected " << Kind << ", got " << CurrentToken;
+  return true;
 }
 
 CheffeErrorCode CheffeParser::parseRecipeTitle(std::string &RecipeTitle,
