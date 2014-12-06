@@ -96,10 +96,9 @@ void CheffeDiagnosticHandler::formatAndLogMessage(
   ss << Message << std::endl;
   if (Context == LineContext::WithContext)
   {
-    ss << getLineAsString(SourceLoc.getLineNo()) << std::endl;
-    ss << ColourText(getContextAsString(SourceLoc.getColumnNo(),
-                                        SourceLoc.getLength()),
-                     ColourKind::MagentaBold) << std::endl;
+    ss << getLineAsString(SourceLoc) << std::endl;
+    ss << ColourText(getContextAsString(SourceLoc), ColourKind::MagentaBold)
+       << std::endl;
   }
 
   switch (Kind)
@@ -138,11 +137,13 @@ unsigned CheffeDiagnosticHandler::getWarningCount() const
   return Warnings.size();
 }
 
-std::string CheffeDiagnosticHandler::getLineAsString(const unsigned LineNo)
+std::string
+CheffeDiagnosticHandler::getLineAsString(const SourceLocation SourceLoc)
 {
-  assert(LineNo != 0 && "Lines must be indexed from 1");
+  assert(SourceLoc.getLineNo() != 0 && "Lines must be indexed from 1");
   unsigned LineCount = 1;
   std::size_t FilePos = 0;
+  const std::size_t LineNo = SourceLoc.getLineNo();
   for (; FilePos < File.Source.size() && LineCount != LineNo; ++FilePos)
   {
     if (File.Source[FilePos] == '\n')
@@ -157,12 +158,12 @@ std::string CheffeDiagnosticHandler::getLineAsString(const unsigned LineNo)
   return Line;
 }
 
-std::string CheffeDiagnosticHandler::getContextAsString(const unsigned ColumnNo,
-                                                        const unsigned Length)
+std::string
+CheffeDiagnosticHandler::getContextAsString(const SourceLocation SourceLoc)
 {
-  assert(ColumnNo != 0 && "Columns must be indexed from 1");
-  const std::string Padding = std::string(ColumnNo - 1, ' ');
-  const std::string UnderlineToken = std::string(Length, '~');
+  assert(SourceLoc.getColumnNo() != 0 && "Columns must be indexed from 1");
+  const std::string Padding = std::string(SourceLoc.getColumnNo() - 1, ' ');
+  const std::string UnderlineToken = std::string(SourceLoc.getLength(), '~');
 
   std::stringstream ss;
   ss << Padding << UnderlineToken;
