@@ -107,6 +107,7 @@ private:
   CheffeErrorCode parseTakeMethodStep();
   CheffeErrorCode parsePutOrFoldMethodStep();
   CheffeErrorCode parseArithmeticMethodStep(const ArithmeticMethodStep Step);
+  CheffeErrorCode parseLiquifyMethodStep();
 
   void emitDiagnosticIfIngredientUndefined(const std::string &Ingredient,
                                            const SourceLocation IngredientLoc);
