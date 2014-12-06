@@ -6,6 +6,7 @@ Ingredients.
 1 kg lamb
 
 Method.
+Combine lamb.
 Combine lamb into mixing bowl.
 Combine lamb into 2nd mixing bowl.
 Combine lamb into the mixing bowl.

@@ -6,6 +6,7 @@ Ingredients.
 1 kg lamb
 
 Method.
+Add dry ingredients.
 Add dry ingredients to mixing bowl.
 Add dry ingredients to 2nd mixing bowl.
 Add dry ingredients to the mixing bowl.
