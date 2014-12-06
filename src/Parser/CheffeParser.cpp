@@ -818,25 +818,36 @@ CheffeParser::parseArithmeticMethodStep(const ArithmeticMethodStep Step)
 
   if (MethodStepPrepositions.find(Step) == std::end(MethodStepPrepositions))
   {
-     cheffe_unreachable("Invalid method step kind");
+    cheffe_unreachable("Invalid method step kind");
   }
   const std::string Preposition = MethodStepPrepositions.find(Step)->second;
 
-  const SourceLocation BeginIngredientLoc = CurrentToken.getSourceLoc();
-  SourceLocation EndIngredientLoc = BeginIngredientLoc;
-  while (CurrentToken.isNotAnyOf(Preposition.c_str(), TokenKind::FullStop,
-                                 TokenKind::EndOfFile))
+  if (Step == ArithmeticMethodStep::Add && CurrentToken.is("dry"))
   {
-    EndIngredientLoc = CurrentToken.getSourceLoc();
+    if (consumeAndExpectToken("ingredients"))
+    {
+      return CheffeErrorCode::CHEFFE_ERROR;
+    }
     getNextToken();
   }
+  else
+  {
+    const SourceLocation BeginIngredientLoc = CurrentToken.getSourceLoc();
+    SourceLocation EndIngredientLoc = BeginIngredientLoc;
+    while (CurrentToken.isNotAnyOf(Preposition.c_str(), TokenKind::FullStop,
+                                   TokenKind::EndOfFile))
+    {
+      EndIngredientLoc = CurrentToken.getSourceLoc();
+      getNextToken();
+    }
 
-  const std::string Ingredient = Lexer.getTextSpan(
-      BeginIngredientLoc.getBegin(), EndIngredientLoc.getEnd());
+    const std::string Ingredient = Lexer.getTextSpan(
+        BeginIngredientLoc.getBegin(), EndIngredientLoc.getEnd());
 
-  const SourceLocation IngredientLoc(BeginIngredientLoc, EndIngredientLoc);
+    const SourceLocation IngredientLoc(BeginIngredientLoc, EndIngredientLoc);
 
-  emitDiagnosticIfIngredientUndefined(Ingredient, IngredientLoc);
+    emitDiagnosticIfIngredientUndefined(Ingredient, IngredientLoc);
+  }
 
   if (CurrentToken.isNot(Preposition.c_str()))
   {
