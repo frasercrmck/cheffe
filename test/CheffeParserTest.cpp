@@ -141,6 +141,11 @@ TEST_F(GoodParserTest, MethodStepAddDry)
   TestParse("/Parser/method-step-add-dry.ch");
 }
 
+TEST_F(GoodParserTest, MethodStepLiquify)
+{
+  TestParse("/Parser/method-step-liquify.ch");
+}
+
 TEST_F(BadParserTest, BadComments)
 {
   TestParse("/Parser/bad-comments.ch");
