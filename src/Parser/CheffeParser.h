@@ -104,6 +104,8 @@ private:
   CheffeErrorCode parseMethodStep();
   CheffeErrorCode parseServesStatement();
 
+  CheffeErrorCode parsePossibleOrdinalIdentifier(unsigned &MixingBowlNo);
+
   CheffeErrorCode parseTakeMethodStep();
   CheffeErrorCode parsePutOrFoldMethodStep();
   CheffeErrorCode parseArithmeticMethodStep(const ArithmeticMethodStep Step);

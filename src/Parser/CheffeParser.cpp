@@ -28,6 +28,37 @@ void CheffeParser::emitDiagnosticIfIngredientUndefined(
       << "' was not defined in the Ingredients paragraph";
 }
 
+// Parse an ordinal identifier at the current token, if it's a number. Ordinal
+// identifiers are always optional. Note that this can update the current
+// token.
+CheffeErrorCode
+CheffeParser::parsePossibleOrdinalIdentifier(unsigned &MixingBowlNo)
+{
+  MixingBowlNo = 1;
+  if (CurrentToken.isNot(TokenKind::Number))
+  {
+    return CheffeErrorCode::CHEFFE_SUCCESS;
+  }
+
+  const unsigned Number = CurrentToken.getNumVal();
+  if (consumeAndExpectToken(TokenKind::Identifier))
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
+  CheffeErrorCode IsValidOrdinal =
+      checkOrdinalIdentifier(Number, CurrentToken.getIdentifierString());
+  if (IsValidOrdinal != CheffeErrorCode::CHEFFE_SUCCESS)
+  {
+    Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Warning,
+                        LineContext::WithContext)
+        << "Incorrect use of ordinal identifier: mismatch between number and "
+           "suffix";
+  }
+
+  getNextToken();
+  return CheffeErrorCode::CHEFFE_SUCCESS;
+}
+
 CheffeErrorCode CheffeParser::checkOrdinalIdentifier(const unsigned Number,
                                                      const std::string &Suffix)
 {
@@ -771,24 +802,11 @@ CheffeErrorCode CheffeParser::parsePutOrFoldMethodStep()
     getNextToken();
   }
 
-  if (CurrentToken.is(TokenKind::Number))
+  unsigned MixingBowlNo = 1;
+  CheffeErrorCode IsValidOrdinal = parsePossibleOrdinalIdentifier(MixingBowlNo);
+  if (IsValidOrdinal != CheffeErrorCode::CHEFFE_SUCCESS)
   {
-    const unsigned Number = CurrentToken.getNumVal();
-    if (consumeAndExpectToken(TokenKind::Identifier))
-    {
-      return CheffeErrorCode::CHEFFE_ERROR;
-    }
-    CheffeErrorCode IsValidOrdinal =
-        checkOrdinalIdentifier(Number, CurrentToken.getIdentifierString());
-    if (IsValidOrdinal != CheffeErrorCode::CHEFFE_SUCCESS)
-    {
-      Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Warning,
-                          LineContext::WithContext)
-          << "Incorrect use of ordinal identifier: mismatch between number and "
-             "suffix";
-    }
-
-    getNextToken();
+    return IsValidOrdinal;
   }
 
   if (expectToken("mixing"))
@@ -867,24 +885,11 @@ CheffeParser::parseArithmeticMethodStep(const ArithmeticMethodStep Step)
     getNextToken();
   }
 
-  if (CurrentToken.is(TokenKind::Number))
+  unsigned MixingBowlNo = 1;
+  CheffeErrorCode IsValidOrdinal = parsePossibleOrdinalIdentifier(MixingBowlNo);
+  if (IsValidOrdinal != CheffeErrorCode::CHEFFE_SUCCESS)
   {
-    const unsigned Number = CurrentToken.getNumVal();
-    if (consumeAndExpectToken(TokenKind::Identifier))
-    {
-      return CheffeErrorCode::CHEFFE_ERROR;
-    }
-    CheffeErrorCode IsValidOrdinal =
-        checkOrdinalIdentifier(Number, CurrentToken.getIdentifierString());
-    if (IsValidOrdinal != CheffeErrorCode::CHEFFE_SUCCESS)
-    {
-      Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Warning,
-                          LineContext::WithContext)
-          << "Incorrect use of ordinal identifier: mismatch between number and "
-             "suffix";
-    }
-
-    getNextToken();
+    return IsValidOrdinal;
   }
 
   if (expectToken("mixing"))
@@ -960,23 +965,12 @@ CheffeErrorCode CheffeParser::parseLiquifyMethodStep()
     }
 
     getNextToken();
-    if (CurrentToken.is(TokenKind::Number))
+    unsigned MixingBowlNo = 1;
+    CheffeErrorCode IsValidOrdinal =
+        parsePossibleOrdinalIdentifier(MixingBowlNo);
+    if (IsValidOrdinal != CheffeErrorCode::CHEFFE_SUCCESS)
     {
-      const unsigned Number = CurrentToken.getNumVal();
-      if (consumeAndExpectToken(TokenKind::Identifier))
-      {
-        return CheffeErrorCode::CHEFFE_ERROR;
-      }
-      CheffeErrorCode IsValidOrdinal =
-          checkOrdinalIdentifier(Number, CurrentToken.getIdentifierString());
-      if (IsValidOrdinal != CheffeErrorCode::CHEFFE_SUCCESS)
-      {
-        Diagnostics->report(CurrentToken.getSourceLoc(),
-                            DiagnosticKind::Warning, LineContext::WithContext)
-            << "Incorrect use of ordinal identifier: mismatch between number "
-               "and suffix";
-      }
-      getNextToken();
+      return IsValidOrdinal;
     }
 
     if (expectToken("mixing"))
