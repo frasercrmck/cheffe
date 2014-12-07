@@ -740,6 +740,10 @@ CheffeErrorCode CheffeParser::parseMethodStep()
   {
     Success = parseStirMethodStep();
   }
+  else if (MethodStepKeyword == "Mix")
+  {
+    Success = parseMixMethodStep();
+  }
   else
   {
     // Haven't defined a parse function for this method step yet. Consume until
@@ -1114,6 +1118,53 @@ CheffeErrorCode CheffeParser::parseStirMethodStep()
   }
 
   if (consumeAndExpectToken("bowl"))
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
+  if (consumeAndExpectToken(TokenKind::FullStop))
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
+  return CheffeErrorCode::CHEFFE_SUCCESS;
+}
+
+// Parses the "Mix" method step:
+//   Mix [the [nth] mixing bowl] well.
+CheffeErrorCode CheffeParser::parseMixMethodStep()
+{
+  getNextToken();
+
+  if (CurrentToken.isNot("well"))
+  {
+    if (expectToken("the"))
+    {
+      return CheffeErrorCode::CHEFFE_ERROR;
+    }
+
+    getNextToken();
+    unsigned MixingBowlNo = 1;
+    CheffeErrorCode IsValidOrdinal =
+        parsePossibleOrdinalIdentifier(MixingBowlNo);
+    if (IsValidOrdinal != CheffeErrorCode::CHEFFE_SUCCESS)
+    {
+      return IsValidOrdinal;
+    }
+
+    if (expectToken("mixing"))
+    {
+      return CheffeErrorCode::CHEFFE_ERROR;
+    }
+
+    if (consumeAndExpectToken("bowl"))
+    {
+      return CheffeErrorCode::CHEFFE_ERROR;
+    }
+    getNextToken();
+  }
+
+  if (expectToken("well"))
   {
     return CheffeErrorCode::CHEFFE_ERROR;
   }
