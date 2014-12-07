@@ -166,6 +166,11 @@ TEST_F(GoodParserTest, MethodStepPour)
   TestParse("/Parser/method-step-pour.ch");
 }
 
+TEST_F(GoodParserTest, MethodStepRefrigerate)
+{
+  TestParse("/Parser/method-step-refrigerate.ch");
+}
+
 TEST_F(BadParserTest, BadComments)
 {
   TestParse("/Parser/bad-comments.ch");
