@@ -748,6 +748,10 @@ CheffeErrorCode CheffeParser::parseMethodStep()
   {
     Success = parseCleanMethodStep();
   }
+  else if (MethodStepKeyword == "Pour")
+  {
+    Success = parsePourMethodStep();
+  }
   else
   {
     // Haven't defined a parse function for this method step yet. Consume until
@@ -1202,6 +1206,83 @@ CheffeErrorCode CheffeParser::parseCleanMethodStep()
   if (consumeAndExpectToken("bowl"))
   {
     return CheffeErrorCode::CHEFFE_SUCCESS;
+  }
+
+  if (consumeAndExpectToken(TokenKind::FullStop))
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
+  return CheffeErrorCode::CHEFFE_SUCCESS;
+}
+
+// Parses the "Pour" method step:
+// Pour contents of the [nth] mixing bowl into the [pth] baking dish.
+CheffeErrorCode CheffeParser::parsePourMethodStep()
+{
+  if (consumeAndExpectToken("contents"))
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
+  if (consumeAndExpectToken("of"))
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
+  if (consumeAndExpectToken("the"))
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
+  getNextToken();
+
+  unsigned MixingBowlNo = 1;
+  const CheffeErrorCode IsValidOrdinalMixingBowl =
+      parsePossibleOrdinalIdentifier(MixingBowlNo);
+  if (IsValidOrdinalMixingBowl != CheffeErrorCode::CHEFFE_SUCCESS)
+  {
+    return IsValidOrdinalMixingBowl;
+  }
+
+  if (expectToken("mixing"))
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
+  if (consumeAndExpectToken("bowl"))
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
+  if (consumeAndExpectToken("into"))
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
+  if (consumeAndExpectToken("the"))
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
+  getNextToken();
+
+  unsigned BakingDishNo = 1;
+  const CheffeErrorCode IsValidOrdinalBakingDish =
+      parsePossibleOrdinalIdentifier(BakingDishNo);
+  if (IsValidOrdinalBakingDish != CheffeErrorCode::CHEFFE_SUCCESS)
+  {
+    return IsValidOrdinalBakingDish;
+  }
+
+  if (expectToken("baking"))
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
+  if (consumeAndExpectToken("dish"))
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
   }
 
   if (consumeAndExpectToken(TokenKind::FullStop))
