@@ -752,6 +752,10 @@ CheffeErrorCode CheffeParser::parseMethodStep()
   {
     Success = parsePourMethodStep();
   }
+  else if (MethodStepKeyword == "Refrigerate")
+  {
+    Success = parseRefrigerateMethodStep();
+  }
   else
   {
     // Haven't defined a parse function for this method step yet. Consume until
@@ -1286,6 +1290,42 @@ CheffeErrorCode CheffeParser::parsePourMethodStep()
   }
 
   if (consumeAndExpectToken(TokenKind::FullStop))
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
+  return CheffeErrorCode::CHEFFE_SUCCESS;
+}
+
+// Parses the "Refrigerate" method step:
+// Refrigerate [for number hours].
+CheffeErrorCode CheffeParser::parseRefrigerateMethodStep()
+{
+  getNextToken();
+
+  if (CurrentToken.isNot(TokenKind::FullStop))
+  {
+    if (expectToken("for"))
+    {
+      return CheffeErrorCode::CHEFFE_ERROR;
+    }
+
+    if (consumeAndExpectToken(TokenKind::Number))
+    {
+      return CheffeErrorCode::CHEFFE_ERROR;
+    }
+
+    const unsigned NumberOfHours = CurrentToken.getNumVal();
+
+    if (consumeAndExpectToken("hours"))
+    {
+      return CheffeErrorCode::CHEFFE_ERROR;
+    }
+
+    getNextToken();
+  }
+
+  if (expectToken(TokenKind::FullStop))
   {
     return CheffeErrorCode::CHEFFE_ERROR;
   }
