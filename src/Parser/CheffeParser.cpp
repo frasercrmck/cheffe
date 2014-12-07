@@ -736,6 +736,10 @@ CheffeErrorCode CheffeParser::parseMethodStep()
   {
     Success = parseLiquifyMethodStep();
   }
+  else if (MethodStepKeyword == "Stir")
+  {
+    Success = parseStirMethodStep();
+  }
   else
   {
     // Haven't defined a parse function for this method step yet. Consume until
@@ -1010,6 +1014,114 @@ CheffeErrorCode CheffeParser::parseLiquifyMethodStep()
   const SourceLocation IngredientLoc(BeginIngredientLoc, EndIngredientLoc);
 
   emitDiagnosticIfIngredientUndefined(Ingredient, IngredientLoc);
+
+  return CheffeErrorCode::CHEFFE_SUCCESS;
+}
+
+// Parses the "Stir" method step:
+//   Stir [the [nth] mixing bowl] for number minutes.
+//   Stir ingredient into the [nth] mixing bowl.
+CheffeErrorCode CheffeParser::parseStirMethodStep()
+{
+  getNextToken();
+
+  if (CurrentToken.is("the") || CurrentToken.is("for"))
+  {
+    if (CurrentToken.is("the"))
+    {
+      getNextToken();
+
+      unsigned MixingBowlNo = 1;
+      CheffeErrorCode IsValidOrdinal =
+          parsePossibleOrdinalIdentifier(MixingBowlNo);
+      if (IsValidOrdinal != CheffeErrorCode::CHEFFE_SUCCESS)
+      {
+        return IsValidOrdinal;
+      }
+
+      if (expectToken("mixing"))
+      {
+        return CheffeErrorCode::CHEFFE_ERROR;
+      }
+
+      if (consumeAndExpectToken("bowl"))
+      {
+        return CheffeErrorCode::CHEFFE_ERROR;
+      }
+
+      if (consumeAndExpectToken("for"))
+      {
+        return CheffeErrorCode::CHEFFE_ERROR;
+      }
+    }
+
+    if (consumeAndExpectToken(TokenKind::Number))
+    {
+      return CheffeErrorCode::CHEFFE_ERROR;
+    }
+
+    if (consumeAndExpectToken("minutes"))
+    {
+      return CheffeErrorCode::CHEFFE_ERROR;
+    }
+
+    if (consumeAndExpectToken(TokenKind::FullStop))
+    {
+      return CheffeErrorCode::CHEFFE_ERROR;
+    }
+
+    return CheffeErrorCode::CHEFFE_SUCCESS;
+  }
+
+  const SourceLocation BeginIngredientLoc = CurrentToken.getSourceLoc();
+  SourceLocation EndIngredientLoc = BeginIngredientLoc;
+  while (CurrentToken.isNotAnyOf("into", TokenKind::FullStop,
+                                 TokenKind::EndOfFile))
+  {
+    EndIngredientLoc = CurrentToken.getSourceLoc();
+    getNextToken();
+  }
+
+  const std::string Ingredient = Lexer.getTextSpan(
+      BeginIngredientLoc.getBegin(), EndIngredientLoc.getEnd());
+
+  const SourceLocation IngredientLoc(BeginIngredientLoc, EndIngredientLoc);
+
+  emitDiagnosticIfIngredientUndefined(Ingredient, IngredientLoc);
+
+  if (expectToken("into"))
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
+  if (consumeAndExpectToken("the"))
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
+  getNextToken();
+
+  unsigned MixingBowlNo = 1;
+  CheffeErrorCode IsValidOrdinal = parsePossibleOrdinalIdentifier(MixingBowlNo);
+  if (IsValidOrdinal != CheffeErrorCode::CHEFFE_SUCCESS)
+  {
+    return IsValidOrdinal;
+  }
+
+  if (expectToken("mixing"))
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
+  if (consumeAndExpectToken("bowl"))
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
+  if (consumeAndExpectToken(TokenKind::FullStop))
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
