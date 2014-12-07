@@ -28,7 +28,7 @@ void CheffeParser::emitDiagnosticIfIngredientUndefined(
       << "' was not defined in the Ingredients paragraph";
 }
 
-CheffeErrorCode CheffeParser::parseOrdinalIdentifier(const unsigned Number,
+CheffeErrorCode CheffeParser::checkOrdinalIdentifier(const unsigned Number,
                                                      const std::string &Suffix)
 {
   if (Suffix.empty())
@@ -779,7 +779,7 @@ CheffeErrorCode CheffeParser::parsePutOrFoldMethodStep()
       return CheffeErrorCode::CHEFFE_ERROR;
     }
     CheffeErrorCode IsValidOrdinal =
-        parseOrdinalIdentifier(Number, CurrentToken.getIdentifierString());
+        checkOrdinalIdentifier(Number, CurrentToken.getIdentifierString());
     if (IsValidOrdinal != CheffeErrorCode::CHEFFE_SUCCESS)
     {
       Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Warning,
@@ -875,7 +875,7 @@ CheffeParser::parseArithmeticMethodStep(const ArithmeticMethodStep Step)
       return CheffeErrorCode::CHEFFE_ERROR;
     }
     CheffeErrorCode IsValidOrdinal =
-        parseOrdinalIdentifier(Number, CurrentToken.getIdentifierString());
+        checkOrdinalIdentifier(Number, CurrentToken.getIdentifierString());
     if (IsValidOrdinal != CheffeErrorCode::CHEFFE_SUCCESS)
     {
       Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Warning,
@@ -968,7 +968,7 @@ CheffeErrorCode CheffeParser::parseLiquifyMethodStep()
         return CheffeErrorCode::CHEFFE_ERROR;
       }
       CheffeErrorCode IsValidOrdinal =
-          parseOrdinalIdentifier(Number, CurrentToken.getIdentifierString());
+          checkOrdinalIdentifier(Number, CurrentToken.getIdentifierString());
       if (IsValidOrdinal != CheffeErrorCode::CHEFFE_SUCCESS)
       {
         Diagnostics->report(CurrentToken.getSourceLoc(),

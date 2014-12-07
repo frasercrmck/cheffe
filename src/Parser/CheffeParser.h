@@ -87,7 +87,7 @@ public:
 
   CheffeErrorCode parseRecipe();
 
-  static CheffeErrorCode parseOrdinalIdentifier(const unsigned Number,
+  static CheffeErrorCode checkOrdinalIdentifier(const unsigned Number,
                                                 const std::string &Sequence);
 
 private:
