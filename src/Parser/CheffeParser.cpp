@@ -752,6 +752,10 @@ CheffeErrorCode CheffeParser::parseMethodStep()
   {
     Success = parsePourMethodStep();
   }
+  else if (MethodStepKeyword == "Set")
+  {
+    Success = parseSetAsideMethodStep();
+  }
   else if (MethodStepKeyword == "Refrigerate")
   {
     Success = parseRefrigerateMethodStep();
@@ -1285,6 +1289,23 @@ CheffeErrorCode CheffeParser::parsePourMethodStep()
   }
 
   if (consumeAndExpectToken("dish"))
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
+  if (consumeAndExpectToken(TokenKind::FullStop))
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
+  return CheffeErrorCode::CHEFFE_SUCCESS;
+}
+
+// Parses the "Set Aside" method step:
+// Set aside.
+CheffeErrorCode CheffeParser::parseSetAsideMethodStep()
+{
+  if (consumeAndExpectToken("aside"))
   {
     return CheffeErrorCode::CHEFFE_ERROR;
   }
