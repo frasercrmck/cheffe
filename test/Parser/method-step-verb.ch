@@ -6,6 +6,7 @@ possible supported verbs.
 Ingredients.
 100 g flour
 500 g butter
+3 onions
 
 Method.
 Sift the flour.
