@@ -756,6 +756,10 @@ CheffeErrorCode CheffeParser::parseMethodStep()
   {
     Success = parseSetAsideMethodStep();
   }
+  else if (MethodStepKeyword == "Serve")
+  {
+    Success = parseServeMethodStep();
+  }
   else if (MethodStepKeyword == "Refrigerate")
   {
     Success = parseRefrigerateMethodStep();
@@ -1311,6 +1315,39 @@ CheffeErrorCode CheffeParser::parseSetAsideMethodStep()
   }
 
   if (consumeAndExpectToken(TokenKind::FullStop))
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
+  return CheffeErrorCode::CHEFFE_SUCCESS;
+}
+
+// Parses the "Serve" method step:
+// Serve with auxiliary-recipe.
+CheffeErrorCode CheffeParser::parseServeMethodStep()
+{
+  if (consumeAndExpectToken("with"))
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
+  if (consumeAndExpectToken(TokenKind::Identifier))
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
+  const SourceLocation BeginRecipeLoc = CurrentToken.getSourceLoc();
+  SourceLocation EndRecipeLoc = BeginRecipeLoc;
+  while (CurrentToken.isNotAnyOf(TokenKind::FullStop, TokenKind::EndOfFile))
+  {
+    EndRecipeLoc = CurrentToken.getSourceLoc();
+    getNextToken();
+  }
+
+  const std::string Recipe =
+      Lexer.getTextSpan(BeginRecipeLoc.getBegin(), EndRecipeLoc.getEnd());
+
+  if (expectToken(TokenKind::FullStop))
   {
     return CheffeErrorCode::CHEFFE_ERROR;
   }

@@ -115,6 +115,7 @@ private:
   CheffeErrorCode parseCleanMethodStep();
   CheffeErrorCode parsePourMethodStep();
   CheffeErrorCode parseSetAsideMethodStep();
+  CheffeErrorCode parseServeMethodStep();
   CheffeErrorCode parseRefrigerateMethodStep();
 
   void emitDiagnosticIfIngredientUndefined(const std::string &Ingredient,
