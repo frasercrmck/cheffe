@@ -744,6 +744,10 @@ CheffeErrorCode CheffeParser::parseMethodStep()
   {
     Success = parseMixMethodStep();
   }
+  else if (MethodStepKeyword == "Clean")
+  {
+    Success = parseCleanMethodStep();
+  }
   else
   {
     // Haven't defined a parse function for this method step yet. Consume until
@@ -1167,6 +1171,37 @@ CheffeErrorCode CheffeParser::parseMixMethodStep()
   if (expectToken("well"))
   {
     return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
+  if (consumeAndExpectToken(TokenKind::FullStop))
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
+  return CheffeErrorCode::CHEFFE_SUCCESS;
+}
+
+// Parses the "Clean" method step:
+//   Clean [nth] mixing bowl.
+CheffeErrorCode CheffeParser::parseCleanMethodStep()
+{
+  getNextToken();
+
+  unsigned MixingBowlNo = 1;
+  CheffeErrorCode IsValidOrdinal = parsePossibleOrdinalIdentifier(MixingBowlNo);
+  if (IsValidOrdinal != CheffeErrorCode::CHEFFE_SUCCESS)
+  {
+    return IsValidOrdinal;
+  }
+
+  if (expectToken("mixing"))
+  {
+    return CheffeErrorCode::CHEFFE_SUCCESS;
+  }
+
+  if (consumeAndExpectToken("bowl"))
+  {
+    return CheffeErrorCode::CHEFFE_SUCCESS;
   }
 
   if (consumeAndExpectToken(TokenKind::FullStop))
