@@ -307,7 +307,14 @@ public:
   {
     if (Tok.Kind == TokenKind::Identifier)
     {
-      stream << Tok.IdentifierString;
+      if (Tok.IdentifierString.empty())
+      {
+        stream << "identifier";
+      }
+      else
+      {
+        stream << Tok.IdentifierString;
+      }
       return stream;
     }
 
