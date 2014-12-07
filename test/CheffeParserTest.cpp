@@ -151,6 +151,11 @@ TEST_F(GoodParserTest, MethodStepStir)
   TestParse("/Parser/method-step-stir.ch");
 }
 
+TEST_F(GoodParserTest, MethodStepMix)
+{
+  TestParse("/Parser/method-step-mix.ch");
+}
+
 TEST_F(BadParserTest, BadComments)
 {
   TestParse("/Parser/bad-comments.ch");
