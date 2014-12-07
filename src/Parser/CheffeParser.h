@@ -114,6 +114,7 @@ private:
   CheffeErrorCode parseMixMethodStep();
   CheffeErrorCode parseCleanMethodStep();
   CheffeErrorCode parsePourMethodStep();
+  CheffeErrorCode parseVerbMethodStep();
   CheffeErrorCode parseSetAsideMethodStep();
   CheffeErrorCode parseServeMethodStep();
   CheffeErrorCode parseRefrigerateMethodStep();

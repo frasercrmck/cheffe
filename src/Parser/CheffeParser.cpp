@@ -752,6 +752,10 @@ CheffeErrorCode CheffeParser::parseMethodStep()
   {
     Success = parsePourMethodStep();
   }
+  else if (IsKnownVerb)
+  {
+    Success = parseVerbMethodStep();
+  }
   else if (MethodStepKeyword == "Set")
   {
     Success = parseSetAsideMethodStep();
@@ -1298,6 +1302,53 @@ CheffeErrorCode CheffeParser::parsePourMethodStep()
   }
 
   if (consumeAndExpectToken(TokenKind::FullStop))
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
+  return CheffeErrorCode::CHEFFE_SUCCESS;
+}
+
+// Parsers the "Verb" method steps. One of the following two:
+//   Verb the ingredient.
+//   Verb [the ingredient] until verbed.
+CheffeErrorCode CheffeParser::parseVerbMethodStep()
+{
+  const std::string Verb = CurrentToken.getIdentifierString();
+  getNextToken();
+
+  if (CurrentToken.is("the"))
+  {
+    getNextToken();
+    const SourceLocation BeginIngredientLoc = CurrentToken.getSourceLoc();
+    SourceLocation EndIngredientLoc = BeginIngredientLoc;
+    while (CurrentToken.isNotAnyOf("until", TokenKind::FullStop,
+                                   TokenKind::EndOfFile))
+    {
+      EndIngredientLoc = CurrentToken.getSourceLoc();
+      getNextToken();
+    }
+
+    const std::string Ingredient = Lexer.getTextSpan(
+        BeginIngredientLoc.getBegin(), EndIngredientLoc.getEnd());
+
+    const SourceLocation IngredientLoc(BeginIngredientLoc, EndIngredientLoc);
+
+    emitDiagnosticIfIngredientUndefined(Ingredient, IngredientLoc);
+  }
+
+  if (CurrentToken.is("until"))
+  {
+    if (consumeAndExpectToken(TokenKind::Identifier))
+    {
+      return CheffeErrorCode::CHEFFE_ERROR;
+    }
+
+    const std::string UntilVerb = CurrentToken.getIdentifierString();
+    getNextToken();
+  }
+
+  if (expectToken(TokenKind::FullStop))
   {
     return CheffeErrorCode::CHEFFE_ERROR;
   }
