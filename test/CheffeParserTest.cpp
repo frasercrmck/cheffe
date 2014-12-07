@@ -161,6 +161,11 @@ TEST_F(GoodParserTest, MethodStepClean)
   TestParse("/Parser/method-step-clean.ch");
 }
 
+TEST_F(GoodParserTest, MethodStepPour)
+{
+  TestParse("/Parser/method-step-pour.ch");
+}
+
 TEST_F(BadParserTest, BadComments)
 {
   TestParse("/Parser/bad-comments.ch");
