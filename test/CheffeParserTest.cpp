@@ -226,6 +226,36 @@ TEST_F(BadParserTest, RecipeDefinedTwice)
   TestParse("/Parser/recipe-defined-twice.ch");
 }
 
+TEST_F(BadParserTest, BadScopes1)
+{
+  TestParse("/Parser/bad-scopes-1.ch");
+}
+
+TEST_F(BadParserTest, BadScopes2)
+{
+  TestParse("/Parser/bad-scopes-2.ch");
+}
+
+TEST_F(BadParserTest, BadScopes3)
+{
+  TestParse("/Parser/bad-scopes-3.ch");
+}
+
+TEST_F(BadParserTest, BadScopes4)
+{
+  TestParse("/Parser/bad-scopes-4.ch");
+}
+
+TEST_F(BadParserTest, BadScopes5)
+{
+  TestParse("/Parser/bad-scopes-5.ch");
+}
+
+TEST_F(BadParserTest, BadScopes6)
+{
+  TestParse("/Parser/bad-scopes-6.ch");
+}
+
 TEST_F(ParserTest, TestOrdinalSuffixes)
 {
   ASSERT_EQ(CheffeErrorCode::CHEFFE_SUCCESS,
