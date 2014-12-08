@@ -798,7 +798,7 @@ CheffeErrorCode CheffeParser::parseMethodStep()
   MethodStep.erase(
       std::remove(std::begin(MethodStep), std::end(MethodStep), '\n'),
       std::end(MethodStep));
-  CHEFFE_DEBUG("\"" << MethodStep.c_str() << "\"\n");
+  CHEFFE_DEBUG("\t\"" << MethodStep.c_str() << "\"\n");
 
   getNextToken();
   return CheffeErrorCode::CHEFFE_SUCCESS;
