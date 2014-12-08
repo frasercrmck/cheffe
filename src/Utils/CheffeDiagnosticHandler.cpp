@@ -13,6 +13,7 @@
 #if CHEFFE_POSIX
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/ioctl.h>
 #include <stdio.h>
 #endif
 
@@ -96,9 +97,7 @@ void CheffeDiagnosticHandler::formatAndLogMessage(
   ss << Message << std::endl;
   if (Context == LineContext::WithContext)
   {
-    ss << getLineAsString(SourceLoc) << std::endl;
-    ss << ColourText(getContextAsString(SourceLoc), ColourKind::MagentaBold)
-       << std::endl;
+    ss << getLineAndContextAsString(SourceLoc) << std::endl;
   }
 
   switch (Kind)
@@ -137,10 +136,11 @@ unsigned CheffeDiagnosticHandler::getWarningCount() const
   return Warnings.size();
 }
 
-std::string
-CheffeDiagnosticHandler::getLineAsString(const SourceLocation SourceLoc)
+std::string CheffeDiagnosticHandler::getLineAndContextAsString(
+    const SourceLocation SourceLoc)
 {
   assert(SourceLoc.getLineNo() != 0 && "Lines must be indexed from 1");
+  assert(SourceLoc.getColumnNo() != 0 && "Columns must be indexed from 1");
   unsigned LineCount = 1;
   std::size_t FilePos = 0;
   const std::size_t LineNo = SourceLoc.getLineNo();
@@ -155,19 +155,48 @@ CheffeDiagnosticHandler::getLineAsString(const SourceLocation SourceLoc)
   const std::string Line =
       File.Source.substr(FilePos, File.Source.find('\n', FilePos) - FilePos);
 
-  return Line;
-}
+  std::stringstream ss;
+#if CHEFFE_POSIX
+  struct winsize WinSize;
+  ioctl(0, TIOCGWINSZ, &WinSize);
 
-std::string
-CheffeDiagnosticHandler::getContextAsString(const SourceLocation SourceLoc)
-{
-  assert(SourceLoc.getColumnNo() != 0 && "Columns must be indexed from 1");
+  const std::size_t ColumnCount = WinSize.ws_col;
+  if (Line.size() <= ColumnCount)
+  {
+    const std::string Padding(SourceLoc.getColumnNo() - 1, ' ');
+    const std::string UnderlineToken(SourceLoc.getLength(), '~');
+
+    ss << Line << std::endl << Padding
+       << ColourText(UnderlineToken, ColourKind::MagentaBold) << std::endl;
+    return ss.str();
+  }
+
+  const std::size_t WrappedLineNo = (SourceLoc.getColumnNo() / ColumnCount) + 1;
+
+  const std::string LinesBefore = Line.substr(0, WrappedLineNo * ColumnCount);
+
+  const std::string Padding((SourceLoc.getColumnNo() - 1) % ColumnCount, ' ');
+  const std::string UnderlineToken(SourceLoc.getLength(), '~');
+
+  ss << LinesBefore << Padding
+     << ColourText(UnderlineToken, ColourKind::MagentaBold) << std::endl;
+
+  if (Line.size() > WrappedLineNo * ColumnCount)
+  {
+    const std::size_t LineAfterBegin = WrappedLineNo * ColumnCount;
+    const std::size_t LineAfterSize = Line.size() - LineAfterBegin;
+    const std::string LinesAfter = Line.substr(LineAfterBegin, LineAfterSize);
+    ss << LinesAfter;
+  }
+  return ss.str();
+#else
+  ss << Line;
   const std::string Padding = std::string(SourceLoc.getColumnNo() - 1, ' ');
   const std::string UnderlineToken = std::string(SourceLoc.getLength(), '~');
-
-  std::stringstream ss;
   ss << Padding << UnderlineToken;
+
   return ss.str();
+#endif
 }
 
 std::string CheffeDiagnosticHandler::getFileAndLineNumberInfoAsString(

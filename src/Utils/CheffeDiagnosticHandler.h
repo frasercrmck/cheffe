@@ -59,8 +59,7 @@ public:
                                         const DiagnosticKind Kind,
                                         const LineContext Context);
 
-  std::string getLineAsString(const SourceLocation SourceLoc);
-  std::string getContextAsString(const SourceLocation SourceLoc);
+  std::string getLineAndContextAsString(const SourceLocation SourceLoc);
   std::string getFileAndLineNumberInfoAsString(const unsigned LineNo,
                                                const unsigned ColumnNo);
 };
