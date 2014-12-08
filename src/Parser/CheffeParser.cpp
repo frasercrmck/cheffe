@@ -680,10 +680,14 @@ CheffeErrorCode CheffeParser::parseMethodStep()
 
   if (!IsValidMethodStepKeyword)
   {
-    FindResult = std::find(std::begin(ValidVerbKeywords),
-                           std::end(ValidVerbKeywords), MethodStepKeyword);
+    auto VerbFindResult =
+        std::find_if(std::begin(ValidVerbKeywords), std::end(ValidVerbKeywords),
+                     [&MethodStepKeyword](const StringPair &Pair)
+                     {
+          return Pair.first == MethodStepKeyword;
+        });
 
-    IsKnownVerb = FindResult != std::end(ValidVerbKeywords);
+    IsKnownVerb = VerbFindResult != std::end(ValidVerbKeywords);
   }
 
   if (!IsValidMethodStepKeyword && !IsKnownVerb)

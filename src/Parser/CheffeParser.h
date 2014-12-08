@@ -7,7 +7,9 @@
 #include "Utils/CheffeDiagnosticHandler.h"
 
 #include <map>
+#include <utility>
 #include <vector>
+#include <set>
 #include <unordered_set>
 
 namespace cheffe
@@ -23,8 +25,13 @@ const std::unordered_set<std::string> ValidMethodSteps = {
     "Divide", "Liquefy", "Liquify", "Stir",       "Mix",    "Clean",
     "Pour",   "Set",     "Serve",   "Refrigerate"};
 
-const std::unordered_set<std::string> ValidVerbKeywords = {
-    "Sift", "Rub", "Melt", "Caramelise", "Cook", "Heat"};
+typedef std::pair<std::string, std::string> StringPair;
+const std::set<StringPair> ValidVerbKeywords = {{"Sift", "Sifted"},
+                                                {"Rub", "Rubbed"},
+                                                {"Melt", "Melted"},
+                                                {"Caramelise", "Caramelised"},
+                                                {"Cook", "Cooked"},
+                                                {"Heat", "Heated"}};
 
 const std::unordered_set<std::string> ValidMeasureTypes = {"heaped", "level"};
 
