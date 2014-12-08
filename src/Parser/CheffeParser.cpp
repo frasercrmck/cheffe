@@ -172,6 +172,14 @@ CheffeErrorCode CheffeParser::parseRecipe()
     {
       return Success;
     }
+
+    if (!LoopNestInfo.empty())
+    {
+      Diagnostics->report(SourceLocation(), DiagnosticKind::Error,
+                          LineContext::WithoutContext)
+          << "Mismatched scopes on function exit";
+      return CheffeErrorCode::CHEFFE_ERROR;
+    }
   } while (CurrentToken.isNot(TokenKind::EndOfFile));
 
   return Success;
@@ -1313,6 +1321,25 @@ CheffeErrorCode CheffeParser::parsePourMethodStep()
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
 
+static bool AreLowerCasedStringsEqual(const std::string &LHS,
+                                      const std::string &RHS)
+{
+  if (LHS.size() != RHS.size())
+  {
+    return false;
+  }
+  auto LHSIt = std::begin(LHS);
+  auto RHSIt = std::begin(RHS);
+  while (LHSIt++ != std::end(LHS) && RHSIt++ != std::end(RHS))
+  {
+    if (std::tolower(*LHSIt) != std::tolower(*RHSIt))
+    {
+      return false;
+    }
+  }
+  return true;
+}
+
 // Parsers the "Verb" method steps. One of the following two:
 //   Verb the ingredient.
 //   Verb [the ingredient] until verbed.
@@ -1341,7 +1368,11 @@ CheffeErrorCode CheffeParser::parseVerbMethodStep()
     emitDiagnosticIfIngredientUndefined(Ingredient, IngredientLoc);
   }
 
-  if (CurrentToken.is("until"))
+  if (CurrentToken.isNot("until"))
+  {
+    LoopNestInfo.push_back(Verb);
+  }
+  else
   {
     if (consumeAndExpectToken(TokenKind::Identifier))
     {
@@ -1349,6 +1380,37 @@ CheffeErrorCode CheffeParser::parseVerbMethodStep()
     }
 
     const std::string UntilVerb = CurrentToken.getIdentifierString();
+
+    if (LoopNestInfo.empty())
+    {
+      Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Error,
+                          LineContext::WithContext)
+          << "Mismatched scope: empty scope stack";
+      return CheffeErrorCode::CHEFFE_ERROR;
+    }
+
+    const std::string FromVerb = LoopNestInfo[LoopNestInfo.size() - 1];
+    LoopNestInfo.pop_back();
+
+    CHEFFE_DEBUG("Searching for a matched pair between "
+                 << FromVerb << " & " << UntilVerb << std::endl);
+
+    auto VerbFindResult =
+        std::find_if(std::begin(ValidVerbKeywords), std::end(ValidVerbKeywords),
+                     [&FromVerb](const StringPair &Pair)
+                     {
+          return Pair.first == FromVerb;
+        });
+    assert(VerbFindResult != std::end(ValidVerbKeywords));
+
+    if (!AreLowerCasedStringsEqual(VerbFindResult->second, UntilVerb))
+    {
+      Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Error,
+                          LineContext::WithContext)
+          << "Mismatched verbs: trying to match '" << FromVerb << "' with '"
+          << UntilVerb << "'";
+      return CheffeErrorCode::CHEFFE_ERROR;
+    }
     getNextToken();
   }
 

@@ -100,6 +100,8 @@ public:
 private:
   CheffeRecipeInfo *CurrentRecipe;
 
+  std::vector<std::string> LoopNestInfo;
+
   CheffeErrorCode parseRecipeTitle(std::string &RecipeTitle,
                                    SourceLocation &RecipeTitleLoc);
   CheffeErrorCode parseCommentBlock();
