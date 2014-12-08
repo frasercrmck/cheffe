@@ -171,11 +171,6 @@ TEST_F(GoodParserTest, MethodStepVerb)
   TestParse("/Parser/method-step-verb.ch");
 }
 
-TEST_F(GoodParserTest, MethodStepUntilVerbed)
-{
-  TestParse("/Parser/method-step-until-verbed.ch");
-}
-
 TEST_F(GoodParserTest, MethodStepSetAside)
 {
   TestParse("/Parser/method-step-set-aside.ch");

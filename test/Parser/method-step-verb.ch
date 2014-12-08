@@ -11,9 +11,15 @@ Ingredients.
 Method.
 Sift the flour.
 Rub the butter.
+Rub the butter until rubbed.
+Sift the flour until sifted.
 Heat the butter.
+Melt the butter until heated.
 Melt the butter.
 Cook the onions.
 Caramelise the onions.
+Cook the onions until caramelised.
+Caramelise the onions until cooked.
+Heat the butter until melted.
 
 Serves 1.
