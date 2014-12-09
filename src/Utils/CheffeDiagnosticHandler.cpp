@@ -83,16 +83,16 @@ void CheffeDiagnosticHandler::formatAndLogMessage(
     const DiagnosticKind Kind, const LineContext Context)
 {
   std::stringstream ss;
+  ss << getFileAndLineNumberInfoAsString(SourceLoc.getLineNo(),
+                                         SourceLoc.getColumnNo()) << ": ";
   if (Kind == DiagnosticKind::Error)
   {
-    ss << ColourText("Error", ColourKind::RedBold) << ": ";
+    ss << ColourText("error", ColourKind::RedBold) << ": ";
   }
   else if (Kind == DiagnosticKind::Warning)
   {
-    ss << ColourText("Warning", ColourKind::YellowBold) << ": ";
+    ss << ColourText("warning", ColourKind::YellowBold) << ": ";
   }
-  ss << getFileAndLineNumberInfoAsString(SourceLoc.getLineNo(),
-                                         SourceLoc.getColumnNo()) << std::endl;
   ss << Message << std::endl;
   if (Context == LineContext::WithContext)
   {
