@@ -1,4 +1,5 @@
 #include "Parser/CheffeParser.h"
+#include "Parser/CheffeMethodStep.h"
 #include "Utils/CheffeDebugUtils.h"
 
 #include <cassert>
@@ -179,6 +180,12 @@ CheffeErrorCode CheffeParser::parseRecipe()
                           LineContext::WithoutContext)
           << "Mismatched scopes on function exit";
       return CheffeErrorCode::CHEFFE_ERROR;
+    }
+
+    CHEFFE_DEBUG("\nMETHOD LIST:" << std::endl);
+    for (auto &MethodStep : CurrentRecipe->getMethodStepList())
+    {
+      CHEFFE_DEBUG("\t" << *MethodStep);
     }
   } while (CurrentToken.isNot(TokenKind::EndOfFile));
 
@@ -718,27 +725,27 @@ CheffeErrorCode CheffeParser::parseMethodStep()
   }
   else if (MethodStepKeyword == "Put")
   {
-    Success = parsePutOrFoldMethodStep();
+    Success = parsePutOrFoldMethodStep(MethodStepKind::Put);
   }
   else if (MethodStepKeyword == "Fold")
   {
-    Success = parsePutOrFoldMethodStep();
+    Success = parsePutOrFoldMethodStep(MethodStepKind::Fold);
   }
   else if (MethodStepKeyword == "Add")
   {
-    Success = parseArithmeticMethodStep(ArithmeticMethodStep::Add);
+    Success = parseArithmeticMethodStep(MethodStepKind::Add);
   }
   else if (MethodStepKeyword == "Remove")
   {
-    Success = parseArithmeticMethodStep(ArithmeticMethodStep::Remove);
+    Success = parseArithmeticMethodStep(MethodStepKind::Remove);
   }
   else if (MethodStepKeyword == "Combine")
   {
-    Success = parseArithmeticMethodStep(ArithmeticMethodStep::Combine);
+    Success = parseArithmeticMethodStep(MethodStepKind::Combine);
   }
   else if (MethodStepKeyword == "Divide")
   {
-    Success = parseArithmeticMethodStep(ArithmeticMethodStep::Divide);
+    Success = parseArithmeticMethodStep(MethodStepKind::Divide);
   }
   else if (MethodStepKeyword == "Liquefy" || MethodStepKeyword == "Liquify")
   {
@@ -800,9 +807,15 @@ CheffeErrorCode CheffeParser::parseMethodStep()
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
 
-CheffeErrorCode CheffeParser::parsePutOrFoldMethodStep()
+CheffeErrorCode
+CheffeParser::parsePutOrFoldMethodStep(const MethodStepKind Step)
 {
   getNextToken();
+
+  if (Step != MethodStepKind::Put && Step != MethodStepKind::Fold)
+  {
+    cheffe_unreachable("invalid method step kind");
+  }
 
   const SourceLocation BeginIngredientLoc = CurrentToken.getSourceLoc();
   SourceLocation EndIngredientLoc = BeginIngredientLoc;
@@ -856,6 +869,8 @@ CheffeErrorCode CheffeParser::parsePutOrFoldMethodStep()
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
+  CurrentRecipe->addNewMethodStep(Step);
+
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
 
@@ -864,11 +879,13 @@ CheffeErrorCode CheffeParser::parsePutOrFoldMethodStep()
 //   Remove ingredient [from [nth] mixing bowl].
 //   Combine ingredient [into [nth] mixing bowl].
 //   Divide ingredient [into [nth] mixing bowl].
+//   Add dry ingredients [to [nth] mixing bowl].
 // Note: the different prepositions: 'to', 'from', 'into'
 CheffeErrorCode
-CheffeParser::parseArithmeticMethodStep(const ArithmeticMethodStep Step)
+CheffeParser::parseArithmeticMethodStep(const MethodStepKind Step)
 {
   getNextToken();
+  MethodStepKind Kind = Step;
 
   if (MethodStepPrepositions.find(Step) == std::end(MethodStepPrepositions))
   {
@@ -876,8 +893,9 @@ CheffeParser::parseArithmeticMethodStep(const ArithmeticMethodStep Step)
   }
   const std::string Preposition = MethodStepPrepositions.find(Step)->second;
 
-  if (Step == ArithmeticMethodStep::Add && CurrentToken.is("dry"))
+  if (Step == MethodStepKind::Add && CurrentToken.is("dry"))
   {
+    Kind = MethodStepKind::AddDry;
     if (consumeAndExpectToken("ingredients"))
     {
       return CheffeErrorCode::CHEFFE_ERROR;
@@ -902,6 +920,8 @@ CheffeParser::parseArithmeticMethodStep(const ArithmeticMethodStep Step)
 
     emitDiagnosticIfIngredientUndefined(Ingredient, IngredientLoc);
   }
+
+  CurrentRecipe->addNewMethodStep(Kind);
 
   if (CurrentToken.isNot(Preposition.c_str()))
   {
@@ -977,6 +997,8 @@ CheffeErrorCode CheffeParser::parseTakeMethodStep()
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
+  CurrentRecipe->addNewMethodStep(MethodStepKind::Take);
+
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
 
@@ -1020,6 +1042,8 @@ CheffeErrorCode CheffeParser::parseLiquifyMethodStep()
       return CheffeErrorCode::CHEFFE_ERROR;
     }
 
+    CurrentRecipe->addNewMethodStep(MethodStepKind::LiquifyBowl);
+
     return CheffeErrorCode::CHEFFE_SUCCESS;
   }
 
@@ -1042,6 +1066,8 @@ CheffeErrorCode CheffeParser::parseLiquifyMethodStep()
   const SourceLocation IngredientLoc(BeginIngredientLoc, EndIngredientLoc);
 
   emitDiagnosticIfIngredientUndefined(Ingredient, IngredientLoc);
+
+  CurrentRecipe->addNewMethodStep(MethodStepKind::LiquifyIngredient);
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
@@ -1098,6 +1124,8 @@ CheffeErrorCode CheffeParser::parseStirMethodStep()
       return CheffeErrorCode::CHEFFE_ERROR;
     }
 
+    CurrentRecipe->addNewMethodStep(MethodStepKind::StirBowl);
+
     return CheffeErrorCode::CHEFFE_SUCCESS;
   }
 
@@ -1151,6 +1179,8 @@ CheffeErrorCode CheffeParser::parseStirMethodStep()
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
+  CurrentRecipe->addNewMethodStep(MethodStepKind::StirBowl);
+
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
 
@@ -1198,6 +1228,8 @@ CheffeErrorCode CheffeParser::parseMixMethodStep()
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
+  CurrentRecipe->addNewMethodStep(MethodStepKind::Mix);
+
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
 
@@ -1228,6 +1260,8 @@ CheffeErrorCode CheffeParser::parseCleanMethodStep()
   {
     return CheffeErrorCode::CHEFFE_ERROR;
   }
+
+  CurrentRecipe->addNewMethodStep(MethodStepKind::Clean);
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
@@ -1306,6 +1340,8 @@ CheffeErrorCode CheffeParser::parsePourMethodStep()
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
+  CurrentRecipe->addNewMethodStep(MethodStepKind::Pour);
+
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
 
@@ -1359,6 +1395,7 @@ CheffeErrorCode CheffeParser::parseVerbMethodStep()
   if (CurrentToken.isNot("until"))
   {
     LoopNestInfo.push_back(Verb);
+    CurrentRecipe->addNewMethodStep(MethodStepKind::Verb);
   }
   else
   {
@@ -1400,6 +1437,7 @@ CheffeErrorCode CheffeParser::parseVerbMethodStep()
       return CheffeErrorCode::CHEFFE_ERROR;
     }
     getNextToken();
+    CurrentRecipe->addNewMethodStep(MethodStepKind::UntilVerbed);
   }
 
   if (expectToken(TokenKind::FullStop))
@@ -1423,6 +1461,8 @@ CheffeErrorCode CheffeParser::parseSetAsideMethodStep()
   {
     return CheffeErrorCode::CHEFFE_ERROR;
   }
+
+  CurrentRecipe->addNewMethodStep(MethodStepKind::SetAside);
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
@@ -1456,6 +1496,8 @@ CheffeErrorCode CheffeParser::parseServeMethodStep()
   {
     return CheffeErrorCode::CHEFFE_ERROR;
   }
+
+  CurrentRecipe->addNewMethodStep(MethodStepKind::Serve);
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
@@ -1492,6 +1534,8 @@ CheffeErrorCode CheffeParser::parseRefrigerateMethodStep()
   {
     return CheffeErrorCode::CHEFFE_ERROR;
   }
+
+  CurrentRecipe->addNewMethodStep(MethodStepKind::Refrigerate);
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }

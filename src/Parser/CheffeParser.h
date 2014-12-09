@@ -59,19 +59,11 @@ enum class MeasureKindTy
   Invalid
 };
 
-enum class ArithmeticMethodStep
-{
-  Add,
-  Remove,
-  Combine,
-  Divide
-};
-
-const std::map<ArithmeticMethodStep, std::string> MethodStepPrepositions = {
-    {ArithmeticMethodStep::Add, "to"},
-    {ArithmeticMethodStep::Remove, "from"},
-    {ArithmeticMethodStep::Combine, "into"},
-    {ArithmeticMethodStep::Divide, "into"},
+const std::map<MethodStepKind, std::string> MethodStepPrepositions = {
+    {MethodStepKind::Add, "to"},
+    {MethodStepKind::Remove, "from"},
+    {MethodStepKind::Combine, "into"},
+    {MethodStepKind::Divide, "into"},
 };
 
 class CheffeParser
@@ -116,8 +108,8 @@ private:
   CheffeErrorCode parsePossibleOrdinalIdentifier(unsigned &MixingBowlNo);
 
   CheffeErrorCode parseTakeMethodStep();
-  CheffeErrorCode parsePutOrFoldMethodStep();
-  CheffeErrorCode parseArithmeticMethodStep(const ArithmeticMethodStep Step);
+  CheffeErrorCode parsePutOrFoldMethodStep(const MethodStepKind Step);
+  CheffeErrorCode parseArithmeticMethodStep(const MethodStepKind Step);
   CheffeErrorCode parseLiquifyMethodStep();
   CheffeErrorCode parseStirMethodStep();
   CheffeErrorCode parseMixMethodStep();

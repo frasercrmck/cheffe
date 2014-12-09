@@ -2,8 +2,10 @@
 #define CHEFFE_RECIPE_INFO
 
 #include "Parser/CheffeIngredient.h"
+#include "Parser/CheffeMethodStep.h"
 
 #include <map>
+#include <vector>
 
 class CheffeRecipeInfo
 {
@@ -28,9 +30,21 @@ public:
     return Ingredients.find(Ingredient) != std::end(Ingredients);
   }
 
+  void addNewMethodStep(const MethodStepKind Kind)
+  {
+    MethodSteps.push_back(
+        std::unique_ptr<CheffeMethodStep>(new CheffeMethodStep(Kind)));
+  }
+
+  const std::vector<std::unique_ptr<CheffeMethodStep>> &getMethodStepList()
+  {
+    return MethodSteps;
+  }
+
 private:
   std::string RecipeTitle;
   std::map<std::string, CheffeIngredient> Ingredients;
+  std::vector<std::unique_ptr<CheffeMethodStep>> MethodSteps;
 };
 
 #endif // CHEFFE_RECIPE_INFO
