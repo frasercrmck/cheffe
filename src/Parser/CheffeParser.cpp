@@ -656,7 +656,6 @@ CheffeErrorCode CheffeParser::parseMethod()
   } Helper(this);
 
   getNextToken();
-  CHEFFE_DEBUG("\nMETHOD LIST:\n");
   while (
       CurrentToken.isNotAnyOf(TokenKind::EndOfParagraph, TokenKind::EndOfFile))
   {
@@ -666,7 +665,6 @@ CheffeErrorCode CheffeParser::parseMethod()
       return Success;
     }
   }
-  CHEFFE_DEBUG("\n");
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
@@ -712,8 +710,6 @@ CheffeErrorCode CheffeParser::parseMethodStep()
                         LineContext::WithContext)
         << "'Liquify' keyword is deprecated: use 'Liquefy' instead";
   }
-
-  const std::size_t BeginMethodStepPos = CurrentToken.getSourceLoc().getBegin();
 
   CheffeErrorCode Success = CheffeErrorCode::CHEFFE_SUCCESS;
   if (MethodStepKeyword == "Take")
@@ -799,14 +795,6 @@ CheffeErrorCode CheffeParser::parseMethodStep()
   {
     return CheffeErrorCode::CHEFFE_ERROR;
   }
-  const std::size_t EndMethodStepPos = CurrentToken.getSourceLoc().getEnd();
-  std::string MethodStep =
-      Lexer.getTextSpan(BeginMethodStepPos, EndMethodStepPos);
-  // Pretty-print the method step - strip out any new lines.
-  MethodStep.erase(
-      std::remove(std::begin(MethodStep), std::end(MethodStep), '\n'),
-      std::end(MethodStep));
-  CHEFFE_DEBUG("\t\"" << MethodStep.c_str() << "\"\n");
 
   getNextToken();
   return CheffeErrorCode::CHEFFE_SUCCESS;
