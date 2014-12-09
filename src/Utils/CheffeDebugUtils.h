@@ -25,7 +25,7 @@ std::ostream &dbgs();
   {                                                                            \
     if (::cheffe::DebugFlag && ::cheffe::isCurrentDebugType(TYPE))             \
     {                                                                          \
-      dbgs() << EXPR;                                                          \
+      EXPR;                                                                    \
     }                                                                          \
   } while (false)
 

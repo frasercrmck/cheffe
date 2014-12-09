@@ -182,11 +182,16 @@ CheffeErrorCode CheffeParser::parseRecipe()
       return CheffeErrorCode::CHEFFE_ERROR;
     }
 
-    CHEFFE_DEBUG("\nMETHOD LIST:" << std::endl);
-    for (auto &MethodStep : CurrentRecipe->getMethodStepList())
-    {
-      CHEFFE_DEBUG("\t" << *MethodStep);
-    }
+    // clang-format off
+    CHEFFE_DEBUG(
+      dbgs() << std::endl << "METHOD LIST:" << std::endl;
+      for (auto &MethodStep : CurrentRecipe->getMethodStepList())
+      {
+        dbgs() << "\t" << *MethodStep;
+      }
+      dbgs() << std::endl;
+    );
+    // clang-format on
   } while (CurrentToken.isNot(TokenKind::EndOfFile));
 
   return Success;
@@ -244,7 +249,12 @@ CheffeErrorCode CheffeParser::parseRecipeTitle(std::string &RecipeTitle,
       Lexer.getTextSpan(BeginTitleLoc.getBegin(), EndTitleLoc.getEnd());
   RecipeTitleLoc = SourceLocation(BeginTitleLoc, EndTitleLoc);
 
-  CHEFFE_DEBUG("RECIPE TITLE:\n\"" << RecipeTitle.c_str() << "\"\n\n");
+  // clang-format off
+  CHEFFE_DEBUG(
+    dbgs() << "RECIPE TITLE:" << std::endl << "\"" << RecipeTitle.c_str()
+           << "\"" << std::endl << std::endl
+  );
+  // clang-format on
 
   if (consumeAndExpectToken(TokenKind::EndOfParagraph))
   {
@@ -280,7 +290,8 @@ CheffeErrorCode CheffeParser::parseCommentBlock()
 
   std::string Comments = Lexer.getTextSpan(
       CommentsBeginPos, CurrentToken.getSourceLoc().getBegin());
-  CHEFFE_DEBUG("COMMENTS:\n\"" << Comments.c_str() << "\"\n\n");
+  CHEFFE_DEBUG(dbgs() << "COMMENTS:" << std::endl << "\"" << Comments.c_str()
+                      << "\"" << std::endl << std::endl);
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
@@ -345,11 +356,11 @@ CheffeErrorCode CheffeParser::parseIngredientsList()
     {
       return Success;
     }
-    CHEFFE_DEBUG("INGREDIENT: " << Ingredient << std::endl);
+    CHEFFE_DEBUG(dbgs() << "INGREDIENT: " << Ingredient << std::endl);
 
     CurrentRecipe->addIngredient(Ingredient);
   }
-  CHEFFE_DEBUG("\n");
+  CHEFFE_DEBUG(dbgs() << std::endl);
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
@@ -523,7 +534,12 @@ CheffeErrorCode CheffeParser::parseCookingTime()
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
-  CHEFFE_DEBUG("COOKING TIME: " << Time << " " << TimeUnit.c_str() << "\n\n");
+  // clang-format off
+  CHEFFE_DEBUG(
+    dbgs() << "COOKING TIME: " << Time << " " << TimeUnit.c_str() << std::endl
+           << std::endl;
+  );
+  // clang-format on
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
@@ -620,12 +636,16 @@ CheffeErrorCode CheffeParser::parseOvenTemperature()
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
-  CHEFFE_DEBUG("OVEN TEMPERATURE: " << Temperature);
-  if (HasGasMark)
-  {
-    CHEFFE_DEBUG(" (gas mark " << GasMark << ")");
-  }
-  CHEFFE_DEBUG("\n");
+  // clang-format off
+  CHEFFE_DEBUG(
+    dbgs() << "OVEN TEMPERATURE: " << Temperature;
+    if (HasGasMark)
+    {
+      dbgs() << " (gas mark " << GasMark << ")";
+    }
+    dbgs() << std::endl;
+  );
+  // clang-format on
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
@@ -1417,8 +1437,12 @@ CheffeErrorCode CheffeParser::parseVerbMethodStep()
     const std::string FromVerb = LoopNestInfo[LoopNestInfo.size() - 1];
     LoopNestInfo.pop_back();
 
-    CHEFFE_DEBUG("Searching for a matched pair between "
-                 << FromVerb << " & " << UntilVerb << std::endl);
+    // clang-format off
+    CHEFFE_DEBUG(
+      dbgs() << "Searching for a matched pair between " << FromVerb
+             << " & " << UntilVerb << std::endl
+    );
+    // clang-format on
 
     auto VerbFindResult =
         std::find_if(std::begin(ValidVerbKeywords), std::end(ValidVerbKeywords),
@@ -1572,7 +1596,7 @@ CheffeErrorCode CheffeParser::parseServesStatement()
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
-  CHEFFE_DEBUG("SERVES: " << ServesNum << "\n\n");
+  CHEFFE_DEBUG(dbgs() << "SERVES: " << ServesNum << std::endl << std::endl);
 
   getNextToken();
   if (CurrentToken.isNotAnyOf(TokenKind::EndOfParagraph, TokenKind::EndOfFile))
