@@ -33,47 +33,47 @@ static std::string getMethodStepKindAsString(const MethodStepKind Kind)
   switch (Kind)
   {
   case MethodStepKind::Take:
-    return "Take";
+    return "TAKE";
   case MethodStepKind::Put:
-    return "Put";
+    return "PUT";
   case MethodStepKind::Fold:
-    return "Fold";
+    return "FOLD";
   case MethodStepKind::Add:
-    return "Add";
+    return "ADD";
   case MethodStepKind::Remove:
-    return "Remove";
+    return "REMOVE";
   case MethodStepKind::Combine:
-    return "Combine";
+    return "COMBINE";
   case MethodStepKind::Divide:
-    return "Divide";
+    return "DIVIDE";
   case MethodStepKind::AddDry:
-    return "AddDry";
+    return "ADD_DRY";
   case MethodStepKind::LiquifyBowl:
-    return "LiquifyBowl";
+    return "LIQUIFY_BOWL";
   case MethodStepKind::LiquifyIngredient:
-    return "LiquifyIngredient";
+    return "LIQUIFY_INGREDIENT";
   case MethodStepKind::StirBowl:
-    return "StirBowl";
+    return "STIR_BOWL";
   case MethodStepKind::StirIngredient:
-    return "StirIngredient";
+    return "STIR_INGREDIENT";
   case MethodStepKind::Mix:
-    return "Mix";
+    return "MIX";
   case MethodStepKind::Clean:
-    return "Clean";
+    return "CLEAN";
   case MethodStepKind::Pour:
-    return "Pour";
+    return "POUR";
   case MethodStepKind::Verb:
-    return "Verb";
+    return "VERB";
   case MethodStepKind::UntilVerbed:
-    return "UntilVerbed";
+    return "UNTIL_VERBED";
   case MethodStepKind::SetAside:
-    return "SetAside";
+    return "SET_ASIDE";
   case MethodStepKind::Serve:
-    return "Serve";
+    return "SERVE";
   case MethodStepKind::Refrigerate:
-    return "Refrigerate";
+    return "REFRIGERATE";
   case MethodStepKind::Invalid:
-    return "Invalid";
+    return "INVALID";
   }
 }
 
