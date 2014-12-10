@@ -57,6 +57,7 @@ CheffeParser::parsePossibleOrdinalIdentifier(unsigned &MixingBowlNo)
   }
 
   getNextToken();
+  MixingBowlNo = Number;
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
 
