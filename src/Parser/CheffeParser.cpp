@@ -944,6 +944,7 @@ CheffeParser::parseArithmeticMethodStep(const MethodStepKind Step)
 
   CurrentRecipe->addNewMethodStep(Kind);
 
+  unsigned MixingBowlNo = 1;
   if (CurrentToken.isNot(Preposition.c_str()))
   {
     return CheffeErrorCode::CHEFFE_SUCCESS;
@@ -958,7 +959,6 @@ CheffeParser::parseArithmeticMethodStep(const MethodStepKind Step)
     getNextToken();
   }
 
-  unsigned MixingBowlNo = 1;
   CheffeErrorCode IsValidOrdinal = parsePossibleOrdinalIdentifier(MixingBowlNo);
   if (IsValidOrdinal != CheffeErrorCode::CHEFFE_SUCCESS)
   {
@@ -1102,11 +1102,11 @@ CheffeErrorCode CheffeParser::parseStirMethodStep()
 
   if (CurrentToken.is("the") || CurrentToken.is("for"))
   {
+    unsigned MixingBowlNo = 1;
     if (CurrentToken.is("the"))
     {
       getNextToken();
 
-      unsigned MixingBowlNo = 1;
       CheffeErrorCode IsValidOrdinal =
           parsePossibleOrdinalIdentifier(MixingBowlNo);
       if (IsValidOrdinal != CheffeErrorCode::CHEFFE_SUCCESS)
@@ -1211,6 +1211,7 @@ CheffeErrorCode CheffeParser::parseMixMethodStep()
 {
   getNextToken();
 
+  unsigned MixingBowlNo = 1;
   if (CurrentToken.isNot("well"))
   {
     if (expectToken("the"))
@@ -1219,7 +1220,6 @@ CheffeErrorCode CheffeParser::parseMixMethodStep()
     }
 
     getNextToken();
-    unsigned MixingBowlNo = 1;
     CheffeErrorCode IsValidOrdinal =
         parsePossibleOrdinalIdentifier(MixingBowlNo);
     if (IsValidOrdinal != CheffeErrorCode::CHEFFE_SUCCESS)
