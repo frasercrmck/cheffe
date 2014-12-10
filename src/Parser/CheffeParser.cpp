@@ -1589,14 +1589,14 @@ CheffeErrorCode CheffeParser::parseServesStatement()
   {
     return CheffeErrorCode::CHEFFE_ERROR;
   }
-  const int ServesNum = CurrentToken.getNumVal();
+  const int ServesNo = CurrentToken.getNumVal();
 
   if (consumeAndExpectToken(TokenKind::FullStop))
   {
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
-  CHEFFE_DEBUG(dbgs() << "SERVES: " << ServesNum << std::endl << std::endl);
+  CHEFFE_DEBUG(dbgs() << "SERVES: " << ServesNo << std::endl << std::endl);
 
   getNextToken();
   if (CurrentToken.isNotAnyOf(TokenKind::EndOfParagraph, TokenKind::EndOfFile))
