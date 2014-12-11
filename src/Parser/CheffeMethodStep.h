@@ -1,6 +1,7 @@
 #ifndef CHEFFE_METHOD_STEP
 #define CHEFFE_METHOD_STEP
 
+#include <vector>
 #include <ostream>
 
 enum class MethodStepKind
@@ -77,6 +78,59 @@ static std::string getMethodStepKindAsString(const MethodStepKind Kind)
   }
 }
 
+class MethodOp
+{
+public:
+  MethodOp()
+  {
+  }
+
+  virtual void dump(std::ostream &os) const
+  {
+    (void)os;
+  }
+};
+
+class MixingBowl : public MethodOp
+{
+public:
+  MixingBowl() : MethodOp(), MixingBowlNo(1)
+  {
+  }
+
+  MixingBowl(const unsigned MixingBowl) : MethodOp(), MixingBowlNo(MixingBowl)
+  {
+  }
+
+  void dump(std::ostream &os) const override
+  {
+    os << "(MixingBowl " << MixingBowlNo << ")";
+  }
+
+private:
+  unsigned MixingBowlNo;
+};
+
+class BakingDish : public MethodOp
+{
+public:
+  BakingDish() : MethodOp(), BakingDishNo(1)
+  {
+  }
+
+  BakingDish(const unsigned BakingDish) : MethodOp(), BakingDishNo(BakingDish)
+  {
+  }
+
+  void dump(std::ostream &os) const override
+  {
+    os << "(BakingDish " << BakingDishNo << ")";
+  }
+
+private:
+  unsigned BakingDishNo;
+};
+
 class CheffeMethodStep
 {
 public:
@@ -84,15 +138,34 @@ public:
   {
   }
 
+  void addMixingBowl(const unsigned MixingBowlNo)
+  {
+    MethodOps.push_back(
+        std::unique_ptr<MixingBowl>(new MixingBowl(MixingBowlNo)));
+  }
+
+  void addBakingDish(const unsigned BakingDishNo)
+  {
+    MethodOps.push_back(
+        std::unique_ptr<BakingDish>(new BakingDish(BakingDishNo)));
+  }
+
   friend std::ostream &operator<<(std::ostream &stream,
                                   const CheffeMethodStep &MethodStep)
   {
-    stream << getMethodStepKindAsString(MethodStep.Kind) << std::endl;
+    stream << getMethodStepKindAsString(MethodStep.Kind);
+    for (auto &Op : MethodStep.MethodOps)
+    {
+      stream << ", ";
+      Op->dump(stream);
+    }
+    stream << std::endl;
     return stream;
   }
 
 private:
   MethodStepKind Kind;
+  std::vector<std::unique_ptr<MethodOp>> MethodOps;
 };
 
 #endif // CHEFFE_METHOD_STEP

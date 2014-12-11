@@ -890,7 +890,8 @@ CheffeParser::parsePutOrFoldMethodStep(const MethodStepKind Step)
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
-  CurrentRecipe->addNewMethodStep(Step);
+  auto MethodStep = CurrentRecipe->addNewMethodStep(Step);
+  MethodStep->addMixingBowl(MixingBowlNo);
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
@@ -942,11 +943,12 @@ CheffeParser::parseArithmeticMethodStep(const MethodStepKind Step)
     emitDiagnosticIfIngredientUndefined(Ingredient, IngredientLoc);
   }
 
-  CurrentRecipe->addNewMethodStep(Kind);
+  auto MethodStep = CurrentRecipe->addNewMethodStep(Kind);
 
   unsigned MixingBowlNo = 1;
   if (CurrentToken.isNot(Preposition.c_str()))
   {
+    MethodStep->addMixingBowl(MixingBowlNo);
     return CheffeErrorCode::CHEFFE_SUCCESS;
   }
 
@@ -964,6 +966,8 @@ CheffeParser::parseArithmeticMethodStep(const MethodStepKind Step)
   {
     return IsValidOrdinal;
   }
+
+  MethodStep->addMixingBowl(MixingBowlNo);
 
   if (expectToken("mixing"))
   {
@@ -1063,7 +1067,9 @@ CheffeErrorCode CheffeParser::parseLiquifyMethodStep()
       return CheffeErrorCode::CHEFFE_ERROR;
     }
 
-    CurrentRecipe->addNewMethodStep(MethodStepKind::LiquifyBowl);
+    auto MethodStep =
+        CurrentRecipe->addNewMethodStep(MethodStepKind::LiquifyBowl);
+    MethodStep->addMixingBowl(MixingBowlNo);
 
     return CheffeErrorCode::CHEFFE_SUCCESS;
   }
@@ -1145,7 +1151,8 @@ CheffeErrorCode CheffeParser::parseStirMethodStep()
       return CheffeErrorCode::CHEFFE_ERROR;
     }
 
-    CurrentRecipe->addNewMethodStep(MethodStepKind::StirBowl);
+    auto MethodStep = CurrentRecipe->addNewMethodStep(MethodStepKind::StirBowl);
+    MethodStep->addMixingBowl(MixingBowlNo);
 
     return CheffeErrorCode::CHEFFE_SUCCESS;
   }
@@ -1200,7 +1207,8 @@ CheffeErrorCode CheffeParser::parseStirMethodStep()
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
-  CurrentRecipe->addNewMethodStep(MethodStepKind::StirBowl);
+  auto MethodStep = CurrentRecipe->addNewMethodStep(MethodStepKind::StirBowl);
+  MethodStep->addMixingBowl(MixingBowlNo);
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
@@ -1249,7 +1257,8 @@ CheffeErrorCode CheffeParser::parseMixMethodStep()
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
-  CurrentRecipe->addNewMethodStep(MethodStepKind::Mix);
+  auto MethodStep = CurrentRecipe->addNewMethodStep(MethodStepKind::Mix);
+  MethodStep->addMixingBowl(MixingBowlNo);
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
@@ -1282,7 +1291,8 @@ CheffeErrorCode CheffeParser::parseCleanMethodStep()
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
-  CurrentRecipe->addNewMethodStep(MethodStepKind::Clean);
+  auto MethodStep = CurrentRecipe->addNewMethodStep(MethodStepKind::Clean);
+  MethodStep->addMixingBowl(MixingBowlNo);
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
@@ -1361,7 +1371,9 @@ CheffeErrorCode CheffeParser::parsePourMethodStep()
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
-  CurrentRecipe->addNewMethodStep(MethodStepKind::Pour);
+  auto MethodStep = CurrentRecipe->addNewMethodStep(MethodStepKind::Pour);
+  MethodStep->addMixingBowl(MixingBowlNo);
+  MethodStep->addBakingDish(BakingDishNo);
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }

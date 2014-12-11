@@ -30,13 +30,15 @@ public:
     return Ingredients.find(Ingredient) != std::end(Ingredients);
   }
 
-  void addNewMethodStep(const MethodStepKind Kind)
+  std::shared_ptr<CheffeMethodStep> addNewMethodStep(const MethodStepKind Kind)
   {
-    MethodSteps.push_back(
-        std::unique_ptr<CheffeMethodStep>(new CheffeMethodStep(Kind)));
+    auto MethodStep =
+        std::shared_ptr<CheffeMethodStep>(new CheffeMethodStep(Kind));
+    MethodSteps.push_back(MethodStep);
+    return MethodStep;
   }
 
-  const std::vector<std::unique_ptr<CheffeMethodStep>> &getMethodStepList()
+  const std::vector<std::shared_ptr<CheffeMethodStep>> &getMethodStepList()
   {
     return MethodSteps;
   }
@@ -44,7 +46,7 @@ public:
 private:
   std::string RecipeTitle;
   std::map<std::string, CheffeIngredient> Ingredients;
-  std::vector<std::unique_ptr<CheffeMethodStep>> MethodSteps;
+  std::vector<std::shared_ptr<CheffeMethodStep>> MethodSteps;
 };
 
 #endif // CHEFFE_RECIPE_INFO
