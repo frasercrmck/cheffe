@@ -1207,7 +1207,8 @@ CheffeErrorCode CheffeParser::parseStirMethodStep()
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
-  auto MethodStep = CurrentRecipe->addNewMethodStep(MethodStepKind::StirBowl);
+  auto MethodStep =
+      CurrentRecipe->addNewMethodStep(MethodStepKind::StirIngredient);
   MethodStep->addMixingBowl(MixingBowlNo);
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
