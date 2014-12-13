@@ -21,5 +21,7 @@ Caramelise the onions.
 Cook the onions until caramelised.
 Caramelise the onions until cooked.
 Heat the butter until melted.
+Cook the onions.
+Heat until cooked.
 
 Serves 1.
