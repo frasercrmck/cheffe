@@ -899,7 +899,7 @@ CheffeParser::parsePutOrFoldMethodStep(const MethodStepKind Step)
   }
 
   auto MethodStep = CurrentRecipe->addNewMethodStep(Step);
-  MethodStep->addIngredient();
+  MethodStep->addIngredient(IngredientInfo);
   MethodStep->addMixingBowl(MixingBowlNo);
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
@@ -954,7 +954,7 @@ CheffeParser::parseArithmeticMethodStep(const MethodStepKind Step)
     auto IngredientInfo = getIngredientInfo(Ingredient, IngredientLoc,
                                             EmitDiagnosticIfUndef::Warning);
 
-    MethodStep->addIngredient();
+    MethodStep->addIngredient(IngredientInfo);
   }
 
   unsigned MixingBowlNo = 1;
@@ -1036,7 +1036,7 @@ CheffeErrorCode CheffeParser::parseTakeMethodStep()
   }
 
   auto MethodStep = CurrentRecipe->addNewMethodStep(MethodStepKind::Take);
-  MethodStep->addIngredient();
+  MethodStep->addIngredient(IngredientInfo);
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
@@ -1111,7 +1111,7 @@ CheffeErrorCode CheffeParser::parseLiquifyMethodStep()
 
   auto MethodStep =
       CurrentRecipe->addNewMethodStep(MethodStepKind::LiquifyIngredient);
-  MethodStep->addIngredient();
+  MethodStep->addIngredient(IngredientInfo);
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
@@ -1227,7 +1227,7 @@ CheffeErrorCode CheffeParser::parseStirMethodStep()
 
   auto MethodStep =
       CurrentRecipe->addNewMethodStep(MethodStepKind::StirIngredient);
-  MethodStep->addIngredient();
+  MethodStep->addIngredient(IngredientInfo);
   MethodStep->addMixingBowl(MixingBowlNo);
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
@@ -1508,7 +1508,7 @@ CheffeErrorCode CheffeParser::parseVerbMethodStep()
 
   if (HasIngredient)
   {
-    MethodStep->addIngredient();
+    MethodStep->addIngredient(IngredientInfo);
   }
 
   if (expectToken(TokenKind::FullStop))

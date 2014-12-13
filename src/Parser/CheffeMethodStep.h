@@ -6,6 +6,7 @@
 #include <vector>
 #include <ostream>
 #include <memory>
+#include <cassert>
 
 enum class MethodStepKind
 {
@@ -101,12 +102,22 @@ public:
   {
   }
 
+  IngredientOp(const bool IsUndefined,
+               const std::shared_ptr<CheffeIngredient> &Ingredient)
+      : MethodOp(), IsUndefined(IsUndefined), Ingredient(Ingredient)
+  {
+  }
+
   void dump(std::ostream &os) const override
   {
     os << "(Ingredient ";
     if (IsUndefined)
     {
       os << "<undefined>";
+    }
+    else
+    {
+      os << *Ingredient;
     }
     os << ")";
   }
@@ -163,9 +174,20 @@ public:
   {
   }
 
-  void addIngredient()
+  void addIngredient(
+      const std::pair<bool, std::shared_ptr<CheffeIngredient>> &IngredientInfo)
   {
-    MethodOps.push_back(std::unique_ptr<IngredientOp>(new IngredientOp()));
+    addIngredient(IngredientInfo.first, IngredientInfo.second);
+  }
+
+  void addIngredient(const bool IsUndefined,
+                     const std::shared_ptr<CheffeIngredient> &Ingredient)
+  {
+    assert(((IsUndefined && Ingredient == nullptr) ||
+            (!IsUndefined && Ingredient != nullptr)) &&
+           "Invalid ingredient information");
+    MethodOps.push_back(std::unique_ptr<IngredientOp>(
+        new IngredientOp(IsUndefined, Ingredient)));
   }
 
   void addMixingBowl(const unsigned MixingBowlNo)
