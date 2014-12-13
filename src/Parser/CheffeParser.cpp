@@ -16,17 +16,24 @@ Token CheffeParser::getNextToken()
   return CurrentToken = Lexer.getToken();
 }
 
-void CheffeParser::emitDiagnosticIfIngredientUndefined(
-    const std::string &Ingredient, const SourceLocation IngredientLoc)
+std::pair<bool, std::shared_ptr<CheffeIngredient>>
+CheffeParser::getIngredientInfo(const std::string &IngredientName,
+                                const SourceLocation IngredientLoc,
+                                const EmitDiagnosticIfUndef Diagnostic)
 {
-  if (CurrentRecipe->wasIngredientDefined(Ingredient))
+  auto Ingredient = CurrentRecipe->getIngredient(IngredientName);
+  if (Ingredient != nullptr)
   {
-    return;
+    return std::make_pair(false, Ingredient);
   }
-  Diagnostics->report(IngredientLoc, DiagnosticKind::Warning,
-                      LineContext::WithContext)
-      << "Ingredient '" << Ingredient
-      << "' was not defined in the Ingredients paragraph";
+  if (Diagnostic == EmitDiagnosticIfUndef::Warning)
+  {
+    Diagnostics->report(IngredientLoc, DiagnosticKind::Warning,
+                        LineContext::WithContext)
+        << "Ingredient '" << IngredientName
+        << "' was not defined in the Ingredients paragraph";
+  }
+  return std::make_pair(true, nullptr);
 }
 
 // Parse an ordinal identifier at the current token, if it's a number. Ordinal
@@ -857,7 +864,8 @@ CheffeParser::parsePutOrFoldMethodStep(const MethodStepKind Step)
 
   const SourceLocation IngredientLoc(BeginIngredientLoc, EndIngredientLoc);
 
-  emitDiagnosticIfIngredientUndefined(Ingredient, IngredientLoc);
+  auto IngredientInfo = getIngredientInfo(Ingredient, IngredientLoc,
+                                          EmitDiagnosticIfUndef::Warning);
 
   getNextToken();
 
@@ -943,7 +951,8 @@ CheffeParser::parseArithmeticMethodStep(const MethodStepKind Step)
 
     const SourceLocation IngredientLoc(BeginIngredientLoc, EndIngredientLoc);
 
-    emitDiagnosticIfIngredientUndefined(Ingredient, IngredientLoc);
+    auto IngredientInfo = getIngredientInfo(Ingredient, IngredientLoc,
+                                            EmitDiagnosticIfUndef::Warning);
 
     MethodStep->addIngredient();
   }
@@ -1013,7 +1022,8 @@ CheffeErrorCode CheffeParser::parseTakeMethodStep()
 
   const SourceLocation IngredientLoc(BeginIngredientLoc, EndIngredientLoc);
 
-  emitDiagnosticIfIngredientUndefined(Ingredient, IngredientLoc);
+  auto IngredientInfo = getIngredientInfo(Ingredient, IngredientLoc,
+                                          EmitDiagnosticIfUndef::Warning);
 
   if (consumeAndExpectToken("refrigerator"))
   {
@@ -1096,7 +1106,8 @@ CheffeErrorCode CheffeParser::parseLiquifyMethodStep()
 
   const SourceLocation IngredientLoc(BeginIngredientLoc, EndIngredientLoc);
 
-  emitDiagnosticIfIngredientUndefined(Ingredient, IngredientLoc);
+  auto IngredientInfo = getIngredientInfo(Ingredient, IngredientLoc,
+                                          EmitDiagnosticIfUndef::Warning);
 
   auto MethodStep =
       CurrentRecipe->addNewMethodStep(MethodStepKind::LiquifyIngredient);
@@ -1177,7 +1188,8 @@ CheffeErrorCode CheffeParser::parseStirMethodStep()
 
   const SourceLocation IngredientLoc(BeginIngredientLoc, EndIngredientLoc);
 
-  emitDiagnosticIfIngredientUndefined(Ingredient, IngredientLoc);
+  auto IngredientInfo = getIngredientInfo(Ingredient, IngredientLoc,
+                                          EmitDiagnosticIfUndef::Warning);
 
   if (expectToken("into"))
   {
@@ -1414,6 +1426,8 @@ CheffeErrorCode CheffeParser::parseVerbMethodStep()
   getNextToken();
 
   bool HasIngredient = false;
+  std::pair<bool, std::shared_ptr<CheffeIngredient>> IngredientInfo =
+      std::make_pair(true, nullptr);
   if (CurrentToken.is("the"))
   {
     getNextToken();
@@ -1431,7 +1445,8 @@ CheffeErrorCode CheffeParser::parseVerbMethodStep()
 
     const SourceLocation IngredientLoc(BeginIngredientLoc, EndIngredientLoc);
 
-    emitDiagnosticIfIngredientUndefined(Ingredient, IngredientLoc);
+    IngredientInfo = getIngredientInfo(Ingredient, IngredientLoc,
+                                       EmitDiagnosticIfUndef::Warning);
     HasIngredient = true;
   }
 

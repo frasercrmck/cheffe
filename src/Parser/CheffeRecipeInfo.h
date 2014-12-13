@@ -27,9 +27,14 @@ public:
     Ingredients[IngredientInfo->Name] = std::move(IngredientInfo);
   }
 
-  bool wasIngredientDefined(const std::string &IngredientName)
+  std::shared_ptr<CheffeIngredient> getIngredient(const std::string &IngredientName)
   {
-    return Ingredients.find(IngredientName) != std::end(Ingredients);
+    auto Ingredient = Ingredients.find(IngredientName);
+    if (Ingredient == std::end(Ingredients))
+    {
+      return nullptr;
+    }
+    return Ingredient->second;
   }
 
   std::shared_ptr<CheffeMethodStep> addNewMethodStep(const MethodStepKind Kind)

@@ -59,6 +59,12 @@ enum class MeasureKindTy
   Invalid
 };
 
+enum class EmitDiagnosticIfUndef
+{
+  Warning,
+  None
+};
+
 const std::map<MethodStepKind, std::string> MethodStepPrepositions = {
     {MethodStepKind::Add, "to"},
     {MethodStepKind::Remove, "from"},
@@ -120,8 +126,10 @@ private:
   CheffeErrorCode parseServeMethodStep();
   CheffeErrorCode parseRefrigerateMethodStep();
 
-  void emitDiagnosticIfIngredientUndefined(const std::string &Ingredient,
-                                           const SourceLocation IngredientLoc);
+  std::pair<bool, std::shared_ptr<CheffeIngredient>>
+  getIngredientInfo(const std::string &Ingredient,
+                    const SourceLocation IngredientLoc,
+                    const EmitDiagnosticIfUndef Diagnostic);
 
   bool isValidTimeUnit(const std::string &TimeUnit, TimeUnitKindTy &Kind);
   bool isValidMeasure(const std::string &Measure, MeasureKindTy &Kind);
