@@ -92,14 +92,14 @@ public:
   }
 };
 
-class MixingBowl : public MethodOp
+class MixingBowlOp : public MethodOp
 {
 public:
-  MixingBowl() : MethodOp(), MixingBowlNo(1)
+  MixingBowlOp() : MethodOp(), MixingBowlNo(1)
   {
   }
 
-  MixingBowl(const unsigned MixingBowl) : MethodOp(), MixingBowlNo(MixingBowl)
+  MixingBowlOp(const unsigned MixingBowl) : MethodOp(), MixingBowlNo(MixingBowl)
   {
   }
 
@@ -112,14 +112,14 @@ private:
   unsigned MixingBowlNo;
 };
 
-class BakingDish : public MethodOp
+class BakingDishOp : public MethodOp
 {
 public:
-  BakingDish() : MethodOp(), BakingDishNo(1)
+  BakingDishOp() : MethodOp(), BakingDishNo(1)
   {
   }
 
-  BakingDish(const unsigned BakingDish) : MethodOp(), BakingDishNo(BakingDish)
+  BakingDishOp(const unsigned BakingDish) : MethodOp(), BakingDishNo(BakingDish)
   {
   }
 
@@ -142,13 +142,13 @@ public:
   void addMixingBowl(const unsigned MixingBowlNo)
   {
     MethodOps.push_back(
-        std::unique_ptr<MixingBowl>(new MixingBowl(MixingBowlNo)));
+        std::unique_ptr<MixingBowlOp>(new MixingBowlOp(MixingBowlNo)));
   }
 
   void addBakingDish(const unsigned BakingDishNo)
   {
     MethodOps.push_back(
-        std::unique_ptr<BakingDish>(new BakingDish(BakingDishNo)));
+        std::unique_ptr<BakingDishOp>(new BakingDishOp(BakingDishNo)));
   }
 
   friend std::ostream &operator<<(std::ostream &stream,
