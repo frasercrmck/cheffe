@@ -164,7 +164,27 @@ public:
   }
 
 private:
-  unsigned BakingDishNo;
+  unsigned BakingDishNo = 1;
+};
+
+class NumberOp : public MethodOp
+{
+public:
+  NumberOp() : MethodOp(), NumberValue(0)
+  {
+  }
+
+  NumberOp(const int Value) : MethodOp(), NumberValue(Value)
+  {
+  }
+
+  void dump(std::ostream &os) const override
+  {
+    os << "(Number " << NumberValue << ")";
+  }
+
+private:
+  int NumberValue = 0;
 };
 
 class CheffeMethodStep
@@ -200,6 +220,11 @@ public:
   {
     MethodOps.push_back(
         std::unique_ptr<BakingDishOp>(new BakingDishOp(BakingDishNo)));
+  }
+
+  void addNumber(const int NumberValue)
+  {
+    MethodOps.push_back(std::unique_ptr<NumberOp>(new NumberOp(NumberValue)));
   }
 
   friend std::ostream &operator<<(std::ostream &stream,

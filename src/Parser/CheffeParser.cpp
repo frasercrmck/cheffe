@@ -1158,6 +1158,8 @@ CheffeErrorCode CheffeParser::parseStirMethodStep()
       return CheffeErrorCode::CHEFFE_ERROR;
     }
 
+    const int NumberOfMinutes = CurrentToken.getNumVal();
+
     if (consumeAndExpectToken("minutes"))
     {
       return CheffeErrorCode::CHEFFE_ERROR;
@@ -1170,6 +1172,7 @@ CheffeErrorCode CheffeParser::parseStirMethodStep()
 
     auto MethodStep = CurrentRecipe->addNewMethodStep(MethodStepKind::StirBowl);
     MethodStep->addMixingBowl(MixingBowlNo);
+    MethodStep->addNumber(NumberOfMinutes);
 
     return CheffeErrorCode::CHEFFE_SUCCESS;
   }
@@ -1579,6 +1582,7 @@ CheffeErrorCode CheffeParser::parseRefrigerateMethodStep()
 {
   getNextToken();
 
+  unsigned NumberOfHours = 0u;
   if (CurrentToken.isNot(TokenKind::FullStop))
   {
     if (expectToken("for"))
@@ -1591,7 +1595,7 @@ CheffeErrorCode CheffeParser::parseRefrigerateMethodStep()
       return CheffeErrorCode::CHEFFE_ERROR;
     }
 
-    const unsigned NumberOfHours = CurrentToken.getNumVal();
+    NumberOfHours = CurrentToken.getNumVal();
 
     if (consumeAndExpectToken("hours"))
     {
@@ -1606,7 +1610,9 @@ CheffeErrorCode CheffeParser::parseRefrigerateMethodStep()
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
-  CurrentRecipe->addNewMethodStep(MethodStepKind::Refrigerate);
+  auto MethodStep =
+      CurrentRecipe->addNewMethodStep(MethodStepKind::Refrigerate);
+  MethodStep->addNumber(NumberOfHours);
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
