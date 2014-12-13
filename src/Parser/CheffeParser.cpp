@@ -366,7 +366,7 @@ CheffeErrorCode CheffeParser::parseIngredientsList()
     }
     CHEFFE_DEBUG(dbgs() << "INGREDIENT: " << Ingredient << std::endl);
 
-    CurrentRecipe->addIngredient(Ingredient);
+    CurrentRecipe->addIngredientDefinition(Ingredient);
   }
   CHEFFE_DEBUG(dbgs() << std::endl);
 

@@ -26,7 +26,7 @@ public:
     return RecipeTitle;
   }
 
-  void addIngredient(const CheffeIngredient &Ingredient)
+  void addIngredientDefinition(const CheffeIngredient &Ingredient)
   {
     // It's alright to overwrite an existing ingredient; it's in the spec
     auto IngredientInfo =
