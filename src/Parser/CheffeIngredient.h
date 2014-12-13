@@ -16,26 +16,26 @@ public:
   std::string MeasureType = "";
   std::string Measure = "";
   std::string Name = "";
-  friend std::ostream &operator<<(std::ostream &stream,
+  friend std::ostream &operator<<(std::ostream &OS,
                                   const CheffeIngredient &Ingredient);
 };
 
-inline std::ostream &operator<<(std::ostream &stream,
+inline std::ostream &operator<<(std::ostream &OS,
                                 const CheffeIngredient &Ingredient)
 {
   if (Ingredient.HasInitialValue)
   {
-    stream << Ingredient.InitialValue;
+    OS << Ingredient.InitialValue;
   }
   else
   {
-    stream << "<none>";
+    OS << "<none>";
   }
-  stream << ":";
-  stream << "'" << Ingredient.Name << "'";
-  stream << ":";
-  stream << (Ingredient.IsDry ? "d" : "w");
-  return stream;
+  OS << ":";
+  OS << "'" << Ingredient.Name << "'";
+  OS << ":";
+  OS << (Ingredient.IsDry ? "d" : "w");
+  return OS;
 }
 
 #endif // CHEFFE_INGREDIENT

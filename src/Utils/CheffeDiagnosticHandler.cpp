@@ -72,10 +72,10 @@ private:
   std::string ColourOn;
   std::string ColourOff;
 
-  friend std::ostream &operator<<(std::ostream &os, const ColourText &Text)
+  friend std::ostream &operator<<(std::ostream &OS, const ColourText &Text)
   {
-    os << Text.ColourOn << Text.Message << Text.ColourOff;
-    return os;
+    OS << Text.ColourOn << Text.Message << Text.ColourOff;
+    return OS;
   }
 };
 

@@ -54,10 +54,10 @@ static std::string TokenKindToString(const TokenKind Kind)
   }
 }
 
-static std::ostream &operator<<(std::ostream &stream, const TokenKind &Kind)
+static std::ostream &operator<<(std::ostream &OS, const TokenKind &Kind)
 {
-  stream << TokenKindToString(Kind);
-  return stream;
+  OS << TokenKindToString(Kind);
+  return OS;
 }
 
 struct SourceLocation
@@ -303,29 +303,29 @@ public:
     return NumVal;
   }
 
-  friend std::ostream &operator<<(std::ostream &stream, const Token &Tok)
+  friend std::ostream &operator<<(std::ostream &OS, const Token &Tok)
   {
     if (Tok.Kind == TokenKind::Identifier)
     {
       if (Tok.IdentifierString.empty())
       {
-        stream << "identifier";
+        OS << "identifier";
       }
       else
       {
-        stream << Tok.IdentifierString;
+        OS << Tok.IdentifierString;
       }
-      return stream;
+      return OS;
     }
 
     if (Tok.Kind == TokenKind::Number)
     {
-      stream << Tok.NumVal;
-      return stream;
+      OS << Tok.NumVal;
+      return OS;
     }
 
-    stream << Tok.Kind;
-    return stream;
+    OS << Tok.Kind;
+    return OS;
   }
 };
 

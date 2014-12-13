@@ -89,9 +89,9 @@ public:
   {
   }
 
-  virtual void dump(std::ostream &os) const
+  virtual void dump(std::ostream &OS) const
   {
-    (void)os;
+    (void)OS;
   }
 };
 
@@ -108,18 +108,18 @@ public:
   {
   }
 
-  void dump(std::ostream &os) const override
+  void dump(std::ostream &OS) const override
   {
-    os << "(Ingredient ";
+    OS << "(Ingredient ";
     if (IsUndefined)
     {
-      os << "<undefined>";
+      OS << "<undefined>";
     }
     else
     {
-      os << *Ingredient;
+      OS << *Ingredient;
     }
-    os << ")";
+    OS << ")";
   }
 
 private:
@@ -138,9 +138,9 @@ public:
   {
   }
 
-  void dump(std::ostream &os) const override
+  void dump(std::ostream &OS) const override
   {
-    os << "(MixingBowl " << MixingBowlNo << ")";
+    OS << "(MixingBowl " << MixingBowlNo << ")";
   }
 
 private:
@@ -158,9 +158,9 @@ public:
   {
   }
 
-  void dump(std::ostream &os) const override
+  void dump(std::ostream &OS) const override
   {
-    os << "(BakingDish " << BakingDishNo << ")";
+    OS << "(BakingDish " << BakingDishNo << ")";
   }
 
 private:
@@ -178,9 +178,9 @@ public:
   {
   }
 
-  void dump(std::ostream &os) const override
+  void dump(std::ostream &OS) const override
   {
-    os << "(Number " << NumberValue << ")";
+    OS << "(Number " << NumberValue << ")";
   }
 
 private:
@@ -227,17 +227,17 @@ public:
     MethodOps.push_back(std::unique_ptr<NumberOp>(new NumberOp(NumberValue)));
   }
 
-  friend std::ostream &operator<<(std::ostream &stream,
+  friend std::ostream &operator<<(std::ostream &OS,
                                   const CheffeMethodStep &MethodStep)
   {
-    stream << getMethodStepKindAsString(MethodStep.Kind);
+    OS << getMethodStepKindAsString(MethodStep.Kind);
     for (auto &Op : MethodStep.MethodOps)
     {
-      stream << ", ";
-      Op->dump(stream);
+      OS << ", ";
+      Op->dump(OS);
     }
-    stream << std::endl;
-    return stream;
+    OS << std::endl;
+    return OS;
   }
 
 private:
