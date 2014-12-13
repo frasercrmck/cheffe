@@ -22,7 +22,9 @@ public:
   void addIngredient(const CheffeIngredient &Ingredient)
   {
     // It's alright to overwrite an existing ingredient; it's in the spec
-    Ingredients[Ingredient.Name] = Ingredient;
+    auto IngredientInfo =
+        std::shared_ptr<CheffeIngredient>(new CheffeIngredient(Ingredient));
+    Ingredients[IngredientInfo->Name] = std::move(IngredientInfo);
   }
 
   bool wasIngredientDefined(const std::string &Ingredient)
@@ -45,7 +47,7 @@ public:
 
 private:
   std::string RecipeTitle;
-  std::map<std::string, CheffeIngredient> Ingredients;
+  std::map<std::string, std::shared_ptr<CheffeIngredient>> Ingredients;
   std::vector<std::shared_ptr<CheffeMethodStep>> MethodSteps;
 };
 
