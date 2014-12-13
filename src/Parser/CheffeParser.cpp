@@ -891,6 +891,7 @@ CheffeParser::parsePutOrFoldMethodStep(const MethodStepKind Step)
   }
 
   auto MethodStep = CurrentRecipe->addNewMethodStep(Step);
+  MethodStep->addIngredient();
   MethodStep->addMixingBowl(MixingBowlNo);
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
@@ -914,6 +915,8 @@ CheffeParser::parseArithmeticMethodStep(const MethodStepKind Step)
     cheffe_unreachable("Invalid method step kind");
   }
   const std::string Preposition = MethodStepPrepositions.find(Step)->second;
+
+  auto MethodStep = CurrentRecipe->addNewMethodStep(Kind);
 
   if (Step == MethodStepKind::Add && CurrentToken.is("dry"))
   {
@@ -941,9 +944,9 @@ CheffeParser::parseArithmeticMethodStep(const MethodStepKind Step)
     const SourceLocation IngredientLoc(BeginIngredientLoc, EndIngredientLoc);
 
     emitDiagnosticIfIngredientUndefined(Ingredient, IngredientLoc);
-  }
 
-  auto MethodStep = CurrentRecipe->addNewMethodStep(Kind);
+    MethodStep->addIngredient();
+  }
 
   unsigned MixingBowlNo = 1;
   if (CurrentToken.isNot(Preposition.c_str()))
@@ -1022,7 +1025,8 @@ CheffeErrorCode CheffeParser::parseTakeMethodStep()
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
-  CurrentRecipe->addNewMethodStep(MethodStepKind::Take);
+  auto MethodStep = CurrentRecipe->addNewMethodStep(MethodStepKind::Take);
+  MethodStep->addIngredient();
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
@@ -1094,7 +1098,9 @@ CheffeErrorCode CheffeParser::parseLiquifyMethodStep()
 
   emitDiagnosticIfIngredientUndefined(Ingredient, IngredientLoc);
 
-  CurrentRecipe->addNewMethodStep(MethodStepKind::LiquifyIngredient);
+  auto MethodStep =
+      CurrentRecipe->addNewMethodStep(MethodStepKind::LiquifyIngredient);
+  MethodStep->addIngredient();
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
@@ -1209,6 +1215,7 @@ CheffeErrorCode CheffeParser::parseStirMethodStep()
 
   auto MethodStep =
       CurrentRecipe->addNewMethodStep(MethodStepKind::StirIngredient);
+  MethodStep->addIngredient();
   MethodStep->addMixingBowl(MixingBowlNo);
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
@@ -1406,6 +1413,7 @@ CheffeErrorCode CheffeParser::parseVerbMethodStep()
   const std::string Verb = CurrentToken.getIdentifierString();
   getNextToken();
 
+  bool HasIngredient = false;
   if (CurrentToken.is("the"))
   {
     getNextToken();
@@ -1424,12 +1432,15 @@ CheffeErrorCode CheffeParser::parseVerbMethodStep()
     const SourceLocation IngredientLoc(BeginIngredientLoc, EndIngredientLoc);
 
     emitDiagnosticIfIngredientUndefined(Ingredient, IngredientLoc);
+    HasIngredient = true;
   }
+
+  std::shared_ptr<CheffeMethodStep> MethodStep = nullptr;
 
   if (CurrentToken.isNot("until"))
   {
     LoopNestInfo.push_back(Verb);
-    CurrentRecipe->addNewMethodStep(MethodStepKind::Verb);
+    MethodStep = CurrentRecipe->addNewMethodStep(MethodStepKind::Verb);
   }
   else
   {
@@ -1475,7 +1486,14 @@ CheffeErrorCode CheffeParser::parseVerbMethodStep()
       return CheffeErrorCode::CHEFFE_ERROR;
     }
     getNextToken();
-    CurrentRecipe->addNewMethodStep(MethodStepKind::UntilVerbed);
+    MethodStep = CurrentRecipe->addNewMethodStep(MethodStepKind::UntilVerbed);
+  }
+
+  assert(MethodStep != nullptr && "Method step was undefined");
+
+  if (HasIngredient)
+  {
+    MethodStep->addIngredient();
   }
 
   if (expectToken(TokenKind::FullStop))

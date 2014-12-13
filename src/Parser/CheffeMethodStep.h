@@ -1,6 +1,8 @@
 #ifndef CHEFFE_METHOD_STEP
 #define CHEFFE_METHOD_STEP
 
+#include "Parser/CheffeIngredient.h"
+
 #include <vector>
 #include <ostream>
 #include <memory>
@@ -92,6 +94,28 @@ public:
   }
 };
 
+class IngredientOp : public MethodOp
+{
+public:
+  IngredientOp() : MethodOp(), IsUndefined(true), Ingredient(nullptr)
+  {
+  }
+
+  void dump(std::ostream &os) const override
+  {
+    os << "(Ingredient ";
+    if (IsUndefined)
+    {
+      os << "<undefined>";
+    }
+    os << ")";
+  }
+
+private:
+  bool IsUndefined;
+  std::shared_ptr<CheffeIngredient> Ingredient;
+};
+
 class MixingBowlOp : public MethodOp
 {
 public:
@@ -137,6 +161,11 @@ class CheffeMethodStep
 public:
   CheffeMethodStep(const MethodStepKind Kind) : Kind(Kind)
   {
+  }
+
+  void addIngredient()
+  {
+    MethodOps.push_back(std::unique_ptr<IngredientOp>(new IngredientOp()));
   }
 
   void addMixingBowl(const unsigned MixingBowlNo)
