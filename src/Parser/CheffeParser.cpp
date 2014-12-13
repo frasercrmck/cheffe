@@ -1651,6 +1651,8 @@ CheffeErrorCode CheffeParser::parseServesStatement()
 
   CHEFFE_DEBUG(dbgs() << "SERVES: " << ServesNo << std::endl << std::endl);
 
+  CurrentRecipe->setServesNo(ServesNo);
+
   getNextToken();
   if (CurrentToken.isNotAnyOf(TokenKind::EndOfParagraph, TokenKind::EndOfFile))
   {

@@ -12,8 +12,13 @@ class CheffeRecipeInfo
 public:
   CheffeRecipeInfo() = delete;
 
-  CheffeRecipeInfo(const std::string &Title) : RecipeTitle(Title)
+  CheffeRecipeInfo(const std::string &Title) : ServesNo(0), RecipeTitle(Title)
   {
+  }
+
+  void setServesNo(const int Serves)
+  {
+    ServesNo = Serves;
   }
 
   std::string getRecipeTitle()
@@ -29,7 +34,8 @@ public:
     Ingredients[IngredientInfo->Name] = std::move(IngredientInfo);
   }
 
-  std::shared_ptr<CheffeIngredient> getIngredient(const std::string &IngredientName)
+  std::shared_ptr<CheffeIngredient>
+  getIngredient(const std::string &IngredientName)
   {
     auto Ingredient = Ingredients.find(IngredientName);
     if (Ingredient == std::end(Ingredients))
@@ -53,6 +59,7 @@ public:
   }
 
 private:
+  int ServesNo;
   std::string RecipeTitle;
   std::map<std::string, std::shared_ptr<CheffeIngredient>> Ingredients;
   std::vector<std::shared_ptr<CheffeMethodStep>> MethodSteps;
