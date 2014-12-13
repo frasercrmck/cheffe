@@ -31,10 +31,10 @@ inline std::ostream &operator<<(std::ostream &stream,
   {
     stream << "<none>";
   }
-  stream << " - ";
-  stream << (Ingredient.IsDry ? "dry" : "wet");
-  stream << " - ";
-  stream << "\"" << Ingredient.Name << "\"";
+  stream << ":";
+  stream << "'" << Ingredient.Name << "'";
+  stream << ":";
+  stream << (Ingredient.IsDry ? "d" : "w");
   return stream;
 }
 
