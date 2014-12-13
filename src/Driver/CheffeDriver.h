@@ -5,6 +5,7 @@
 #include "Utils/CheffeDiagnosticHandler.h"
 
 #include <vector>
+#include <memory>
 
 namespace cheffe
 {

@@ -6,6 +6,7 @@
 #include "Utils/CheffeDiagnosticHandler.h"
 
 #include <string>
+#include <cstring>
 #include <iostream>
 
 using namespace cheffe;
@@ -33,17 +34,17 @@ int main(int argc, char **argv)
   std::string FileName;
   for (int i = 1; i < argc; ++i)
   {
-    if (!strcmp(argv[i], "-help"))
+    if (!std::strcmp(argv[i], "-help"))
     {
       printUsage();
       return 0;
     }
-    if (!strcmp(argv[i], "-debug"))
+    if (!std::strcmp(argv[i], "-debug"))
     {
       setDebugFlag(true);
       continue;
     }
-    if (!strcmp(argv[i], "-debug-only"))
+    if (!std::strcmp(argv[i], "-debug-only"))
     {
       if (i != argc - 1)
       {

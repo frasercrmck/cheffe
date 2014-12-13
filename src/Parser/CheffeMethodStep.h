@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <ostream>
+#include <memory>
 
 enum class MethodStepKind
 {

@@ -11,6 +11,7 @@
 #endif
 
 #if CHEFFE_POSIX
+#include <cstring>
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
