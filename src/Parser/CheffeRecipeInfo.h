@@ -10,6 +10,8 @@
 class CheffeRecipeInfo
 {
 public:
+  CheffeRecipeInfo() = delete;
+
   CheffeRecipeInfo(const std::string &Title) : RecipeTitle(Title)
   {
   }
