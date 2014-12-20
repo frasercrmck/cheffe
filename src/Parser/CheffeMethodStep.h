@@ -89,6 +89,8 @@ public:
   {
   }
 
+  virtual ~MethodOp() {}
+
   virtual void dump(std::ostream &OS) const
   {
     (void)OS;
@@ -99,6 +101,10 @@ class IngredientOp : public MethodOp
 {
 public:
   IngredientOp() : MethodOp(), IsUndefined(true), Ingredient(nullptr)
+  {
+  }
+
+  ~IngredientOp() override
   {
   }
 
