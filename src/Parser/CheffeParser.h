@@ -80,23 +80,26 @@ private:
 
   std::shared_ptr<CheffeDiagnosticHandler> Diagnostics;
 
-  std::map<std::string, std::unique_ptr<CheffeRecipeInfo>> RecipeInfo;
 
 public:
   CheffeParser(const CheffeSourceFile &SrcFile,
                std::shared_ptr<CheffeDiagnosticHandler> Diags)
       : Lexer(SrcFile), CurrentToken(), Diagnostics(Diags),
-        CurrentRecipe(nullptr)
+        CurrentRecipe(nullptr), RecipeInfo(new RecipeMap())
   {
   }
 
   CheffeErrorCode parseRecipe();
+
+  typedef std::map<std::string, std::unique_ptr<CheffeRecipeInfo>> RecipeMap;
+  std::unique_ptr<RecipeMap> takeRecipeInfo();
 
   static CheffeErrorCode checkOrdinalIdentifier(const unsigned Number,
                                                 const std::string &Sequence);
 
 private:
   CheffeRecipeInfo *CurrentRecipe;
+  std::unique_ptr<RecipeMap> RecipeInfo;
 
   std::vector<std::string> LoopNestInfo;
 

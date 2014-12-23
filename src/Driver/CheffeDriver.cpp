@@ -31,6 +31,18 @@ CheffeErrorCode CheffeDriver::compileRecipe()
 
   const CheffeErrorCode Success = Parser.parseRecipe();
 
+  if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
+  {
+    return Success;
+  }
+
+  std::unique_ptr<CheffeParser::RecipeMap> RecipeInfo = Parser.takeRecipeInfo();
+
+  if (!RecipeInfo)
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
   return Success;
 }
 

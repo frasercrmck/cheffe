@@ -37,6 +37,11 @@ CheffeParser::getIngredientInfo(const std::string &IngredientName,
   return std::make_pair(true, nullptr);
 }
 
+std::unique_ptr<CheffeParser::RecipeMap> CheffeParser::takeRecipeInfo()
+{
+  return std::move(RecipeInfo);
+}
+
 // Parse an ordinal identifier at the current token, if it's a number. Ordinal
 // identifiers are always optional. Note that this can update the current
 // token.
@@ -133,7 +138,12 @@ CheffeErrorCode CheffeParser::parseRecipe()
       return Success;
     }
 
-    if (RecipeInfo.find(RecipeTitle) != std::end(RecipeInfo))
+    if (!RecipeInfo)
+    {
+      return CheffeErrorCode::CHEFFE_ERROR;
+    }
+
+    if ((*RecipeInfo).find(RecipeTitle) != std::end(*RecipeInfo))
     {
       Diagnostics->report(RecipeTitleLoc, DiagnosticKind::Error,
                           LineContext::WithContext)
@@ -145,7 +155,7 @@ CheffeErrorCode CheffeParser::parseRecipe()
         std::unique_ptr<CheffeRecipeInfo>(new CheffeRecipeInfo(RecipeTitle));
 
     CurrentRecipe = Recipe.get();
-    RecipeInfo[RecipeTitle] = std::move(Recipe);
+    RecipeInfo->insert(std::make_pair(RecipeTitle, std::move(Recipe)));
 
     Success = parseCommentBlock();
     if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
