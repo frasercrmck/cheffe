@@ -74,13 +74,6 @@ const std::map<MethodStepKind, std::string> MethodStepPrepositions = {
 
 class CheffeParser
 {
-private:
-  CheffeLexer Lexer;
-  Token CurrentToken;
-
-  std::shared_ptr<CheffeDiagnosticHandler> Diagnostics;
-
-
 public:
   CheffeParser(const CheffeSourceFile &SrcFile,
                std::shared_ptr<CheffeDiagnosticHandler> Diags)
@@ -98,6 +91,10 @@ public:
                                                 const std::string &Sequence);
 
 private:
+  CheffeLexer Lexer;
+  Token CurrentToken;
+
+  std::shared_ptr<CheffeDiagnosticHandler> Diagnostics;
   CheffeRecipeInfo *CurrentRecipe;
   std::unique_ptr<RecipeMap> RecipeInfo;
 
