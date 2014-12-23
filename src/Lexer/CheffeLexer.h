@@ -42,10 +42,7 @@ public:
   // Returns a copy of the span of text from the input file.
   std::string getTextSpan(const std::size_t Begin, const std::size_t End);
 
-  void setIgnoreNewLines(const bool Ignore)
-  {
-    IgnoreNewLines = Ignore;
-  }
+  void setIgnoreNewLines(const bool Ignore);
 };
 
 } // end namespace cheffe

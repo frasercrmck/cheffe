@@ -5,6 +5,11 @@
 namespace cheffe
 {
 
+void CheffeLexer::setIgnoreNewLines(const bool Ignore)
+{
+  IgnoreNewLines = Ignore;
+}
+
 int CheffeLexer::getNextChar()
 {
   if (static_cast<std::size_t>(CurrentPos) >= File.Source.size())
