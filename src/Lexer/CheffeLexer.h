@@ -31,16 +31,16 @@ public:
   int getNextChar();
 
   // Peeks at the next char from the input
-  int peekNextChar();
+  int peekNextChar() const;
 
   // Returns a token from the input, consuming one or more characters.
   Token getToken();
 
   // Looks ahead NumChars chars, or until the end of the file.
-  std::string lookAhead(const std::size_t NumChars);
+  std::string lookAhead(const std::size_t NumChars) const;
 
   // Returns a copy of the span of text from the input file.
-  std::string getTextSpan(const std::size_t Begin, const std::size_t End);
+  std::string getTextSpan(const std::size_t Begin, const std::size_t End) const;
 
   void setIgnoreNewLines(const bool Ignore);
 };

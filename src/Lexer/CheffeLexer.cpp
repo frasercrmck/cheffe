@@ -29,7 +29,7 @@ int CheffeLexer::getNextChar()
   return Char;
 }
 
-int CheffeLexer::peekNextChar()
+int CheffeLexer::peekNextChar() const
 {
   if (static_cast<std::size_t>(CurrentPos) >= File.Source.size())
   {
@@ -39,13 +39,13 @@ int CheffeLexer::peekNextChar()
 }
 
 std::string CheffeLexer::getTextSpan(const std::size_t Begin,
-                                     const std::size_t End)
+                                     const std::size_t End) const
 {
   assert(Begin >= 0 && Begin <= End && "");
   return File.Source.substr(Begin, End - Begin);
 }
 
-std::string CheffeLexer::lookAhead(const std::size_t NumChars)
+std::string CheffeLexer::lookAhead(const std::size_t NumChars) const
 {
   assert(CurrentPos < File.Source.size() && "");
   // This std::string constructor handles the case if
