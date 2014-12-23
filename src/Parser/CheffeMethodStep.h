@@ -1,12 +1,12 @@
 #ifndef CHEFFE_METHOD_STEP
 #define CHEFFE_METHOD_STEP
 
-#include "Parser/CheffeIngredient.h"
-
 #include <vector>
 #include <ostream>
 #include <memory>
 #include <cassert>
+
+class CheffeIngredient;
 
 enum class MethodStepKind
 {
@@ -33,55 +33,6 @@ enum class MethodStepKind
   Invalid
 };
 
-static std::string getMethodStepKindAsString(const MethodStepKind Kind)
-{
-  switch (Kind)
-  {
-  case MethodStepKind::Take:
-    return "TAKE";
-  case MethodStepKind::Put:
-    return "PUT";
-  case MethodStepKind::Fold:
-    return "FOLD";
-  case MethodStepKind::Add:
-    return "ADD";
-  case MethodStepKind::Remove:
-    return "REMOVE";
-  case MethodStepKind::Combine:
-    return "COMBINE";
-  case MethodStepKind::Divide:
-    return "DIVIDE";
-  case MethodStepKind::AddDry:
-    return "ADD_DRY";
-  case MethodStepKind::LiquifyBowl:
-    return "LIQUIFY_BOWL";
-  case MethodStepKind::LiquifyIngredient:
-    return "LIQUIFY_INGREDIENT";
-  case MethodStepKind::StirBowl:
-    return "STIR_BOWL";
-  case MethodStepKind::StirIngredient:
-    return "STIR_INGREDIENT";
-  case MethodStepKind::Mix:
-    return "MIX";
-  case MethodStepKind::Clean:
-    return "CLEAN";
-  case MethodStepKind::Pour:
-    return "POUR";
-  case MethodStepKind::Verb:
-    return "VERB";
-  case MethodStepKind::UntilVerbed:
-    return "UNTIL_VERBED";
-  case MethodStepKind::SetAside:
-    return "SET_ASIDE";
-  case MethodStepKind::Serve:
-    return "SERVE";
-  case MethodStepKind::Refrigerate:
-    return "REFRIGERATE";
-  case MethodStepKind::Invalid:
-    return "INVALID";
-  }
-}
-
 class MethodOp
 {
 public:
@@ -93,10 +44,7 @@ public:
   {
   }
 
-  virtual void dump(std::ostream &OS) const
-  {
-    (void)OS;
-  }
+  virtual void dump(std::ostream &OS) const;
 };
 
 class IngredientOp : public MethodOp
@@ -116,19 +64,7 @@ public:
   {
   }
 
-  void dump(std::ostream &OS) const override
-  {
-    OS << "(Ingredient ";
-    if (IsUndefined)
-    {
-      OS << "<undefined>";
-    }
-    else
-    {
-      OS << *Ingredient;
-    }
-    OS << ")";
-  }
+  void dump(std::ostream &OS) const override;
 
 private:
   bool IsUndefined;
@@ -146,10 +82,7 @@ public:
   {
   }
 
-  void dump(std::ostream &OS) const override
-  {
-    OS << "(MixingBowl " << MixingBowlNo << ")";
-  }
+  void dump(std::ostream &OS) const override;
 
 private:
   unsigned MixingBowlNo;
@@ -166,10 +99,7 @@ public:
   {
   }
 
-  void dump(std::ostream &OS) const override
-  {
-    OS << "(BakingDish " << BakingDishNo << ")";
-  }
+  void dump(std::ostream &OS) const override;
 
 private:
   unsigned BakingDishNo = 1;
@@ -186,10 +116,7 @@ public:
   {
   }
 
-  void dump(std::ostream &OS) const override
-  {
-    OS << "(Number " << NumberValue << ")";
-  }
+  void dump(std::ostream &OS) const override;
 
 private:
   int NumberValue = 0;
@@ -206,10 +133,7 @@ public:
   {
   }
 
-  void dump(std::ostream &OS) const override
-  {
-    OS << "(Recipe '" << RecipeName << "')";
-  }
+  void dump(std::ostream &OS) const override;
 
 private:
   std::string RecipeName = "";
@@ -223,55 +147,21 @@ public:
   }
 
   void addIngredient(
-      const std::pair<bool, std::shared_ptr<CheffeIngredient>> &IngredientInfo)
-  {
-    addIngredient(IngredientInfo.first, IngredientInfo.second);
-  }
+      const std::pair<bool, std::shared_ptr<CheffeIngredient>> &IngredientInfo);
 
   void addIngredient(const bool IsUndefined,
-                     const std::shared_ptr<CheffeIngredient> &Ingredient)
-  {
-    assert(((IsUndefined && Ingredient == nullptr) ||
-            (!IsUndefined && Ingredient != nullptr)) &&
-           "Invalid ingredient information");
-    MethodOps.push_back(std::unique_ptr<IngredientOp>(
-        new IngredientOp(IsUndefined, Ingredient)));
-  }
+                     const std::shared_ptr<CheffeIngredient> &Ingredient);
 
-  void addMixingBowl(const unsigned MixingBowlNo)
-  {
-    MethodOps.push_back(
-        std::unique_ptr<MixingBowlOp>(new MixingBowlOp(MixingBowlNo)));
-  }
+  void addMixingBowl(const unsigned MixingBowlNo);
 
-  void addBakingDish(const unsigned BakingDishNo)
-  {
-    MethodOps.push_back(
-        std::unique_ptr<BakingDishOp>(new BakingDishOp(BakingDishNo)));
-  }
+  void addBakingDish(const unsigned BakingDishNo);
 
-  void addNumber(const int NumberValue)
-  {
-    MethodOps.push_back(std::unique_ptr<NumberOp>(new NumberOp(NumberValue)));
-  }
+  void addNumber(const int NumberValue);
 
-  void addRecipe(const std::string &RecipeName)
-  {
-    MethodOps.push_back(std::unique_ptr<RecipeOp>(new RecipeOp(RecipeName)));
-  }
+  void addRecipe(const std::string &RecipeName);
 
   friend std::ostream &operator<<(std::ostream &OS,
-                                  const CheffeMethodStep &MethodStep)
-  {
-    OS << getMethodStepKindAsString(MethodStep.Kind);
-    for (auto &Op : MethodStep.MethodOps)
-    {
-      OS << ", ";
-      Op->dump(OS);
-    }
-    OS << std::endl;
-    return OS;
-  }
+                                  const CheffeMethodStep &MethodStep);
 
 private:
   MethodStepKind Kind;

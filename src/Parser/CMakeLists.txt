@@ -2,6 +2,7 @@ set(
   cheffe-src-files
   CheffeParser.cpp
   CheffeRecipeInfo.cpp
+  CheffeMethodStep.cpp
 )
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../ )
