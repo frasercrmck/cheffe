@@ -89,7 +89,9 @@ public:
   {
   }
 
-  virtual ~MethodOp() {}
+  virtual ~MethodOp()
+  {
+  }
 
   virtual void dump(std::ostream &OS) const
   {
@@ -193,6 +195,26 @@ private:
   int NumberValue = 0;
 };
 
+class RecipeOp : public MethodOp
+{
+public:
+  RecipeOp() : MethodOp(), RecipeName("")
+  {
+  }
+
+  RecipeOp(const std::string &Recipe) : MethodOp(), RecipeName(Recipe)
+  {
+  }
+
+  void dump(std::ostream &OS) const override
+  {
+    OS << "(Recipe '" << RecipeName << "')";
+  }
+
+private:
+  std::string RecipeName = "";
+};
+
 class CheffeMethodStep
 {
 public:
@@ -231,6 +253,11 @@ public:
   void addNumber(const int NumberValue)
   {
     MethodOps.push_back(std::unique_ptr<NumberOp>(new NumberOp(NumberValue)));
+  }
+
+  void addRecipe(const std::string &RecipeName)
+  {
+    MethodOps.push_back(std::unique_ptr<RecipeOp>(new RecipeOp(RecipeName)));
   }
 
   friend std::ostream &operator<<(std::ostream &OS,
