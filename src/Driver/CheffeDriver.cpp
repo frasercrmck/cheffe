@@ -1,3 +1,4 @@
+#include "CheffeCommon.h"
 #include "Driver/CheffeDriver.h"
 #include "Parser/CheffeParser.h"
 
@@ -36,7 +37,7 @@ CheffeErrorCode CheffeDriver::compileRecipe()
     return Success;
   }
 
-  std::unique_ptr<CheffeParser::RecipeMap> RecipeInfo = Parser.takeRecipeInfo();
+  std::unique_ptr<RecipeMap> RecipeInfo = Parser.takeRecipeInfo();
 
   if (!RecipeInfo)
   {

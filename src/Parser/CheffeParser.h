@@ -2,6 +2,7 @@
 #define CHEFFE_PARSER
 
 #include "cheffe.h"
+#include "CheffeCommon.h"
 #include "Lexer/CheffeLexer.h"
 #include "Parser/CheffeRecipeInfo.h"
 #include "Utils/CheffeDiagnosticHandler.h"
@@ -84,7 +85,6 @@ public:
 
   CheffeErrorCode parseRecipe();
 
-  typedef std::map<std::string, std::unique_ptr<CheffeRecipeInfo>> RecipeMap;
   std::unique_ptr<RecipeMap> takeRecipeInfo();
 
   static CheffeErrorCode checkOrdinalIdentifier(const unsigned Number,

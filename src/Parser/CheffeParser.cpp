@@ -1,3 +1,4 @@
+#include "Parser/CheffeRecipeInfo.h"
 #include "Parser/CheffeParser.h"
 #include "Parser/CheffeMethodStep.h"
 #include "Parser/CheffeIngredient.h"
@@ -37,7 +38,7 @@ CheffeParser::getIngredientInfo(const std::string &IngredientName,
   return std::make_pair(true, nullptr);
 }
 
-std::unique_ptr<CheffeParser::RecipeMap> CheffeParser::takeRecipeInfo()
+std::unique_ptr<RecipeMap> CheffeParser::takeRecipeInfo()
 {
   return std::move(RecipeInfo);
 }
