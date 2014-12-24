@@ -12,14 +12,15 @@ add_executable( cheffe ${cheffe-src-files} )
 
 add_subdirectory( Lexer )
 add_subdirectory( Parser )
+add_subdirectory( JIT )
 add_subdirectory( Driver )
 add_subdirectory( Utils )
 
 target_link_libraries ( cheffe
-  CheffeParser CheffeLexer CheffeDriver CheffeUtils
+  CheffeParser CheffeLexer CheffeDriver CheffeUtils CheffeJIT
 )
 
 add_library( cheffe_test_lib INTERFACE )
 target_link_libraries( cheffe_test_lib INTERFACE
-  CheffeParser CheffeLexer CheffeDriver CheffeUtils
+  CheffeParser CheffeLexer CheffeDriver CheffeUtils CheffeJIT
 )

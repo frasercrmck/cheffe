@@ -1,6 +1,7 @@
 #include "CheffeCommon.h"
 #include "Driver/CheffeDriver.h"
 #include "Parser/CheffeParser.h"
+#include "JIT/CheffeJIT.h"
 
 namespace cheffe
 {
@@ -30,19 +31,28 @@ CheffeErrorCode CheffeDriver::compileRecipe()
   Diagnostics->setSourceFile(File);
   CheffeParser Parser(File, Diagnostics);
 
-  const CheffeErrorCode Success = Parser.parseRecipe();
+  CheffeErrorCode Success = Parser.parseRecipe();
 
   if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
   {
     return Success;
   }
 
-  const std::string MainRecipeTitle = Parser.getMainRecipeTitle();
   std::unique_ptr<RecipeMap> RecipeInfo = Parser.takeRecipeInfo();
+  const std::string MainRecipeTitle = Parser.getMainRecipeTitle();
 
   if (!RecipeInfo)
   {
     return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
+  CheffeJIT JIT(std::move(RecipeInfo), MainRecipeTitle);
+
+  Success = JIT.executeRecipe();
+
+  if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
+  {
+    return Success;
   }
 
   return Success;
