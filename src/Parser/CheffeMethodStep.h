@@ -149,6 +149,8 @@ public:
   {
   }
 
+  MethodStepKind getMethodStepKind() const;
+
   void addIngredient(
       const std::pair<bool, std::shared_ptr<CheffeIngredient>> &IngredientInfo);
 

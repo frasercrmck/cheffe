@@ -92,6 +92,11 @@ void RecipeOp::dump(std::ostream &OS) const
   OS << "(Recipe '" << RecipeName << "')";
 }
 
+MethodStepKind CheffeMethodStep::getMethodStepKind() const
+{
+  return Kind;
+}
+
 void CheffeMethodStep::addIngredient(
     const std::pair<bool, std::shared_ptr<CheffeIngredient>> &IngredientInfo)
 {
