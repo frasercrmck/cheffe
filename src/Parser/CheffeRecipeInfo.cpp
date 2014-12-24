@@ -1,6 +1,9 @@
 #include "Parser/CheffeRecipeInfo.h"
 #include "Parser/CheffeIngredient.h"
 
+namespace cheffe
+{
+
 void CheffeRecipeInfo::setServesNo(const int Serves)
 {
   ServesNo = Serves;
@@ -45,3 +48,5 @@ CheffeRecipeInfo::getMethodStepList()
 {
   return MethodSteps;
 }
+
+} // end namespace cheffe

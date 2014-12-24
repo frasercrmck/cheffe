@@ -4,6 +4,9 @@
 #include <string>
 #include <ostream>
 
+namespace cheffe
+{
+
 class CheffeIngredient
 {
 public:
@@ -37,5 +40,7 @@ inline std::ostream &operator<<(std::ostream &OS,
   OS << (Ingredient.IsDry ? "d" : "w");
   return OS;
 }
+
+} // end namespace cheffe
 
 #endif // CHEFFE_INGREDIENT

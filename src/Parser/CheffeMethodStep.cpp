@@ -1,6 +1,9 @@
 #include "Parser/CheffeMethodStep.h"
 #include "Parser/CheffeIngredient.h"
 
+namespace cheffe
+{
+
 static std::string getMethodStepKindAsString(const MethodStepKind Kind)
 {
   switch (Kind)
@@ -138,3 +141,5 @@ std::ostream &operator<<(std::ostream &OS, const CheffeMethodStep &MethodStep)
   OS << std::endl;
   return OS;
 }
+
+} // end namespace cheffe

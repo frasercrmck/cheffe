@@ -6,6 +6,9 @@
 #include <memory>
 #include <cassert>
 
+namespace cheffe
+{
+
 class CheffeIngredient;
 
 enum class MethodStepKind
@@ -167,5 +170,7 @@ private:
   MethodStepKind Kind;
   std::vector<std::unique_ptr<MethodOp>> MethodOps;
 };
+
+} // end namespace cheffe
 
 #endif // CHEFFE_METHOD_STEP

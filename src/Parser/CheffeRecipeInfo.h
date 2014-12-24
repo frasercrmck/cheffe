@@ -7,6 +7,9 @@
 #include <vector>
 #include <string>
 
+namespace cheffe
+{
+
 class CheffeIngredient;
 
 class CheffeRecipeInfo
@@ -37,5 +40,7 @@ private:
   std::map<std::string, std::shared_ptr<CheffeIngredient>> Ingredients;
   std::vector<std::shared_ptr<CheffeMethodStep>> MethodSteps;
 };
+
+} // end namespace cheffe
 
 #endif // CHEFFE_RECIPE_INFO
