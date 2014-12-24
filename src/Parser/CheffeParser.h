@@ -85,6 +85,7 @@ public:
 
   CheffeErrorCode parseRecipe();
 
+  std::string getMainRecipeTitle() const;
   std::unique_ptr<RecipeMap> takeRecipeInfo();
 
   static CheffeErrorCode checkOrdinalIdentifier(const unsigned Number,
@@ -97,6 +98,8 @@ private:
   std::shared_ptr<CheffeDiagnosticHandler> Diagnostics;
   CheffeRecipeInfo *CurrentRecipe;
   std::unique_ptr<RecipeMap> RecipeInfo;
+
+  std::string MainRecipeTitle;
 
   std::vector<std::string> LoopNestInfo;
 

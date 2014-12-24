@@ -37,6 +37,7 @@ CheffeErrorCode CheffeDriver::compileRecipe()
     return Success;
   }
 
+  const std::string MainRecipeTitle = Parser.getMainRecipeTitle();
   std::unique_ptr<RecipeMap> RecipeInfo = Parser.takeRecipeInfo();
 
   if (!RecipeInfo)

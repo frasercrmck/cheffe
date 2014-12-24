@@ -38,6 +38,11 @@ CheffeParser::getIngredientInfo(const std::string &IngredientName,
   return std::make_pair(true, nullptr);
 }
 
+std::string CheffeParser::getMainRecipeTitle() const
+{
+  return MainRecipeTitle;
+}
+
 std::unique_ptr<RecipeMap> CheffeParser::takeRecipeInfo()
 {
   return std::move(RecipeInfo);
@@ -150,6 +155,11 @@ CheffeErrorCode CheffeParser::parseRecipe()
                           LineContext::WithContext)
           << "Recipe '" << RecipeTitle << "' defined more than once!";
       return CheffeErrorCode::CHEFFE_ERROR;
+    }
+
+    if (MainRecipeTitle.empty())
+    {
+      MainRecipeTitle = RecipeTitle;
     }
 
     auto Recipe =
