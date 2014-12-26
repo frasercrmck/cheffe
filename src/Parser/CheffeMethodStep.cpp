@@ -58,6 +58,11 @@ void MethodOp::dump(std::ostream &OS) const
   (void)OS;
 }
 
+std::shared_ptr<CheffeIngredient> IngredientOp::getIngredient() const
+{
+  return IsUndefined ? nullptr : Ingredient;
+}
+
 void IngredientOp::dump(std::ostream &OS) const
 {
   OS << "(Ingredient ";
@@ -72,14 +77,29 @@ void IngredientOp::dump(std::ostream &OS) const
   OS << ")";
 }
 
+int MixingBowlOp::getMixingBowlNo() const
+{
+  return MixingBowlNo;
+}
+
 void MixingBowlOp::dump(std::ostream &OS) const
 {
   OS << "(MixingBowl " << MixingBowlNo << ")";
 }
 
+int BakingDishOp::getBakingDishNo() const
+{
+  return BakingDishNo;
+}
+
 void BakingDishOp::dump(std::ostream &OS) const
 {
   OS << "(BakingDish " << BakingDishNo << ")";
+}
+
+int NumberOp::getNumberValue() const
+{
+  return NumberValue;
 }
 
 void NumberOp::dump(std::ostream &OS) const
@@ -90,6 +110,12 @@ void NumberOp::dump(std::ostream &OS) const
 void RecipeOp::dump(std::ostream &OS) const
 {
   OS << "(Recipe '" << RecipeName << "')";
+}
+
+std::shared_ptr<MethodOp> CheffeMethodStep::getOperand(const unsigned Idx) const
+{
+  assert(Idx < MethodOps.size() && "Invalid operand access!");
+  return MethodOps[Idx];
 }
 
 MethodStepKind CheffeMethodStep::getMethodStepKind() const

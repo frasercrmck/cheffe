@@ -67,6 +67,8 @@ public:
   {
   }
 
+  std::shared_ptr<CheffeIngredient> getIngredient() const;
+
   void dump(std::ostream &OS) const override;
 
 private:
@@ -85,6 +87,8 @@ public:
   {
   }
 
+  int getMixingBowlNo() const;
+
   void dump(std::ostream &OS) const override;
 
 private:
@@ -102,6 +106,8 @@ public:
   {
   }
 
+  int getBakingDishNo() const;
+
   void dump(std::ostream &OS) const override;
 
 private:
@@ -118,6 +124,8 @@ public:
   NumberOp(const int Value) : MethodOp(), NumberValue(Value)
   {
   }
+
+  int getNumberValue() const;
 
   void dump(std::ostream &OS) const override;
 
@@ -150,6 +158,8 @@ public:
   }
 
   MethodStepKind getMethodStepKind() const;
+
+  std::shared_ptr<MethodOp> getOperand(const unsigned Idx) const;
 
   void addIngredient(
       const std::pair<bool, std::shared_ptr<CheffeIngredient>> &IngredientInfo);
