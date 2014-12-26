@@ -61,6 +61,7 @@ CheffeParser::parsePossibleOrdinalIdentifier(unsigned &MixingBowlNo)
   }
 
   const unsigned Number = CurrentToken.getNumVal();
+  auto NumberSourceLoc = CurrentToken.getSourceLoc();
   if (consumeAndExpectToken(TokenKind::Identifier))
   {
     return CheffeErrorCode::CHEFFE_ERROR;
@@ -73,6 +74,14 @@ CheffeParser::parsePossibleOrdinalIdentifier(unsigned &MixingBowlNo)
                         LineContext::WithContext)
         << "Incorrect use of ordinal identifier: mismatch between number and "
            "suffix";
+  }
+
+  if (Number == 0)
+  {
+    Diagnostics->report(NumberSourceLoc, DiagnosticKind::Error,
+                        LineContext::WithContext)
+        << "Cannot use 0 as an ordinal identifier";
+    return CheffeErrorCode::CHEFFE_ERROR;
   }
 
   getNextToken();
