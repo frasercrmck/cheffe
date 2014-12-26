@@ -947,7 +947,6 @@ CheffeErrorCode
 CheffeParser::parseArithmeticMethodStep(const MethodStepKind Step)
 {
   getNextToken();
-  MethodStepKind Kind = Step;
 
   if (MethodStepPrepositions.find(Step) == std::end(MethodStepPrepositions))
   {
@@ -955,15 +954,15 @@ CheffeParser::parseArithmeticMethodStep(const MethodStepKind Step)
   }
   const std::string Preposition = MethodStepPrepositions.find(Step)->second;
 
-  auto MethodStep = CurrentRecipe->addNewMethodStep(Kind);
+  std::shared_ptr<CheffeMethodStep> MethodStep = nullptr;
 
   if (Step == MethodStepKind::Add && CurrentToken.is("dry"))
   {
-    Kind = MethodStepKind::AddDry;
     if (consumeAndExpectToken("ingredients"))
     {
       return CheffeErrorCode::CHEFFE_ERROR;
     }
+    MethodStep = CurrentRecipe->addNewMethodStep(MethodStepKind::AddDry);
     getNextToken();
   }
   else
@@ -985,6 +984,7 @@ CheffeParser::parseArithmeticMethodStep(const MethodStepKind Step)
     auto IngredientInfo = getIngredientInfo(Ingredient, IngredientLoc,
                                             EmitDiagnosticIfUndef::Warning);
 
+    MethodStep = CurrentRecipe->addNewMethodStep(Step);
     MethodStep->addIngredient(IngredientInfo);
   }
 
@@ -996,6 +996,8 @@ CheffeParser::parseArithmeticMethodStep(const MethodStepKind Step)
   }
 
   getNextToken();
+
+  assert(MethodStep != nullptr && "New method step is still null");
 
   // Not in the spec, but in the "official" examples:
   //   "Put potatoes into the mixing bowl."
