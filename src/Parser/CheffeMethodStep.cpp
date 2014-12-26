@@ -77,7 +77,7 @@ void IngredientOp::dump(std::ostream &OS) const
   OS << ")";
 }
 
-int MixingBowlOp::getMixingBowlNo() const
+unsigned MixingBowlOp::getMixingBowlNo() const
 {
   return MixingBowlNo;
 }
@@ -87,7 +87,7 @@ void MixingBowlOp::dump(std::ostream &OS) const
   OS << "(MixingBowl " << MixingBowlNo << ")";
 }
 
-int BakingDishOp::getBakingDishNo() const
+unsigned BakingDishOp::getBakingDishNo() const
 {
   return BakingDishNo;
 }

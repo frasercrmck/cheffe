@@ -87,7 +87,7 @@ public:
   {
   }
 
-  int getMixingBowlNo() const;
+  unsigned getMixingBowlNo() const;
 
   void dump(std::ostream &OS) const override;
 
@@ -106,7 +106,7 @@ public:
   {
   }
 
-  int getBakingDishNo() const;
+  unsigned getBakingDishNo() const;
 
   void dump(std::ostream &OS) const override;
 
