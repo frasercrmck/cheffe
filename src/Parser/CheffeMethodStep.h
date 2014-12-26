@@ -170,7 +170,7 @@ public:
 
 private:
   MethodStepKind Kind;
-  std::vector<std::unique_ptr<MethodOp>> MethodOps;
+  std::vector<std::shared_ptr<MethodOp>> MethodOps;
 };
 
 } // end namespace cheffe

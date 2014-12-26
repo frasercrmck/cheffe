@@ -109,30 +109,27 @@ void CheffeMethodStep::addIngredient(
   assert(((IsUndefined && Ingredient == nullptr) ||
           (!IsUndefined && Ingredient != nullptr)) &&
          "Invalid ingredient information");
-  MethodOps.push_back(
-      std::unique_ptr<IngredientOp>(new IngredientOp(IsUndefined, Ingredient)));
+  MethodOps.push_back(std::make_shared<IngredientOp>(IsUndefined, Ingredient));
 }
 
 void CheffeMethodStep::addMixingBowl(const unsigned MixingBowlNo)
 {
-  MethodOps.push_back(
-      std::unique_ptr<MixingBowlOp>(new MixingBowlOp(MixingBowlNo)));
+  MethodOps.push_back(std::make_shared<MixingBowlOp>(MixingBowlNo));
 }
 
 void CheffeMethodStep::addBakingDish(const unsigned BakingDishNo)
 {
-  MethodOps.push_back(
-      std::unique_ptr<BakingDishOp>(new BakingDishOp(BakingDishNo)));
+  MethodOps.push_back(std::make_shared<BakingDishOp>(BakingDishNo));
 }
 
 void CheffeMethodStep::addNumber(const int NumberValue)
 {
-  MethodOps.push_back(std::unique_ptr<NumberOp>(new NumberOp(NumberValue)));
+  MethodOps.push_back(std::make_shared<NumberOp>(NumberValue));
 }
 
 void CheffeMethodStep::addRecipe(const std::string &RecipeName)
 {
-  MethodOps.push_back(std::unique_ptr<RecipeOp>(new RecipeOp(RecipeName)));
+  MethodOps.push_back(std::make_shared<RecipeOp>(RecipeName));
 }
 
 std::ostream &operator<<(std::ostream &OS, const CheffeMethodStep &MethodStep)
