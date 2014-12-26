@@ -9,6 +9,11 @@ void CheffeRecipeInfo::setServesNo(const int Serves)
   ServesNo = Serves;
 }
 
+unsigned CheffeRecipeInfo::getServesNo() const
+{
+  return ServesNo;
+}
+
 std::string CheffeRecipeInfo::getRecipeTitle() const
 {
   return RecipeTitle;

@@ -23,6 +23,8 @@ public:
 
   void setServesNo(const int Serves);
 
+  unsigned getServesNo() const;
+
   std::string getRecipeTitle() const;
 
   void addIngredientDefinition(const CheffeIngredient &Ingredient);
@@ -35,7 +37,7 @@ public:
   const std::vector<std::shared_ptr<CheffeMethodStep>> &getMethodStepList();
 
 private:
-  int ServesNo;
+  unsigned ServesNo;
   std::string RecipeTitle;
   std::map<std::string, std::shared_ptr<CheffeIngredient>> Ingredients;
   std::vector<std::shared_ptr<CheffeMethodStep>> MethodSteps;
