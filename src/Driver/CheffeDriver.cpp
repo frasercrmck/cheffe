@@ -46,7 +46,7 @@ CheffeErrorCode CheffeDriver::compileRecipe()
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
-  CheffeJIT JIT(std::move(RecipeInfo), MainRecipeTitle);
+  CheffeJIT JIT(std::move(RecipeInfo), MainRecipeTitle, Diagnostics);
 
   Success = JIT.executeRecipe();
 
