@@ -1,6 +1,8 @@
 #ifndef CHEFFE_METHOD_STEP
 #define CHEFFE_METHOD_STEP
 
+#include "Lexer/CheffeToken.h"
+
 #include <vector>
 #include <ostream>
 #include <memory>
@@ -62,18 +64,23 @@ public:
   }
 
   IngredientOp(const bool IsUndefined,
-               const std::shared_ptr<CheffeIngredient> &Ingredient)
-      : MethodOp(), IsUndefined(IsUndefined), Ingredient(Ingredient)
+               const std::shared_ptr<CheffeIngredient> &Ingredient,
+               const SourceLocation SourceLoc)
+      : MethodOp(), IsUndefined(IsUndefined), Ingredient(Ingredient),
+        SourceLoc(SourceLoc)
   {
   }
 
   std::shared_ptr<CheffeIngredient> getIngredient() const;
+
+  SourceLocation getSourceLoc() const;
 
   void dump(std::ostream &OS) const override;
 
 private:
   bool IsUndefined;
   std::shared_ptr<CheffeIngredient> Ingredient;
+  SourceLocation SourceLoc;
 };
 
 class MixingBowlOp : public MethodOp
@@ -162,10 +169,12 @@ public:
   std::shared_ptr<MethodOp> getOperand(const unsigned Idx) const;
 
   void addIngredient(
-      const std::pair<bool, std::shared_ptr<CheffeIngredient>> &IngredientInfo);
+      const std::pair<bool, std::shared_ptr<CheffeIngredient>> &IngredientInfo,
+      const SourceLocation SourceLoc);
 
   void addIngredient(const bool IsUndefined,
-                     const std::shared_ptr<CheffeIngredient> &Ingredient);
+                     const std::shared_ptr<CheffeIngredient> &Ingredient,
+                     const SourceLocation SourceLoc);
 
   void addMixingBowl(const unsigned MixingBowlNo);
 
