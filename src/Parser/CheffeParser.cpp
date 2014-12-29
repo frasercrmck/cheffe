@@ -164,7 +164,7 @@ CheffeErrorCode CheffeParser::parseRecipe()
 
     auto Recipe = std::make_shared<CheffeRecipeInfo>(RecipeTitle);
 
-    CurrentRecipe = Recipe.get();
+    CurrentRecipe = Recipe;
     ProgramInfo->addRecipe(RecipeTitle, Recipe);
 
     Success = parseCommentBlock();

@@ -95,7 +95,8 @@ private:
   Token CurrentToken;
 
   std::shared_ptr<CheffeDiagnosticHandler> Diagnostics;
-  CheffeRecipeInfo *CurrentRecipe;
+
+  std::shared_ptr<CheffeRecipeInfo> CurrentRecipe;
   std::unique_ptr<CheffeProgramInfo> ProgramInfo;
 
   std::vector<std::string> LoopNestInfo;
