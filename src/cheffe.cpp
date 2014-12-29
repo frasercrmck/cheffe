@@ -98,6 +98,7 @@ int main(int argc, char **argv)
   if (Success != CheffeErrorCode::CHEFFE_SUCCESS || !ProgramInfo)
   {
     std::cerr << "Error: could not parse input file\n";
+    return 1;
   }
 
   Success = Driver.executeRecipe(ProgramInfo);
@@ -107,6 +108,7 @@ int main(int argc, char **argv)
   if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
   {
     std::cerr << "Error: could not execute input file\n";
+    return 1;
   }
 
   return 0;
