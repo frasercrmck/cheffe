@@ -25,7 +25,7 @@ CheffeErrorCode CheffeJIT::executeRecipe()
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
-  const std::unique_ptr<CheffeRecipeInfo> &MainRecipeInfo =
+  const std::shared_ptr<CheffeRecipeInfo> &MainRecipeInfo =
       RecipeMap->find(MainRecipeTitle)->second;
 
   // clang-format off

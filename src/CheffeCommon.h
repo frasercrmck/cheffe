@@ -9,7 +9,7 @@ namespace cheffe
 
 class CheffeRecipeInfo;
 
-typedef std::map<std::string, std::unique_ptr<CheffeRecipeInfo>> RecipeMap;
+typedef std::map<std::string, std::shared_ptr<CheffeRecipeInfo>> RecipeMap;
 
 }; // end namespace cheffe
 

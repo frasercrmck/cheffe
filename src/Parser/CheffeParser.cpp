@@ -171,11 +171,10 @@ CheffeErrorCode CheffeParser::parseRecipe()
       MainRecipeTitle = RecipeTitle;
     }
 
-    auto Recipe =
-        std::unique_ptr<CheffeRecipeInfo>(new CheffeRecipeInfo(RecipeTitle));
+    auto Recipe = std::make_shared<CheffeRecipeInfo>(RecipeTitle);
 
     CurrentRecipe = Recipe.get();
-    RecipeInfo->insert(std::make_pair(RecipeTitle, std::move(Recipe)));
+    RecipeInfo->insert(std::make_pair(RecipeTitle, Recipe));
 
     Success = parseCommentBlock();
     if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
