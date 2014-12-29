@@ -12,21 +12,18 @@ namespace cheffe
 
 CheffeErrorCode CheffeJIT::executeRecipe()
 {
-  if (!RecipeMap)
-  {
-    return CheffeErrorCode::CHEFFE_ERROR;
-  }
-  if (RecipeMap->find(MainRecipeTitle) == std::end(*RecipeMap))
-  {
-    return CheffeErrorCode::CHEFFE_ERROR;
-  }
-  if (!RecipeMap->find(MainRecipeTitle)->second)
+  if (!ProgramInfo)
   {
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
-  const std::shared_ptr<CheffeRecipeInfo> &MainRecipeInfo =
-      RecipeMap->find(MainRecipeTitle)->second;
+  std::shared_ptr<CheffeRecipeInfo> MainRecipeInfo =
+      ProgramInfo->getEntryPointRecipe();
+
+  if (!MainRecipeInfo)
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
 
   // clang-format off
   CHEFFE_DEBUG(

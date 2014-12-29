@@ -38,15 +38,14 @@ CheffeErrorCode CheffeDriver::compileRecipe()
     return Success;
   }
 
-  std::unique_ptr<RecipeMap> RecipeInfo = Parser.takeRecipeInfo();
-  const std::string MainRecipeTitle = Parser.getMainRecipeTitle();
+  std::unique_ptr<CheffeProgramInfo> ProgramInfo = Parser.takeProgramInfo();
 
-  if (!RecipeInfo)
+  if (!ProgramInfo)
   {
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
-  CheffeJIT JIT(std::move(RecipeInfo), MainRecipeTitle, Diagnostics);
+  CheffeJIT JIT(std::move(ProgramInfo), Diagnostics);
 
   Success = JIT.executeRecipe();
 

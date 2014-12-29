@@ -4,7 +4,7 @@
 #include "cheffe.h"
 #include "CheffeCommon.h"
 #include "Lexer/CheffeLexer.h"
-#include "Parser/CheffeRecipeInfo.h"
+#include "Parser/CheffeProgramInfo.h"
 #include "Utils/CheffeDiagnosticHandler.h"
 
 #include <map>
@@ -79,14 +79,13 @@ public:
   CheffeParser(const CheffeSourceFile &SrcFile,
                std::shared_ptr<CheffeDiagnosticHandler> Diags)
       : Lexer(SrcFile), CurrentToken(), Diagnostics(Diags),
-        CurrentRecipe(nullptr), RecipeInfo(new RecipeMap())
+        CurrentRecipe(nullptr), ProgramInfo(new CheffeProgramInfo())
   {
   }
 
   CheffeErrorCode parseRecipe();
 
-  std::string getMainRecipeTitle() const;
-  std::unique_ptr<RecipeMap> takeRecipeInfo();
+  std::unique_ptr<CheffeProgramInfo> takeProgramInfo();
 
   static CheffeErrorCode checkOrdinalIdentifier(const unsigned Number,
                                                 const std::string &Sequence);
@@ -97,9 +96,7 @@ private:
 
   std::shared_ptr<CheffeDiagnosticHandler> Diagnostics;
   CheffeRecipeInfo *CurrentRecipe;
-  std::unique_ptr<RecipeMap> RecipeInfo;
-
-  std::string MainRecipeTitle;
+  std::unique_ptr<CheffeProgramInfo> ProgramInfo;
 
   std::vector<std::string> LoopNestInfo;
 

@@ -3,6 +3,7 @@
 
 #include "cheffe.h"
 #include "CheffeCommon.h"
+#include "Parser/CheffeProgramInfo.h"
 #include "Utils/CheffeDiagnosticHandler.h"
 
 namespace cheffe
@@ -11,19 +12,16 @@ namespace cheffe
 class CheffeJIT
 {
 public:
-  CheffeJIT(std::unique_ptr<RecipeMap> RecipeMap,
-            const std::string &MainRecipeTitle,
+  CheffeJIT(std::unique_ptr<CheffeProgramInfo> ProgramInfo,
             std::shared_ptr<CheffeDiagnosticHandler> Diags)
-      : RecipeMap(std::move(RecipeMap)), MainRecipeTitle(MainRecipeTitle),
-        Diagnostics(Diags)
+      : ProgramInfo(std::move(ProgramInfo)), Diagnostics(Diags)
   {
   }
 
   CheffeErrorCode executeRecipe();
 
 private:
-  std::unique_ptr<RecipeMap> RecipeMap;
-  std::string MainRecipeTitle;
+  std::unique_ptr<CheffeProgramInfo> ProgramInfo;
   std::shared_ptr<CheffeDiagnosticHandler> Diagnostics;
 };
 

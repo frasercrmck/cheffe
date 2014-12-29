@@ -1,4 +1,3 @@
-#include "Parser/CheffeRecipeInfo.h"
 #include "Parser/CheffeParser.h"
 #include "Parser/CheffeMethodStep.h"
 #include "Parser/CheffeIngredient.h"
@@ -38,14 +37,9 @@ CheffeParser::getIngredientInfo(const std::string &IngredientName,
   return std::make_pair(true, nullptr);
 }
 
-std::string CheffeParser::getMainRecipeTitle() const
+std::unique_ptr<CheffeProgramInfo> CheffeParser::takeProgramInfo()
 {
-  return MainRecipeTitle;
-}
-
-std::unique_ptr<RecipeMap> CheffeParser::takeRecipeInfo()
-{
-  return std::move(RecipeInfo);
+  return std::move(ProgramInfo);
 }
 
 // Parse an ordinal identifier at the current token, if it's a number. Ordinal
@@ -153,12 +147,12 @@ CheffeErrorCode CheffeParser::parseRecipe()
       return Success;
     }
 
-    if (!RecipeInfo)
+    if (!ProgramInfo)
     {
       return CheffeErrorCode::CHEFFE_ERROR;
     }
 
-    if ((*RecipeInfo).find(RecipeTitle) != std::end(*RecipeInfo))
+    if (ProgramInfo->getRecipe(RecipeTitle))
     {
       Diagnostics->report(RecipeTitleLoc, DiagnosticKind::Error,
                           LineContext::WithContext)
@@ -166,15 +160,12 @@ CheffeErrorCode CheffeParser::parseRecipe()
       return CheffeErrorCode::CHEFFE_ERROR;
     }
 
-    if (MainRecipeTitle.empty())
-    {
-      MainRecipeTitle = RecipeTitle;
-    }
+    ProgramInfo->setEntryPointRecipeTitleIfNone(RecipeTitle);
 
     auto Recipe = std::make_shared<CheffeRecipeInfo>(RecipeTitle);
 
     CurrentRecipe = Recipe.get();
-    RecipeInfo->insert(std::make_pair(RecipeTitle, Recipe));
+    ProgramInfo->addRecipe(RecipeTitle, Recipe);
 
     Success = parseCommentBlock();
     if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
