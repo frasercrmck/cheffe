@@ -7,6 +7,7 @@ add_definitions( -DTEST_ROOT_PATH="${CMAKE_CURRENT_SOURCE_DIR}" )
 
 add_executable( cheffe_test
   CheffeParserTest.cpp
+  CheffeJITExecutionTest.cpp
   CheffeDiagnosticsTest.cpp
 )
 
