@@ -110,3 +110,13 @@ TEST_F(JITExecutionTest, Nothing2)
 
   ASSERT_TRUE(Output.empty());
 }
+
+TEST_F(JITExecutionTest, PourNothing)
+{
+  const std::string FileName = "/JITExecution/pour-1.ch";
+  DoTest(FileName.c_str());
+
+  const std::string Output = getStandardOut();
+
+  ASSERT_TRUE(Output.empty());
+}
