@@ -135,6 +135,75 @@ CheffeErrorCode CheffeJIT::executeRecipe()
   );
   // clang-format on
 
+  for (auto MSI = std::begin(MethodSteps), MSE = std::end(MethodSteps);
+       MSI != MSE; ++MSI)
+  {
+    auto MS = *MSI;
+    CHEFFE_DEBUG(dbgs() << *MS);
+
+    switch (MS->getMethodStepKind())
+    {
+    default:
+      return CheffeErrorCode::CHEFFE_ERROR;
+    case MethodStepKind::Pour:
+    {
+      // FIXME: No safety here if the indices are wrong!
+      auto MixingBowl =
+          std::static_pointer_cast<MixingBowlOp>(MS->getOperand(0));
+      auto BakingDish =
+          std::static_pointer_cast<BakingDishOp>(MS->getOperand(1));
+
+      const unsigned MixingBowlNo = MixingBowl->getMixingBowlNo();
+      const unsigned BakingDishNo = BakingDish->getBakingDishNo();
+
+      // No point in trying to copy if the mixing bowl is empty
+      if (MixingBowlNo > MixingBowls.size())
+      {
+        break;
+      }
+
+      if (BakingDishNo >= BakingDishes.size())
+      {
+        BakingDishes.resize(BakingDishNo);
+      }
+
+      for (auto &StackItem : MixingBowls[MixingBowlNo - 1])
+      {
+        pushBakingDishItem(StackItem, BakingDishNo - 1);
+      }
+      break;
+    }
+    }
+  }
+
+  const unsigned ServesNo = MainRecipeInfo->getServesNo();
+
+  bool HaveOutputAnything = false;
+  for (unsigned i = 0; i < ServesNo && i < BakingDishes.size(); ++i)
+  {
+    while (!BakingDishes[i].empty())
+    {
+      HaveOutputAnything = true;
+      auto Item = popBakingDishItem(i);
+      if (Item.first)
+      {
+        std::cout << Item.second;
+      }
+      else
+      {
+        std::cout << (char)Item.second;
+      }
+    }
+  }
+
+  // The spec is a bit weird in that it says to output the contents of the
+  // baking dish, even if those are numbers. Is the user supposed to add a
+  // newline theirselves?
+  if (HaveOutputAnything)
+  {
+    std::cout << std::endl;
+  }
+
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
 
