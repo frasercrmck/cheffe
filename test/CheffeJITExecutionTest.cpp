@@ -91,7 +91,7 @@ private:
   StreamRedirector Redirector;
 };
 
-TEST_F(JITExecutionTest, MismatchedTimeUnit)
+TEST_F(JITExecutionTest, Nothing1)
 {
   const std::string FileName = "/JITExecution/nothing-1.ch";
   DoTest(FileName.c_str());
