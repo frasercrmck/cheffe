@@ -2,6 +2,7 @@ set(
   cheffe-src-files
   CheffeParser.cpp
   CheffeRecipeInfo.cpp
+  CheffeProgramInfo.cpp
   CheffeMethodStep.cpp
 )
 

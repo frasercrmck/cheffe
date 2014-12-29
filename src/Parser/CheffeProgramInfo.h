@@ -16,30 +16,14 @@ private:
 
 public:
   std::shared_ptr<CheffeRecipeInfo>
-  getRecipe(const std::string &RecipeTitle) const
-  {
-    auto RecipeIter = RecipeInfo.find(RecipeTitle);
-    return RecipeIter == std::end(RecipeInfo) ? nullptr : RecipeIter->second;
-  }
+  getRecipe(const std::string &RecipeTitle) const;
 
-  std::shared_ptr<CheffeRecipeInfo> getEntryPointRecipe()
-  {
-    return getRecipe(EntryPointRecipeTitle);
-  }
+  std::shared_ptr<CheffeRecipeInfo> getEntryPointRecipe();
 
   void addRecipe(const std::string &RecipeTitle,
-                 std::shared_ptr<CheffeRecipeInfo> Recipe)
-  {
-    RecipeInfo.insert(std::make_pair(RecipeTitle, Recipe));
-  }
+                 std::shared_ptr<CheffeRecipeInfo> Recipe);
 
-  void setEntryPointRecipeTitleIfNone(const std::string &RecipeTitle)
-  {
-    if (EntryPointRecipeTitle.empty())
-    {
-      EntryPointRecipeTitle = RecipeTitle;
-    }
-  }
+  void setEntryPointRecipeTitleIfNone(const std::string &RecipeTitle);
 
 private:
   RecipeMapTy RecipeInfo;
