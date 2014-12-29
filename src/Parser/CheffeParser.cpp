@@ -410,9 +410,9 @@ CheffeErrorCode CheffeParser::parseIngredient(CheffeIngredient &Ingredient)
 
   if (CurrentToken.is(TokenKind::Number))
   {
-    // Initial value
-    Ingredient.HasInitialValue = true;
-    Ingredient.InitialValue = CurrentToken.getNumVal();
+    // Value
+    Ingredient.HasValue = true;
+    Ingredient.Value = CurrentToken.getNumVal();
     getNextToken();
   }
 

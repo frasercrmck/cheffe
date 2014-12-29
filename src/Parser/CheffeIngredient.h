@@ -13,8 +13,8 @@ public:
   CheffeIngredient()
   {
   }
-  bool HasInitialValue = false;
-  int InitialValue = 0;
+  bool HasValue = false;
+  int Value = 0;
   bool IsDry = true;
   std::string MeasureType = "";
   std::string Measure = "";
@@ -26,9 +26,9 @@ public:
 inline std::ostream &operator<<(std::ostream &OS,
                                 const CheffeIngredient &Ingredient)
 {
-  if (Ingredient.HasInitialValue)
+  if (Ingredient.HasValue)
   {
-    OS << Ingredient.InitialValue;
+    OS << Ingredient.Value;
   }
   else
   {
