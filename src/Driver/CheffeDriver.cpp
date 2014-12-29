@@ -16,7 +16,8 @@ void CheffeDriver::setDiagnosticHandler(
   Diagnostics = Diags;
 }
 
-CheffeErrorCode CheffeDriver::compileRecipe()
+CheffeErrorCode
+CheffeDriver::compileRecipe(std::unique_ptr<CheffeProgramInfo> &ProgramInfo)
 {
   if (File.Source.empty())
   {
@@ -38,23 +39,22 @@ CheffeErrorCode CheffeDriver::compileRecipe()
     return Success;
   }
 
-  std::unique_ptr<CheffeProgramInfo> ProgramInfo = Parser.takeProgramInfo();
+  ProgramInfo = Parser.takeProgramInfo();
 
   if (!ProgramInfo)
   {
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
+  return Success;
+}
+
+CheffeErrorCode
+CheffeDriver::executeRecipe(std::unique_ptr<CheffeProgramInfo> &ProgramInfo)
+{
   CheffeJIT JIT(std::move(ProgramInfo), Diagnostics);
 
-  Success = JIT.executeRecipe();
-
-  if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
-  {
-    return Success;
-  }
-
-  return Success;
+  return JIT.executeRecipe();
 }
 
 } // end namespace cheffe

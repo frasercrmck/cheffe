@@ -3,6 +3,7 @@
 #include "cheffe.h"
 #include "Driver/CheffeDriver.h"
 #include "Parser/CheffeParser.h"
+#include "Parser/CheffeProgramInfo.h"
 #include "Utils/CheffeFileHandler.h"
 
 #include <regex>
@@ -61,7 +62,8 @@ public:
 
     Driver.setDiagnosticHandler(Diagnostics);
 
-    Driver.compileRecipe();
+    auto ProgramInfo = std::unique_ptr<CheffeProgramInfo>(nullptr);
+    Driver.compileRecipe(ProgramInfo);
 
     ASSERT_EQ(ExpectedDiagnosticCount.first, Diagnostics->getErrorCount())
         << "Expected " << ExpectedDiagnosticCount.first << " errors, found "

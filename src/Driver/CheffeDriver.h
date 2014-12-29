@@ -2,6 +2,7 @@
 #define CHEFFE_DRIVER
 
 #include "cheffe.h"
+#include "Parser/CheffeProgramInfo.h"
 #include "Utils/CheffeDiagnosticHandler.h"
 
 #include <vector>
@@ -16,7 +17,8 @@ public:
   {
   }
 
-  CheffeErrorCode compileRecipe();
+  CheffeErrorCode compileRecipe(std::unique_ptr<CheffeProgramInfo> &ProgramInfo);
+  CheffeErrorCode executeRecipe(std::unique_ptr<CheffeProgramInfo> &ProgramInfo);
 
   void setSourceFile(const CheffeSourceFile &File);
 

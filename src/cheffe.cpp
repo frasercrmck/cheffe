@@ -1,6 +1,7 @@
 #include "cheffe.h"
 #include "Driver/CheffeDriver.h"
 #include "Parser/CheffeParser.h"
+#include "Parser/CheffeProgramInfo.h"
 #include "Utils/CheffeDebugUtils.h"
 #include "Utils/CheffeFileHandler.h"
 #include "Utils/CheffeDiagnosticHandler.h"
@@ -88,17 +89,24 @@ int main(int argc, char **argv)
 
   Driver.setDiagnosticHandler(Diagnostics);
 
-  const CheffeErrorCode Success = Driver.compileRecipe();
+  auto ProgramInfo = std::unique_ptr<CheffeProgramInfo>(nullptr);
+
+  CheffeErrorCode Success = Driver.compileRecipe(ProgramInfo);
+
+  Diagnostics->flushDiagnostics();
+
+  if (Success != CheffeErrorCode::CHEFFE_SUCCESS || !ProgramInfo)
+  {
+    std::cerr << "Error: could not parse input file\n";
+  }
+
+  Success = Driver.executeRecipe(ProgramInfo);
 
   Diagnostics->flushDiagnostics();
 
   if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
   {
-    std::cerr << "Error: could not parse input file\n";
-  }
-  else
-  {
-    std::cout << "File parsed successfully\n";
+    std::cerr << "Error: could not execute input file\n";
   }
 
   return 0;

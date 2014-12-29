@@ -3,6 +3,7 @@
 #include "cheffe.h"
 #include "Driver/CheffeDriver.h"
 #include "Parser/CheffeParser.h"
+#include "Parser/CheffeProgramInfo.h"
 #include "Utils/CheffeFileHandler.h"
 
 #include <string>
@@ -35,7 +36,8 @@ public:
 
     Driver.setDiagnosticHandler(Diagnostics);
 
-    Error = Driver.compileRecipe();
+    auto ProgramInfo = std::unique_ptr<CheffeProgramInfo>(nullptr);
+    Error = Driver.compileRecipe(ProgramInfo);
   }
 };
 
