@@ -100,3 +100,13 @@ TEST_F(JITExecutionTest, Nothing1)
 
   ASSERT_TRUE(Output.empty());
 }
+
+TEST_F(JITExecutionTest, Nothing2)
+{
+  const std::string FileName = "/JITExecution/nothing-2.ch";
+  DoTest(FileName.c_str());
+
+  const std::string Output = getStandardOut();
+
+  ASSERT_TRUE(Output.empty());
+}
