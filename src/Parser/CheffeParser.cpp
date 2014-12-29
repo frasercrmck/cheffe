@@ -698,7 +698,13 @@ CheffeErrorCode CheffeParser::parseMethod()
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
-  if (consumeAndExpectToken(TokenKind::NewLine))
+  getNextToken();
+  if (CurrentToken.is(TokenKind::EndOfParagraph))
+  {
+    return CheffeErrorCode::CHEFFE_SUCCESS;
+  }
+
+  if (expectToken(TokenKind::NewLine))
   {
     return CheffeErrorCode::CHEFFE_ERROR;
   }
