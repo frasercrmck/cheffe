@@ -122,10 +122,12 @@ void CheffeDiagnosticHandler::flushDiagnostics()
   {
     errs() << Message << std::endl;
   }
+  Warnings.clear();
   for (auto &Message : Errors)
   {
     errs() << Message << std::endl;
   }
+  Errors.clear();
 }
 
 unsigned CheffeDiagnosticHandler::getErrorCount() const
