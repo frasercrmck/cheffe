@@ -1,7 +1,7 @@
 #ifndef CHEFFE_RECIPE_INFO
 #define CHEFFE_RECIPE_INFO
 
-#include "Parser/CheffeMethodStep.h"
+#include "IR/CheffeMethodStep.h"
 
 #include <map>
 #include <vector>

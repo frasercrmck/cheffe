@@ -3,7 +3,7 @@
 
 #include "cheffe.h"
 #include "CheffeCommon.h"
-#include "Parser/CheffeProgramInfo.h"
+#include "IR/CheffeProgramInfo.h"
 #include "Utils/CheffeDiagnosticHandler.h"
 
 namespace cheffe

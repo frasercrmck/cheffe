@@ -1,7 +1,7 @@
 #ifndef CHEFFE_PROGRAM_INFO
 #define CHEFFE_PROGRAM_INFO
 
-#include "Parser/CheffeRecipeInfo.h"
+#include "IR/CheffeRecipeInfo.h"
 
 #include <map>
 #include <string>

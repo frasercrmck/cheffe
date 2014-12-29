@@ -1,4 +1,4 @@
-#include "Parser/CheffeProgramInfo.h"
+#include "IR/CheffeProgramInfo.h"
 
 namespace cheffe
 {

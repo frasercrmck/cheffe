@@ -1,5 +1,5 @@
-#include "Parser/CheffeRecipeInfo.h"
-#include "Parser/CheffeIngredient.h"
+#include "IR/CheffeRecipeInfo.h"
+#include "IR/CheffeIngredient.h"
 
 namespace cheffe
 {

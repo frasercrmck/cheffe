@@ -4,7 +4,7 @@
 #include "cheffe.h"
 #include "CheffeCommon.h"
 #include "Lexer/CheffeLexer.h"
-#include "Parser/CheffeProgramInfo.h"
+#include "IR/CheffeProgramInfo.h"
 #include "Utils/CheffeDiagnosticHandler.h"
 
 #include <map>

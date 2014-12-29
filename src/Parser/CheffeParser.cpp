@@ -1,6 +1,6 @@
 #include "Parser/CheffeParser.h"
-#include "Parser/CheffeMethodStep.h"
-#include "Parser/CheffeIngredient.h"
+#include "IR/CheffeMethodStep.h"
+#include "IR/CheffeIngredient.h"
 #include "Utils/CheffeDebugUtils.h"
 
 #include <cassert>

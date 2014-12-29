@@ -2,7 +2,7 @@
 #define CHEFFE_DRIVER
 
 #include "cheffe.h"
-#include "Parser/CheffeProgramInfo.h"
+#include "IR/CheffeProgramInfo.h"
 #include "Utils/CheffeDiagnosticHandler.h"
 
 #include <vector>

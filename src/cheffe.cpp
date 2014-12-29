@@ -1,7 +1,7 @@
 #include "cheffe.h"
 #include "Driver/CheffeDriver.h"
 #include "Parser/CheffeParser.h"
-#include "Parser/CheffeProgramInfo.h"
+#include "IR/CheffeProgramInfo.h"
 #include "Utils/CheffeDebugUtils.h"
 #include "Utils/CheffeFileHandler.h"
 #include "Utils/CheffeDiagnosticHandler.h"

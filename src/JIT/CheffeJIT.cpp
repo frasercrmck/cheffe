@@ -1,7 +1,7 @@
 #include "cheffe.h"
 #include "JIT/CheffeJIT.h"
+#include "IR/CheffeRecipeInfo.h"
 #include "Utils/CheffeDebugUtils.h"
-#include "Parser/CheffeRecipeInfo.h"
 
 #include <iostream>
 

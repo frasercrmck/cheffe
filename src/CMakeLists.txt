@@ -10,6 +10,7 @@ set(
 )
 add_executable( cheffe ${cheffe-src-files} )
 
+add_subdirectory( IR )
 add_subdirectory( Lexer )
 add_subdirectory( Parser )
 add_subdirectory( JIT )
