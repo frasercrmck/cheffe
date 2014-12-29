@@ -4,12 +4,20 @@
 #include "IR/CheffeIngredient.h"
 #include "Utils/CheffeDebugUtils.h"
 
+#include <deque>
+#include <memory>
 #include <iostream>
 
 #define DEBUG_TYPE "jit"
 
 namespace cheffe
 {
+
+typedef std::pair<bool, uint64_t> StackItemTy;
+typedef std::deque<StackItemTy> StackTy;
+
+std::vector<StackTy> MixingBowls;
+std::vector<StackTy> BakingDishes;
 
 CheffeErrorCode
 CheffeJIT::getIngredientInfo(const std::shared_ptr<MethodOp> &MOp,
@@ -29,6 +37,54 @@ CheffeJIT::getIngredientInfo(const std::shared_ptr<MethodOp> &MOp,
   IngredientInfo = Ingredient->getIngredient();
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
+}
+
+void pushStackItem(std::vector<StackTy> &Stack, const StackItemTy StackItem,
+                   const unsigned StackIdx)
+{
+  if ((StackIdx + 1) > Stack.size())
+  {
+    Stack.resize(StackIdx + 1);
+  }
+
+  Stack[StackIdx].push_back(StackItem);
+}
+
+void pushMixingBowlItem(const StackItemTy StackItem, const unsigned StackIdx)
+{
+  return pushStackItem(MixingBowls, StackItem, StackIdx);
+}
+
+void pushBakingDishItem(const StackItemTy StackItem, const unsigned StackIdx)
+{
+  return pushStackItem(BakingDishes, StackItem, StackIdx);
+}
+
+StackItemTy popStackItem(std::vector<StackTy> &Stack,
+                         const unsigned StackItemIdx)
+{
+  if (StackItemIdx > Stack.size())
+  {
+    return std::make_pair(true, 0);
+  }
+
+  if (Stack[StackItemIdx].empty())
+  {
+    return std::make_pair(true, 0);
+  }
+  auto StackItem = Stack[StackItemIdx].back();
+  Stack[StackItemIdx].pop_back();
+  return StackItem;
+}
+
+StackItemTy popMixingBowlItem(const unsigned StackItemIdx)
+{
+  return popStackItem(MixingBowls, StackItemIdx);
+}
+
+StackItemTy popBakingDishItem(const unsigned StackItemIdx)
+{
+  return popStackItem(BakingDishes, StackItemIdx);
 }
 
 bool CheffeJIT::checkIngredientHasValue(
