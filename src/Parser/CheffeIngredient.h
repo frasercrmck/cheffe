@@ -1,6 +1,8 @@
 #ifndef CHEFFE_INGREDIENT
 #define CHEFFE_INGREDIENT
 
+#include "Lexer/CheffeToken.h"
+
 #include <string>
 #include <ostream>
 
@@ -19,6 +21,7 @@ public:
   std::string MeasureType = "";
   std::string Measure = "";
   std::string Name = "";
+  SourceLocation DefLoc;
   friend std::ostream &operator<<(std::ostream &OS,
                                   const CheffeIngredient &Ingredient);
 };

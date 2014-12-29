@@ -407,6 +407,7 @@ CheffeErrorCode CheffeParser::parseIngredientsList()
 CheffeErrorCode CheffeParser::parseIngredient(CheffeIngredient &Ingredient)
 {
   getNextToken();
+  const SourceLocation BeginIngredientDefLoc = CurrentToken.getSourceLoc();
 
   if (CurrentToken.is(TokenKind::Number))
   {
@@ -468,15 +469,20 @@ CheffeErrorCode CheffeParser::parseIngredient(CheffeIngredient &Ingredient)
 
   const std::size_t BeginIngredientNamePos =
       CurrentToken.getSourceLoc().getBegin();
+  SourceLocation EndIngredientDefLoc = CurrentToken.getSourceLoc();
   while (CurrentToken.isNotAnyOf(TokenKind::NewLine, TokenKind::EndOfParagraph,
                                  TokenKind::EndOfFile))
   {
+    EndIngredientDefLoc = CurrentToken.getSourceLoc();
     getNextToken();
   }
   const std::size_t EndIngredientNamePos =
       CurrentToken.getSourceLoc().getBegin();
   Ingredient.Name =
       Lexer.getTextSpan(BeginIngredientNamePos, EndIngredientNamePos);
+
+  Ingredient.DefLoc =
+      SourceLocation(BeginIngredientDefLoc, EndIngredientDefLoc);
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
