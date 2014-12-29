@@ -93,7 +93,7 @@ private:
 
 TEST_F(JITExecutionTest, MismatchedTimeUnit)
 {
-  const std::string FileName = "/JITExecution/nothing.ch";
+  const std::string FileName = "/JITExecution/nothing-1.ch";
   DoTest(FileName.c_str());
 
   const std::string Output = getStandardOut();
