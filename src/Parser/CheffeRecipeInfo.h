@@ -32,6 +32,8 @@ public:
   std::shared_ptr<CheffeIngredient>
   getIngredient(const std::string &IngredientName) const;
 
+  std::vector<std::shared_ptr<CheffeIngredient>> getDryIngredients() const;
+
   std::shared_ptr<CheffeMethodStep> addNewMethodStep(const MethodStepKind Kind);
 
   const std::vector<std::shared_ptr<CheffeMethodStep>> &getMethodStepList();

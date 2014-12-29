@@ -39,6 +39,21 @@ CheffeRecipeInfo::getIngredient(const std::string &IngredientName) const
   return Ingredient->second;
 }
 
+std::vector<std::shared_ptr<CheffeIngredient>>
+CheffeRecipeInfo::getDryIngredients() const
+{
+  std::vector<std::shared_ptr<CheffeIngredient>> DryIngredients;
+  for (auto &Ingredient : Ingredients)
+  {
+    if (Ingredient.second->IsDry)
+    {
+      DryIngredients.push_back(Ingredient.second);
+    }
+  }
+
+  return DryIngredients;
+}
+
 std::shared_ptr<CheffeMethodStep>
 CheffeRecipeInfo::addNewMethodStep(const MethodStepKind Kind)
 {
