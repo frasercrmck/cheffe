@@ -204,6 +204,24 @@ CheffeErrorCode CheffeJIT::executeRecipe()
       }
       break;
     }
+    case MethodStepKind::LiquifyBowl:
+    {
+      auto MixingBowl =
+          std::static_pointer_cast<MixingBowlOp>(MS->getOperand(0));
+      const unsigned MixingBowlNo = MixingBowl->getMixingBowlNo();
+      // If we haven't put anything into this mixing bowl, don't bother trying
+      // to loop
+      if (MixingBowlNo > MixingBowls.size())
+      {
+        break;
+      }
+
+      for (auto &Item : MixingBowls[MixingBowlNo - 1])
+      {
+        Item.first = false;
+      }
+      break;
+    }
     }
   }
 

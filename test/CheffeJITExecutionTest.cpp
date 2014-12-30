@@ -180,3 +180,23 @@ TEST_F(JITExecutionTest, Put6)
 
   ASSERT_TRUE("x = 1\n");
 }
+
+TEST_F(JITExecutionTest, HelloWorld)
+{
+  const std::string FileName = "/JITExecution/hello.ch";
+  DoTest(FileName.c_str());
+
+  const std::string Output = getStandardOut();
+
+  ASSERT_TRUE("Hello world!\n");
+}
+
+TEST_F(JITExecutionTest, HelloWorldFull)
+{
+  const std::string FileName = "/JITExecution/hello-full.ch";
+  DoTest(FileName.c_str());
+
+  const std::string Output = getStandardOut();
+
+  ASSERT_TRUE("Hello world!\n");
+}
