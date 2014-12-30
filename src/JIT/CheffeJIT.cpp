@@ -123,8 +123,8 @@ CheffeErrorCode CheffeJIT::executeRecipe()
 
   // clang-format off
   CHEFFE_DEBUG(
-    dbgs() << "Executing '" << MainRecipeInfo->getRecipeTitle() << "'..."
-           << std::endl << std::endl;
+    dbgs() << std::endl << "Executing '" << MainRecipeInfo->getRecipeTitle()
+           << "'..." << std::endl << std::endl;
   );
   // clang-format on
 
@@ -132,10 +132,12 @@ CheffeErrorCode CheffeJIT::executeRecipe()
 
   // clang-format off
   CHEFFE_DEBUG(
+    dbgs() << "=== All Method Steps ===" << std::endl;
     for (auto &I : MethodSteps)
     {
       dbgs() << *I;
     }
+    dbgs() << "========================" << std::endl << std::endl;
   );
   // clang-format on
 
@@ -370,6 +372,10 @@ CheffeErrorCode CheffeJIT::executeRecipe()
   {
     std::cout << std::endl;
   }
+
+  CHEFFE_DEBUG(dbgs() << "Ending execution of '"
+                      << MainRecipeInfo->getRecipeTitle()
+                      << "'" << std::endl << std::endl);
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
