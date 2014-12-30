@@ -176,6 +176,29 @@ CheffeErrorCode CheffeJIT::executeRecipe()
       pushMixingBowlItem(std::make_pair(IsDry, Value), MixingBowlNo - 1);
       break;
     }
+    case MethodStepKind::AddDry:
+    {
+      auto MixingBowl =
+          std::static_pointer_cast<MixingBowlOp>(MS->getOperand(0));
+      const unsigned MixingBowlNo = MixingBowl->getMixingBowlNo();
+      if (MixingBowlNo > MixingBowls.size())
+      {
+        MixingBowls.resize(MixingBowlNo);
+      }
+
+      long long DrySum = 0;
+      for (auto &Item : MainRecipeInfo->getDryIngredients())
+      {
+        if (!checkIngredientHasValue(Item, Item->DefLoc))
+        {
+          return CheffeErrorCode::CHEFFE_ERROR;
+        }
+        DrySum += Item->Value;
+      }
+
+      pushMixingBowlItem(std::make_pair(true, DrySum), MixingBowlNo - 1);
+      break;
+    }
     case MethodStepKind::Pour:
     {
       // FIXME: No safety here if the indices are wrong!

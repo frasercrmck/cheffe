@@ -200,3 +200,13 @@ TEST_F(JITExecutionTest, HelloWorldFull)
 
   ASSERT_TRUE("Hello world!\n");
 }
+
+TEST_F(JITExecutionTest, AddDry1)
+{
+  const std::string FileName = "/JITExecution/adddry-1.ch";
+  DoTest(FileName.c_str());
+
+  const std::string Output = getStandardOut();
+
+  ASSERT_TRUE("10\n");
+}
