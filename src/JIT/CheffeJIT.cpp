@@ -354,13 +354,36 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
       break;
     }
     case MethodStepKind::StirBowl:
+    case MethodStepKind::StirIngredient:
     {
-      auto MixingBowl =
-          std::static_pointer_cast<MixingBowlOp>(MS->getOperand(0));
+      const bool IsBowl = MS->getMethodStepKind() == MethodStepKind::StirBowl;
+      auto MixingBowl = std::static_pointer_cast<MixingBowlOp>(
+          MS->getOperand(IsBowl ? 0 : 1));
       const unsigned MixingBowlNo = MixingBowl->getMixingBowlNo();
 
-      const long long Number = std::static_pointer_cast<NumberOp>(
-                                   MS->getOperand(1))->getNumberValue();
+      long long Number = 0;
+      if (IsBowl)
+      {
+        Number = std::static_pointer_cast<NumberOp>(MS->getOperand(1))
+                     ->getNumberValue();
+      }
+      else
+      {
+        SourceLocation IngredientLoc;
+        std::shared_ptr<CheffeIngredient> Ingredient = nullptr;
+        const CheffeErrorCode Success =
+            getIngredientInfo(MS->getOperand(0), Ingredient, IngredientLoc);
+        if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
+        {
+          return CheffeErrorCode::CHEFFE_ERROR;
+        }
+
+        if (!checkIngredientHasValue(Ingredient, IngredientLoc))
+        {
+          return CheffeErrorCode::CHEFFE_ERROR;
+        }
+        Number = Ingredient->Value;
+      }
       // If we haven't put any ingredients into this mixing bowl already, or if
       // we're not going to stir anything, then don't bother trying
       if (MixingBowlNo > MixingBowls.size() || Number == 0)

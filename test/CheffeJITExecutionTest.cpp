@@ -396,3 +396,11 @@ TEST_F(JITExecutionTest, StirBowl7)
   const std::string Output = getStandardOut();
   ASSERT_EQ(Output, "1234542\n");
 }
+
+TEST_F(JITExecutionTest, StirIngredient1)
+{
+  const std::string FileName = "/JITExecution/stir-ingr-1.ch";
+  DoTest(FileName.c_str());
+  const std::string Output = getStandardOut();
+  ASSERT_EQ(Output, "1234245\n");
+}
