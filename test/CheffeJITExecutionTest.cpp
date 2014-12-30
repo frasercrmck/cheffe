@@ -170,3 +170,13 @@ TEST_F(JITExecutionTest, Put5)
 
   ASSERT_TRUE("11\n");
 }
+
+TEST_F(JITExecutionTest, Put6)
+{
+  const std::string FileName = "/JITExecution/put-6.ch";
+  DoTest(FileName.c_str());
+
+  const std::string Output = getStandardOut();
+
+  ASSERT_TRUE("x = 1\n");
+}
