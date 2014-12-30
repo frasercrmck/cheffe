@@ -4,7 +4,6 @@
 #include "IR/CheffeIngredient.h"
 #include "Utils/CheffeDebugUtils.h"
 
-#include <deque>
 #include <memory>
 #include <iostream>
 
@@ -12,13 +11,6 @@
 
 namespace cheffe
 {
-
-typedef std::pair<bool, long long> StackItemTy;
-typedef std::deque<StackItemTy> StackTy;
-
-std::vector<StackTy> MixingBowls;
-std::vector<StackTy> BakingDishes;
-
 CheffeErrorCode
 CheffeJIT::getIngredientInfo(const std::shared_ptr<MethodOp> &MOp,
                              std::shared_ptr<CheffeIngredient> &IngredientInfo,
@@ -39,8 +31,9 @@ CheffeJIT::getIngredientInfo(const std::shared_ptr<MethodOp> &MOp,
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
 
-void pushStackItem(std::vector<StackTy> &Stack, const StackItemTy StackItem,
-                   const unsigned StackIdx)
+void CheffeJIT::pushStackItem(std::vector<CheffeJIT::StackTy> &Stack,
+                              const CheffeJIT::StackItemTy StackItem,
+                              const unsigned StackIdx)
 {
   if ((StackIdx + 1) > Stack.size())
   {
@@ -50,18 +43,9 @@ void pushStackItem(std::vector<StackTy> &Stack, const StackItemTy StackItem,
   Stack[StackIdx].push_back(StackItem);
 }
 
-void pushMixingBowlItem(const StackItemTy StackItem, const unsigned StackIdx)
-{
-  return pushStackItem(MixingBowls, StackItem, StackIdx);
-}
-
-void pushBakingDishItem(const StackItemTy StackItem, const unsigned StackIdx)
-{
-  return pushStackItem(BakingDishes, StackItem, StackIdx);
-}
-
-StackItemTy popStackItem(std::vector<StackTy> &Stack,
-                         const unsigned StackItemIdx)
+CheffeJIT::StackItemTy
+CheffeJIT::popStackItem(std::vector<CheffeJIT::StackTy> &Stack,
+                        const unsigned StackItemIdx)
 {
   if (StackItemIdx >= Stack.size())
   {
@@ -75,16 +59,6 @@ StackItemTy popStackItem(std::vector<StackTy> &Stack,
   auto StackItem = Stack[StackItemIdx].back();
   Stack[StackItemIdx].pop_back();
   return StackItem;
-}
-
-StackItemTy popMixingBowlItem(const unsigned StackItemIdx)
-{
-  return popStackItem(MixingBowls, StackItemIdx);
-}
-
-StackItemTy popBakingDishItem(const unsigned StackItemIdx)
-{
-  return popStackItem(BakingDishes, StackItemIdx);
 }
 
 bool CheffeJIT::checkIngredientHasValue(
@@ -102,12 +76,8 @@ bool CheffeJIT::checkIngredientHasValue(
   return false;
 }
 
-CheffeErrorCode CheffeJIT::executeRecipe()
+CheffeErrorCode CheffeJIT::executeProgram()
 {
-  // Clear up from any old execution
-  MixingBowls.clear();
-  BakingDishes.clear();
-
   if (!ProgramInfo)
   {
     return CheffeErrorCode::CHEFFE_ERROR;
@@ -121,14 +91,36 @@ CheffeErrorCode CheffeJIT::executeRecipe()
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
+  std::vector<StackTy> MixingBowls;
+  std::vector<StackTy> BakingDishes;
+  const CheffeErrorCode Success =
+      executeRecipe(MainRecipeInfo, MixingBowls, BakingDishes);
+
+  return Success;
+}
+
+CheffeErrorCode
+CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
+                         std::vector<StackTy> &CallerMixingBowls,
+                         std::vector<StackTy> &CallerBakingDishes)
+{
+  if (!RecipeInfo)
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
   // clang-format off
   CHEFFE_DEBUG(
-    dbgs() << std::endl << "Executing '" << MainRecipeInfo->getRecipeTitle()
+    dbgs() << std::endl << "Executing '" << RecipeInfo->getRecipeTitle()
            << "'..." << std::endl << std::endl;
   );
   // clang-format on
 
-  auto MethodSteps = MainRecipeInfo->getMethodStepList();
+  // Recipes take a copy of all of the caller's mixing bowls and baking dishes.
+  std::vector<StackTy> MixingBowls(CallerMixingBowls);
+  std::vector<StackTy> BakingDishes(CallerBakingDishes);
+
+  auto MethodSteps = RecipeInfo->getMethodStepList();
 
   // clang-format off
   CHEFFE_DEBUG(
@@ -199,7 +191,8 @@ CheffeErrorCode CheffeJIT::executeRecipe()
           std::static_pointer_cast<MixingBowlOp>(MS->getOperand(1));
       const unsigned MixingBowlNo = MixingBowl->getMixingBowlNo();
 
-      pushMixingBowlItem(std::make_pair(IsDry, Value), MixingBowlNo - 1);
+      pushStackItem(MixingBowls, std::make_pair(IsDry, Value),
+                    MixingBowlNo - 1);
       break;
     }
     case MethodStepKind::Fold:
@@ -218,7 +211,7 @@ CheffeErrorCode CheffeJIT::executeRecipe()
           std::static_pointer_cast<MixingBowlOp>(MS->getOperand(1));
       const unsigned MixingBowlNo = MixingBowl->getMixingBowlNo();
 
-      auto TopOfStack = popMixingBowlItem(MixingBowlNo - 1);
+      auto TopOfStack = popStackItem(MixingBowls, MixingBowlNo - 1);
 
       Ingredient->HasValue = true;
       Ingredient->Value = TopOfStack.second;
@@ -235,7 +228,7 @@ CheffeErrorCode CheffeJIT::executeRecipe()
       }
 
       long long DrySum = 0;
-      for (auto &Item : MainRecipeInfo->getDryIngredients())
+      for (auto &Item : RecipeInfo->getDryIngredients())
       {
         if (!checkIngredientHasValue(Item, Item->DefLoc))
         {
@@ -244,7 +237,8 @@ CheffeErrorCode CheffeJIT::executeRecipe()
         DrySum += Item->Value;
       }
 
-      pushMixingBowlItem(std::make_pair(true, DrySum), MixingBowlNo - 1);
+      pushStackItem(MixingBowls, std::make_pair(true, DrySum),
+                    MixingBowlNo - 1);
       break;
     }
     case MethodStepKind::Add:
@@ -272,7 +266,7 @@ CheffeErrorCode CheffeJIT::executeRecipe()
       const unsigned MixingBowlNo = MixingBowl->getMixingBowlNo();
 
       const long long Value = Ingredient->Value;
-      auto NewValue = popMixingBowlItem(MixingBowlNo - 1);
+      auto NewValue = popStackItem(MixingBowls, MixingBowlNo - 1);
 
       switch (MS->getMethodStepKind())
       {
@@ -293,7 +287,7 @@ CheffeErrorCode CheffeJIT::executeRecipe()
         break;
       }
 
-      pushMixingBowlItem(NewValue, MixingBowlNo - 1);
+      pushStackItem(MixingBowls, NewValue, MixingBowlNo - 1);
       break;
     }
     case MethodStepKind::Pour:
@@ -320,7 +314,7 @@ CheffeErrorCode CheffeJIT::executeRecipe()
 
       for (auto &StackItem : MixingBowls[MixingBowlNo - 1])
       {
-        pushBakingDishItem(StackItem, BakingDishNo - 1);
+        pushStackItem(BakingDishes, StackItem, BakingDishNo - 1);
       }
       break;
     }
@@ -345,7 +339,21 @@ CheffeErrorCode CheffeJIT::executeRecipe()
     }
   }
 
-  const unsigned ServesNo = MainRecipeInfo->getServesNo();
+  // Copy the contents of the 1st mixing bowl back to the caller recipe.
+  if (!MixingBowls.empty())
+  {
+    if (CallerMixingBowls.empty())
+    {
+      CallerMixingBowls.resize(1);
+    }
+
+    for (auto &Item : MixingBowls[0])
+    {
+      CallerMixingBowls[0].push_back(Item);
+    }
+  }
+
+  const unsigned ServesNo = RecipeInfo->getServesNo();
 
   bool HaveOutputAnything = false;
   for (unsigned i = 0; i < ServesNo && i < BakingDishes.size(); ++i)
@@ -353,7 +361,7 @@ CheffeErrorCode CheffeJIT::executeRecipe()
     while (!BakingDishes[i].empty())
     {
       HaveOutputAnything = true;
-      auto Item = popBakingDishItem(i);
+      auto Item = popStackItem(BakingDishes, i);
       if (Item.first)
       {
         std::cout << Item.second;
@@ -374,7 +382,7 @@ CheffeErrorCode CheffeJIT::executeRecipe()
   }
 
   CHEFFE_DEBUG(dbgs() << "Ending execution of '"
-                      << MainRecipeInfo->getRecipeTitle()
+                      << RecipeInfo->getRecipeTitle()
                       << "'" << std::endl << std::endl);
 
   return CheffeErrorCode::CHEFFE_SUCCESS;

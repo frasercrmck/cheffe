@@ -54,7 +54,7 @@ CheffeDriver::executeRecipe(std::unique_ptr<CheffeProgramInfo> &ProgramInfo)
 {
   CheffeJIT JIT(std::move(ProgramInfo), Diagnostics);
 
-  return JIT.executeRecipe();
+  return JIT.executeProgram();
 }
 
 } // end namespace cheffe
