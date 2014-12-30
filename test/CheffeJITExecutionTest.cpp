@@ -128,7 +128,7 @@ TEST_F(JITExecutionTest, Put1)
 
   const std::string Output = getStandardOut();
 
-  ASSERT_TRUE("111111\n");
+  ASSERT_EQ(Output, "111111\n");
 }
 
 TEST_F(JITExecutionTest, Put2)
@@ -138,7 +138,7 @@ TEST_F(JITExecutionTest, Put2)
 
   const std::string Output = getStandardOut();
 
-  ASSERT_TRUE("111111\n");
+  ASSERT_EQ(Output, "111111\n");
 }
 
 TEST_F(JITExecutionTest, Put3)
@@ -148,7 +148,7 @@ TEST_F(JITExecutionTest, Put3)
 
   const std::string Output = getStandardOut();
 
-  ASSERT_TRUE("111111\n");
+  ASSERT_EQ(Output, "111111\n");
 }
 
 TEST_F(JITExecutionTest, Put4)
@@ -158,7 +158,7 @@ TEST_F(JITExecutionTest, Put4)
 
   const std::string Output = getStandardOut();
 
-  ASSERT_TRUE("1111\n");
+  ASSERT_EQ(Output, "1111\n");
 }
 
 TEST_F(JITExecutionTest, Put5)
@@ -168,7 +168,7 @@ TEST_F(JITExecutionTest, Put5)
 
   const std::string Output = getStandardOut();
 
-  ASSERT_TRUE("11\n");
+  ASSERT_EQ(Output, "11\n");
 }
 
 TEST_F(JITExecutionTest, Put6)
@@ -178,7 +178,7 @@ TEST_F(JITExecutionTest, Put6)
 
   const std::string Output = getStandardOut();
 
-  ASSERT_TRUE("x = 1\n");
+  ASSERT_EQ(Output, "x = 1\n");
 }
 
 TEST_F(JITExecutionTest, HelloWorld)
@@ -188,7 +188,7 @@ TEST_F(JITExecutionTest, HelloWorld)
 
   const std::string Output = getStandardOut();
 
-  ASSERT_TRUE("Hello world!\n");
+  ASSERT_EQ(Output, "Hello world!\n");
 }
 
 TEST_F(JITExecutionTest, HelloWorldFull)
@@ -198,7 +198,7 @@ TEST_F(JITExecutionTest, HelloWorldFull)
 
   const std::string Output = getStandardOut();
 
-  ASSERT_TRUE("Hello world!\n");
+  ASSERT_EQ(Output, "Hello world!\n");
 }
 
 TEST_F(JITExecutionTest, AddDry1)
@@ -208,5 +208,5 @@ TEST_F(JITExecutionTest, AddDry1)
 
   const std::string Output = getStandardOut();
 
-  ASSERT_TRUE("10\n");
+  ASSERT_EQ(Output, "10\n");
 }
