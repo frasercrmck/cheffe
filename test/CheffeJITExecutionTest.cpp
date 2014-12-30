@@ -310,3 +310,13 @@ TEST_F(JITExecutionTest, Fold2)
 
   ASSERT_EQ(Output, "0\n");
 }
+
+TEST_F(JITExecutionTest, Serve1)
+{
+  const std::string FileName = "/JITExecution/serve-1.ch";
+  DoTest(FileName.c_str());
+
+  const std::string Output = getStandardOut();
+
+  ASSERT_EQ(Output, "240\n");
+}

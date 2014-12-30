@@ -336,6 +336,24 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
       }
       break;
     }
+    case MethodStepKind::Serve:
+    {
+      auto Recipe = std::static_pointer_cast<RecipeOp>(MS->getOperand(0));
+      const std::string CalleeRecipeName = Recipe->getRecipeName();
+
+      std::shared_ptr<CheffeRecipeInfo> CalleeRecipeInfo =
+          ProgramInfo->getRecipe(CalleeRecipeName);
+
+      const CheffeErrorCode CalleeSuccess =
+          executeRecipe(CalleeRecipeInfo, MixingBowls, BakingDishes);
+
+      if (CalleeSuccess != CheffeErrorCode::CHEFFE_SUCCESS)
+      {
+        return CalleeSuccess;
+      }
+
+      break;
+    }
     }
   }
 
