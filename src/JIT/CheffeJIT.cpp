@@ -5,6 +5,7 @@
 #include "Utils/CheffeDebugUtils.h"
 
 #include <memory>
+#include <algorithm>
 #include <iostream>
 
 #define DEBUG_TYPE "jit"
@@ -350,6 +351,38 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
       {
         Item.first = false;
       }
+      break;
+    }
+    case MethodStepKind::StirBowl:
+    {
+      auto MixingBowl =
+          std::static_pointer_cast<MixingBowlOp>(MS->getOperand(0));
+      const unsigned MixingBowlNo = MixingBowl->getMixingBowlNo();
+
+      const long long Number = std::static_pointer_cast<NumberOp>(
+                                   MS->getOperand(1))->getNumberValue();
+      // If we haven't put any ingredients into this mixing bowl already, or if
+      // we're not going to stir anything, then don't bother trying
+      if (MixingBowlNo > MixingBowls.size() || Number == 0)
+      {
+        break;
+      }
+
+      if (Number < 0)
+      {
+        Diagnostics->report(MS->getSourceLoc(), DiagnosticKind::Error,
+                            LineContext::WithContext)
+            << "Trying to stir the mixing bowl by a negative amount";
+        return CheffeErrorCode::CHEFFE_ERROR;
+      }
+
+      auto TopOfStack = popStackItem(MixingBowls, MixingBowlNo - 1);
+
+      const long long SizeOfMixingBowl = MixingBowls[MixingBowlNo - 1].size();
+      const auto InsertPos = std::max(0LL, SizeOfMixingBowl - Number);
+
+      MixingBowls[MixingBowlNo - 1].insert(
+          MixingBowls[MixingBowlNo - 1].begin() + InsertPos, TopOfStack);
       break;
     }
     case MethodStepKind::Serve:

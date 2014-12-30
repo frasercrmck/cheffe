@@ -340,3 +340,59 @@ TEST_F(JITExecutionTest, LiquefyIngr2)
 
   ASSERT_EQ(Output, "*42\n");
 }
+
+TEST_F(JITExecutionTest, StirBowl1)
+{
+  const std::string FileName = "/JITExecution/stir-bowl-1.ch";
+  DoTest(FileName.c_str());
+  const std::string Output = getStandardOut();
+  ASSERT_EQ(Output, "4212345\n");
+}
+
+TEST_F(JITExecutionTest, StirBowl2)
+{
+  const std::string FileName = "/JITExecution/stir-bowl-2.ch";
+  DoTest(FileName.c_str());
+  const std::string Output = getStandardOut();
+  ASSERT_EQ(Output, "1422345\n");
+}
+
+TEST_F(JITExecutionTest, StirBowl3)
+{
+  const std::string FileName = "/JITExecution/stir-bowl-3.ch";
+  DoTest(FileName.c_str());
+  const std::string Output = getStandardOut();
+  ASSERT_EQ(Output, "1242345\n");
+}
+
+TEST_F(JITExecutionTest, StirBowl4)
+{
+  const std::string FileName = "/JITExecution/stir-bowl-4.ch";
+  DoTest(FileName.c_str());
+  const std::string Output = getStandardOut();
+  ASSERT_EQ(Output, "1234245\n");
+}
+
+TEST_F(JITExecutionTest, StirBowl5)
+{
+  const std::string FileName = "/JITExecution/stir-bowl-5.ch";
+  DoTest(FileName.c_str());
+  const std::string Output = getStandardOut();
+  ASSERT_EQ(Output, "1234425\n");
+}
+
+TEST_F(JITExecutionTest, StirBowl6)
+{
+  const std::string FileName = "/JITExecution/stir-bowl-6.ch";
+  DoTest(FileName.c_str());
+  const std::string Output = getStandardOut();
+  ASSERT_EQ(Output, "1234542\n");
+}
+
+TEST_F(JITExecutionTest, StirBowl7)
+{
+  const std::string FileName = "/JITExecution/stir-bowl-7.ch";
+  DoTest(FileName.c_str());
+  const std::string Output = getStandardOut();
+  ASSERT_EQ(Output, "1234542\n");
+}
