@@ -63,7 +63,7 @@ void pushBakingDishItem(const StackItemTy StackItem, const unsigned StackIdx)
 StackItemTy popStackItem(std::vector<StackTy> &Stack,
                          const unsigned StackItemIdx)
 {
-  if (StackItemIdx > Stack.size())
+  if (StackItemIdx >= Stack.size())
   {
     return std::make_pair(true, 0);
   }
