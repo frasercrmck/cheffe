@@ -320,3 +320,23 @@ TEST_F(JITExecutionTest, Serve1)
 
   ASSERT_EQ(Output, "240\n");
 }
+
+TEST_F(JITExecutionTest, LiquefyIngr1)
+{
+  const std::string FileName = "/JITExecution/liquefy-ingr-1.ch";
+  DoTest(FileName.c_str());
+
+  const std::string Output = getStandardOut();
+
+  ASSERT_EQ(Output, "*\n");
+}
+
+TEST_F(JITExecutionTest, LiquefyIngr2)
+{
+  const std::string FileName = "/JITExecution/liquefy-ingr-2.ch";
+  DoTest(FileName.c_str());
+
+  const std::string Output = getStandardOut();
+
+  ASSERT_EQ(Output, "*42\n");
+}

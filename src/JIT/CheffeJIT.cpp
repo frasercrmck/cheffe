@@ -318,6 +318,22 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
       }
       break;
     }
+    case MethodStepKind::LiquifyIngredient:
+    {
+      SourceLocation IngredientLoc;
+      std::shared_ptr<CheffeIngredient> Ingredient = nullptr;
+
+      const CheffeErrorCode Success =
+          getIngredientInfo(MS->getOperand(0), Ingredient, IngredientLoc);
+      if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
+      {
+        return Success;
+      }
+
+      Ingredient->IsDry = false;
+
+      break;
+    }
     case MethodStepKind::LiquifyBowl:
     {
       auto MixingBowl =
