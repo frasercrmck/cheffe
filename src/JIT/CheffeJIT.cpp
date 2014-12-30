@@ -415,8 +415,7 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
     std::cout << std::endl;
   }
 
-  CHEFFE_DEBUG(dbgs() << "Ending execution of '"
-                      << RecipeInfo->getRecipeTitle()
+  CHEFFE_DEBUG(dbgs() << "Ending execution of '" << RecipeInfo->getRecipeTitle()
                       << "'" << std::endl << std::endl);
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
