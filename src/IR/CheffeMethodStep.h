@@ -151,6 +151,8 @@ public:
   {
   }
 
+  std::string getRecipeName() const;
+
   void dump(std::ostream &OS) const override;
 
 private:

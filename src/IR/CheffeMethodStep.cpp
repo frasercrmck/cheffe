@@ -112,6 +112,11 @@ void NumberOp::dump(std::ostream &OS) const
   OS << "(Number " << NumberValue << ")";
 }
 
+std::string RecipeOp::getRecipeName() const
+{
+  return RecipeName;
+}
+
 void RecipeOp::dump(std::ostream &OS) const
 {
   OS << "(Recipe '" << RecipeName << "')";
