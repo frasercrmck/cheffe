@@ -149,6 +149,30 @@ CheffeErrorCode CheffeJIT::executeRecipe()
     {
     default:
       return CheffeErrorCode::CHEFFE_ERROR;
+    case MethodStepKind::Take:
+    {
+      SourceLocation IngredientLoc;
+      std::shared_ptr<CheffeIngredient> Ingredient = nullptr;
+
+      const CheffeErrorCode Success =
+          getIngredientInfo(MS->getOperand(0), Ingredient, IngredientLoc);
+      if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
+      {
+        return CheffeErrorCode::CHEFFE_ERROR;
+      }
+
+      long long NewValue = 0;
+      while (!(std::cin >> NewValue))
+      {
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cout << "Invalid input.  Try again: ";
+      }
+
+      Ingredient->HasValue = true;
+      Ingredient->Value = NewValue;
+      break;
+    }
     case MethodStepKind::Put:
     {
       SourceLocation IngredientLoc;
