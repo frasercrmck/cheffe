@@ -290,3 +290,23 @@ TEST_F(JITExecutionTest, Divide2)
 
   ASSERT_EQ(Output, "0\n");
 }
+
+TEST_F(JITExecutionTest, Fold1)
+{
+  const std::string FileName = "/JITExecution/fold-1.ch";
+  DoTest(FileName.c_str());
+
+  const std::string Output = getStandardOut();
+
+  ASSERT_EQ(Output, "1\n");
+}
+
+TEST_F(JITExecutionTest, Fold2)
+{
+  const std::string FileName = "/JITExecution/fold-2.ch";
+  DoTest(FileName.c_str());
+
+  const std::string Output = getStandardOut();
+
+  ASSERT_EQ(Output, "0\n");
+}
