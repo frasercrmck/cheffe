@@ -149,6 +149,33 @@ CheffeErrorCode CheffeJIT::executeRecipe()
     {
     default:
       return CheffeErrorCode::CHEFFE_ERROR;
+    case MethodStepKind::Put:
+    {
+      SourceLocation IngredientLoc;
+      std::shared_ptr<CheffeIngredient> Ingredient = nullptr;
+
+      const CheffeErrorCode Success =
+          getIngredientInfo(MS->getOperand(0), Ingredient, IngredientLoc);
+      if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
+      {
+        return CheffeErrorCode::CHEFFE_ERROR;
+      }
+
+      if (!checkIngredientHasValue(Ingredient, IngredientLoc))
+      {
+        return CheffeErrorCode::CHEFFE_ERROR;
+      }
+
+      const bool IsDry = Ingredient->IsDry;
+      const int Value = Ingredient->Value;
+
+      auto MixingBowl =
+          std::static_pointer_cast<MixingBowlOp>(MS->getOperand(1));
+      const unsigned MixingBowlNo = MixingBowl->getMixingBowlNo();
+
+      pushMixingBowlItem(std::make_pair(IsDry, Value), MixingBowlNo - 1);
+      break;
+    }
     case MethodStepKind::Pour:
     {
       // FIXME: No safety here if the indices are wrong!
