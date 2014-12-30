@@ -100,11 +100,17 @@ CheffeErrorCode CheffeJIT::executeProgram()
   return Success;
 }
 
+long long randomGenerator(long long i)
+{
+  return std::rand() % i;
+}
+
 CheffeErrorCode
 CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
                          std::vector<StackTy> &CallerMixingBowls,
                          std::vector<StackTy> &CallerBakingDishes)
 {
+  std::srand(std::time(0));
   if (!RecipeInfo)
   {
     return CheffeErrorCode::CHEFFE_ERROR;
@@ -422,6 +428,22 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
       }
 
       MixingBowls[MixingBowlNo - 1].clear();
+      break;
+    }
+    case MethodStepKind::Mix:
+    {
+      const auto MixingBowl =
+          std::static_pointer_cast<MixingBowlOp>(MS->getOperand(0));
+      const unsigned MixingBowlNo = MixingBowl->getMixingBowlNo();
+
+      // If there's already nothing in the mixing bowl, don't bother cleaning
+      // anything
+      if (MixingBowlNo > MixingBowls.size())
+      {
+        break;
+      }
+      std::random_shuffle(MixingBowls[MixingBowlNo - 1].begin(),
+                          MixingBowls[MixingBowlNo - 1].end(), randomGenerator);
       break;
     }
     case MethodStepKind::Serve:

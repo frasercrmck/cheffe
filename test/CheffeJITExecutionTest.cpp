@@ -6,6 +6,7 @@
 #include "IR/CheffeProgramInfo.h"
 #include "Utils/CheffeFileHandler.h"
 
+#include <set>
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -427,4 +428,22 @@ TEST_F(JITExecutionTest, CleanBowl3)
   DoTest(FileName.c_str());
   const std::string Output = getStandardOut();
   ASSERT_EQ(Output, "424321\n");
+}
+
+TEST_F(JITExecutionTest, MixBowl1)
+{
+  const std::string FileName = "/JITExecution/mix-bowl-1.ch";
+  DoTest(FileName.c_str());
+  const std::string Output = getStandardOut();
+
+  std::set<char> Expected = {'5', '4', '3', '2', '1', '\n'};
+
+  for (auto Char : Output)
+  {
+    auto Iter = Expected.find(Char);
+    ASSERT_NE(Iter, std::end(Expected));
+    Expected.erase(Iter);
+  }
+
+  ASSERT_TRUE(Expected.empty());
 }
