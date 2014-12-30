@@ -408,6 +408,22 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
           MixingBowls[MixingBowlNo - 1].begin() + InsertPos, TopOfStack);
       break;
     }
+    case MethodStepKind::Clean:
+    {
+      const auto MixingBowl =
+          std::static_pointer_cast<MixingBowlOp>(MS->getOperand(0));
+      const unsigned MixingBowlNo = MixingBowl->getMixingBowlNo();
+
+      // If there's already nothing in the mixing bowl, don't bother cleaning
+      // anything
+      if (MixingBowlNo > MixingBowls.size())
+      {
+        break;
+      }
+
+      MixingBowls[MixingBowlNo - 1].clear();
+      break;
+    }
     case MethodStepKind::Serve:
     {
       auto Recipe = std::static_pointer_cast<RecipeOp>(MS->getOperand(0));

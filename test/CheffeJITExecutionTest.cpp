@@ -404,3 +404,27 @@ TEST_F(JITExecutionTest, StirIngredient1)
   const std::string Output = getStandardOut();
   ASSERT_EQ(Output, "1234245\n");
 }
+
+TEST_F(JITExecutionTest, CleanBowl1)
+{
+  const std::string FileName = "/JITExecution/clean-bowl-1.ch";
+  DoTest(FileName.c_str());
+  const std::string Output = getStandardOut();
+  ASSERT_EQ(Output, "42\n");
+}
+
+TEST_F(JITExecutionTest, CleanBowl2)
+{
+  const std::string FileName = "/JITExecution/clean-bowl-2.ch";
+  DoTest(FileName.c_str());
+  const std::string Output = getStandardOut();
+  ASSERT_EQ(Output, "424321\n");
+}
+
+TEST_F(JITExecutionTest, CleanBowl3)
+{
+  const std::string FileName = "/JITExecution/clean-bowl-3.ch";
+  DoTest(FileName.c_str());
+  const std::string Output = getStandardOut();
+  ASSERT_EQ(Output, "424321\n");
+}
