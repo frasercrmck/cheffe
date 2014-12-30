@@ -143,9 +143,9 @@ TEST_F(GoodParserTest, MethodStepAddDry)
   TestParse("/Parser/method-step-add-dry.ch");
 }
 
-TEST_F(GoodParserTest, MethodStepLiquify)
+TEST_F(GoodParserTest, MethodStepLiquefy)
 {
-  TestParse("/Parser/method-step-liquify.ch");
+  TestParse("/Parser/method-step-liquefy.ch");
 }
 
 TEST_F(GoodParserTest, MethodStepStir)

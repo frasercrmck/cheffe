@@ -1,6 +1,6 @@
-Liquify/Liquefy Method Step.
+Liquefy/Liquify Method Step.
 
-This recipe tests the "liquify" and "liquefy" method steps.
+This recipe tests the "liquefy" and "liquify" method steps.
 
 Ingredients.
 1 kg lamb

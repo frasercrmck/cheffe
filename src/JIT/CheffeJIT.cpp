@@ -318,7 +318,7 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
       }
       break;
     }
-    case MethodStepKind::LiquifyIngredient:
+    case MethodStepKind::LiquefyIngredient:
     {
       SourceLocation IngredientLoc;
       std::shared_ptr<CheffeIngredient> Ingredient = nullptr;
@@ -334,7 +334,7 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
 
       break;
     }
-    case MethodStepKind::LiquifyBowl:
+    case MethodStepKind::LiquefyBowl:
     {
       auto MixingBowl =
           std::static_pointer_cast<MixingBowlOp>(MS->getOperand(0));

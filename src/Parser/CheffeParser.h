@@ -117,7 +117,7 @@ private:
   CheffeErrorCode parseTakeMethodStep();
   CheffeErrorCode parsePutOrFoldMethodStep(const MethodStepKind Step);
   CheffeErrorCode parseArithmeticMethodStep(const MethodStepKind Step);
-  CheffeErrorCode parseLiquifyMethodStep();
+  CheffeErrorCode parseLiquefyMethodStep();
   CheffeErrorCode parseStirMethodStep();
   CheffeErrorCode parseMixMethodStep();
   CheffeErrorCode parseCleanMethodStep();

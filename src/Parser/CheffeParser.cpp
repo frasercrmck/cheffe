@@ -816,7 +816,7 @@ CheffeErrorCode CheffeParser::parseMethodStep()
   }
   else if (MethodStepKeyword == "Liquefy" || MethodStepKeyword == "Liquify")
   {
-    Success = parseLiquifyMethodStep();
+    Success = parseLiquefyMethodStep();
   }
   else if (MethodStepKeyword == "Stir")
   {
@@ -1082,7 +1082,7 @@ CheffeErrorCode CheffeParser::parseTakeMethodStep()
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
 
-CheffeErrorCode CheffeParser::parseLiquifyMethodStep()
+CheffeErrorCode CheffeParser::parseLiquefyMethodStep()
 {
   getNextToken();
 
@@ -1123,7 +1123,7 @@ CheffeErrorCode CheffeParser::parseLiquifyMethodStep()
     }
 
     auto MethodStep =
-        CurrentRecipe->addNewMethodStep(MethodStepKind::LiquifyBowl);
+        CurrentRecipe->addNewMethodStep(MethodStepKind::LiquefyBowl);
     MethodStep->addMixingBowl(MixingBowlNo);
 
     return CheffeErrorCode::CHEFFE_SUCCESS;
@@ -1151,7 +1151,7 @@ CheffeErrorCode CheffeParser::parseLiquifyMethodStep()
                                           EmitDiagnosticIfUndef::Warning);
 
   auto MethodStep =
-      CurrentRecipe->addNewMethodStep(MethodStepKind::LiquifyIngredient);
+      CurrentRecipe->addNewMethodStep(MethodStepKind::LiquefyIngredient);
   MethodStep->addIngredient(IngredientInfo, IngredientLoc);
 
   return CheffeErrorCode::CHEFFE_SUCCESS;

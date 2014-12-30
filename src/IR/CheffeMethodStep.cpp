@@ -24,10 +24,10 @@ static std::string getMethodStepKindAsString(const MethodStepKind Kind)
     return "DIVIDE";
   case MethodStepKind::AddDry:
     return "ADD_DRY";
-  case MethodStepKind::LiquifyBowl:
-    return "LIQUIFY_BOWL";
-  case MethodStepKind::LiquifyIngredient:
-    return "LIQUIFY_INGREDIENT";
+  case MethodStepKind::LiquefyBowl:
+    return "LIQUEFY_BOWL";
+  case MethodStepKind::LiquefyIngredient:
+    return "LIQUEFY_INGREDIENT";
   case MethodStepKind::StirBowl:
     return "STIR_BOWL";
   case MethodStepKind::StirIngredient:
