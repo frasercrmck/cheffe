@@ -199,6 +199,55 @@ CheffeErrorCode CheffeJIT::executeRecipe()
       pushMixingBowlItem(std::make_pair(true, DrySum), MixingBowlNo - 1);
       break;
     }
+    case MethodStepKind::Add:
+    case MethodStepKind::Remove:
+    case MethodStepKind::Combine:
+    case MethodStepKind::Divide:
+    {
+      SourceLocation IngredientLoc;
+      std::shared_ptr<CheffeIngredient> Ingredient = nullptr;
+
+      const CheffeErrorCode Success =
+          getIngredientInfo(MS->getOperand(0), Ingredient, IngredientLoc);
+      if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
+      {
+        return Success;
+      }
+
+      if (!checkIngredientHasValue(Ingredient, IngredientLoc))
+      {
+        return CheffeErrorCode::CHEFFE_ERROR;
+      }
+
+      auto MixingBowl =
+          std::static_pointer_cast<MixingBowlOp>(MS->getOperand(1));
+      const unsigned MixingBowlNo = MixingBowl->getMixingBowlNo();
+
+      const long long Value = Ingredient->Value;
+      auto NewValue = popMixingBowlItem(MixingBowlNo - 1);
+
+      switch (MS->getMethodStepKind())
+      {
+      default:
+        cheffe_unreachable("Impossible operand code");
+        break;
+      case MethodStepKind::Add:
+        NewValue.second += Value;
+        break;
+      case MethodStepKind::Remove:
+        NewValue.second -= Value;
+        break;
+      case MethodStepKind::Combine:
+        NewValue.second *= Value;
+        break;
+      case MethodStepKind::Divide:
+        NewValue.second /= Value;
+        break;
+      }
+
+      pushMixingBowlItem(NewValue, MixingBowlNo - 1);
+      break;
+    }
     case MethodStepKind::Pour:
     {
       // FIXME: No safety here if the indices are wrong!

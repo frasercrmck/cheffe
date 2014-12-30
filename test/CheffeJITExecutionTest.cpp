@@ -210,3 +210,83 @@ TEST_F(JITExecutionTest, AddDry1)
 
   ASSERT_EQ(Output, "10\n");
 }
+
+TEST_F(JITExecutionTest, Add1)
+{
+  const std::string FileName = "/JITExecution/add-1.ch";
+  DoTest(FileName.c_str());
+
+  const std::string Output = getStandardOut();
+
+  ASSERT_EQ(Output, "3\n");
+}
+
+TEST_F(JITExecutionTest, Add2)
+{
+  const std::string FileName = "/JITExecution/add-2.ch";
+  DoTest(FileName.c_str());
+
+  const std::string Output = getStandardOut();
+
+  ASSERT_EQ(Output, "42\n");
+}
+
+TEST_F(JITExecutionTest, Remove1)
+{
+  const std::string FileName = "/JITExecution/remove-1.ch";
+  DoTest(FileName.c_str());
+
+  const std::string Output = getStandardOut();
+
+  ASSERT_EQ(Output, "-1\n");
+}
+
+TEST_F(JITExecutionTest, Remove2)
+{
+  const std::string FileName = "/JITExecution/remove-2.ch";
+  DoTest(FileName.c_str());
+
+  const std::string Output = getStandardOut();
+
+  ASSERT_EQ(Output, "1\n");
+}
+
+TEST_F(JITExecutionTest, Combine1)
+{
+  const std::string FileName = "/JITExecution/combine-1.ch";
+  DoTest(FileName.c_str());
+
+  const std::string Output = getStandardOut();
+
+  ASSERT_EQ(Output, "16\n");
+}
+
+TEST_F(JITExecutionTest, Combine2)
+{
+  const std::string FileName = "/JITExecution/combine-2.ch";
+  DoTest(FileName.c_str());
+
+  const std::string Output = getStandardOut();
+
+  ASSERT_EQ(Output, "4398046511104\n");
+}
+
+TEST_F(JITExecutionTest, Divide1)
+{
+  const std::string FileName = "/JITExecution/divide-1.ch";
+  DoTest(FileName.c_str());
+
+  const std::string Output = getStandardOut();
+
+  ASSERT_EQ(Output, "16\n");
+}
+
+TEST_F(JITExecutionTest, Divide2)
+{
+  const std::string FileName = "/JITExecution/divide-2.ch";
+  DoTest(FileName.c_str());
+
+  const std::string Output = getStandardOut();
+
+  ASSERT_EQ(Output, "0\n");
+}
