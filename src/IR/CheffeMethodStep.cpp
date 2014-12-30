@@ -133,6 +133,16 @@ MethodStepKind CheffeMethodStep::getMethodStepKind() const
   return Kind;
 }
 
+SourceLocation CheffeMethodStep::getSourceLoc() const
+{
+  return SourceLoc;
+}
+
+void CheffeMethodStep::setSourceLoc(const SourceLocation Loc)
+{
+  SourceLoc = Loc;
+}
+
 void CheffeMethodStep::addIngredient(
     const std::pair<bool, std::shared_ptr<CheffeIngredient>> &IngredientInfo,
     const SourceLocation SourceLoc)

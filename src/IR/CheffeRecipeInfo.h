@@ -36,6 +36,8 @@ public:
 
   std::shared_ptr<CheffeMethodStep> addNewMethodStep(const MethodStepKind Kind);
 
+  std::shared_ptr<CheffeMethodStep> getLastMethodStep() const;
+
   const std::vector<std::shared_ptr<CheffeMethodStep>> &getMethodStepList();
 
 private:

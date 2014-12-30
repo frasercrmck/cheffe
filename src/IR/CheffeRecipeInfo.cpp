@@ -63,6 +63,11 @@ CheffeRecipeInfo::addNewMethodStep(const MethodStepKind Kind)
   return MethodStep;
 }
 
+std::shared_ptr<CheffeMethodStep> CheffeRecipeInfo::getLastMethodStep() const
+{
+  return MethodSteps.empty() ? nullptr : MethodSteps.back();
+}
+
 const std::vector<std::shared_ptr<CheffeMethodStep>> &
 CheffeRecipeInfo::getMethodStepList()
 {

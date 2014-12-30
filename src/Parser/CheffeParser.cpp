@@ -785,6 +785,8 @@ CheffeErrorCode CheffeParser::parseMethodStep()
         << "'Liquify' keyword is deprecated: use 'Liquefy' instead";
   }
 
+  SourceLocation BeginMethodStepLoc = CurrentToken.getSourceLoc();
+
   CheffeErrorCode Success = CheffeErrorCode::CHEFFE_SUCCESS;
   if (MethodStepKeyword == "Take")
   {
@@ -863,6 +865,16 @@ CheffeErrorCode CheffeParser::parseMethodStep()
   if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
   {
     return Success;
+  }
+
+  // Tack on the source location information for this method step onto the
+  // last-added method step that the recipe contains. Bit of a hack but it
+  // keeps the parsing interfaces cleaner.
+  if (CurrentRecipe->getLastMethodStep())
+  {
+    const SourceLocation EndMethodStepLoc = CurrentToken.getSourceLoc();
+    CurrentRecipe->getLastMethodStep()->setSourceLoc(
+        SourceLocation(BeginMethodStepLoc, EndMethodStepLoc));
   }
 
   if (expectToken(TokenKind::FullStop))

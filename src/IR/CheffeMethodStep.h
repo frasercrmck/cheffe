@@ -168,6 +168,9 @@ public:
 
   MethodStepKind getMethodStepKind() const;
 
+  SourceLocation getSourceLoc() const;
+  void setSourceLoc(const SourceLocation Loc);
+
   std::shared_ptr<MethodOp> getOperand(const unsigned Idx) const;
 
   void addIngredient(
@@ -191,6 +194,7 @@ public:
 
 private:
   MethodStepKind Kind;
+  SourceLocation SourceLoc;
   std::vector<std::shared_ptr<MethodOp>> MethodOps;
 };
 
