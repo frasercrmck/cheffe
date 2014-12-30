@@ -16,7 +16,7 @@ public:
   {
   }
   bool HasValue = false;
-  int Value = 0;
+  long long Value = 0;
   bool IsDry = true;
   std::string MeasureType = "";
   std::string Measure = "";

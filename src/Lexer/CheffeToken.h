@@ -131,7 +131,7 @@ private:
   // Position information
   SourceLocation SourceLoc;
 
-  int NumVal;
+  long long NumVal;
   std::string IdentifierString;
 
 public:
@@ -144,7 +144,7 @@ public:
   {
   }
 
-  Token(TokenKind Tok, std::size_t B, std::size_t E, int Val)
+  Token(TokenKind Tok, std::size_t B, std::size_t E, long long Val)
       : Kind(Tok), SourceLoc(B, E), NumVal(Val)
   {
   }
@@ -298,7 +298,7 @@ public:
     return IdentifierString;
   }
 
-  int getNumVal() const
+  long long getNumVal() const
   {
     return NumVal;
   }

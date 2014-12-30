@@ -21,7 +21,7 @@ public:
   {
   }
 
-  void setServesNo(const int Serves);
+  void setServesNo(const unsigned Serves);
 
   unsigned getServesNo() const;
 

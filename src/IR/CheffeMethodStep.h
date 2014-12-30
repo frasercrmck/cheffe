@@ -128,16 +128,16 @@ public:
   {
   }
 
-  NumberOp(const int Value) : MethodOp(), NumberValue(Value)
+  NumberOp(const long long Value) : MethodOp(), NumberValue(Value)
   {
   }
 
-  int getNumberValue() const;
+  long long getNumberValue() const;
 
   void dump(std::ostream &OS) const override;
 
 private:
-  int NumberValue = 0;
+  long long NumberValue = 0;
 };
 
 class RecipeOp : public MethodOp
@@ -180,7 +180,7 @@ public:
 
   void addBakingDish(const unsigned BakingDishNo);
 
-  void addNumber(const int NumberValue);
+  void addNumber(const long long NumberValue);
 
   void addRecipe(const std::string &RecipeName);
 

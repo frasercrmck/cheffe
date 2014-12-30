@@ -537,7 +537,7 @@ CheffeErrorCode CheffeParser::parseCookingTime()
   {
     return CheffeErrorCode::CHEFFE_ERROR;
   }
-  const int Time = CurrentToken.getNumVal();
+  const long long Time = CurrentToken.getNumVal();
 
   if (consumeAndExpectToken(TokenKind::Identifier))
   {
@@ -625,7 +625,7 @@ CheffeErrorCode CheffeParser::parseOvenTemperature()
   {
     return CheffeErrorCode::CHEFFE_ERROR;
   }
-  const int Temperature = CurrentToken.getNumVal();
+  const long long Temperature = CurrentToken.getNumVal();
 
   if (consumeAndExpectToken("degrees"))
   {
@@ -639,7 +639,7 @@ CheffeErrorCode CheffeParser::parseOvenTemperature()
 
   getNextToken();
 
-  int GasMark = 0;
+  long long GasMark = 0;
   bool HasGasMark = false;
   if (CurrentToken.is(TokenKind::OpenBrace))
   {
@@ -1199,7 +1199,7 @@ CheffeErrorCode CheffeParser::parseStirMethodStep()
       return CheffeErrorCode::CHEFFE_ERROR;
     }
 
-    const int NumberOfMinutes = CurrentToken.getNumVal();
+    const long long NumberOfMinutes = CurrentToken.getNumVal();
 
     if (consumeAndExpectToken("minutes"))
     {
@@ -1685,7 +1685,8 @@ CheffeErrorCode CheffeParser::parseServesStatement()
   {
     return CheffeErrorCode::CHEFFE_ERROR;
   }
-  const int ServesNo = CurrentToken.getNumVal();
+  const long long ServesNo = CurrentToken.getNumVal();
+  const SourceLocation NumberLoc = CurrentToken.getSourceLoc();
 
   if (consumeAndExpectToken(TokenKind::FullStop))
   {
@@ -1694,7 +1695,16 @@ CheffeErrorCode CheffeParser::parseServesStatement()
 
   CHEFFE_DEBUG(dbgs() << "SERVES: " << ServesNo << std::endl << std::endl);
 
-  CurrentRecipe->setServesNo(ServesNo);
+  if (ServesNo < std::numeric_limits<unsigned>::min() ||
+      ServesNo > std::numeric_limits<unsigned>::max())
+  {
+    Diagnostics->report(NumberLoc, DiagnosticKind::Error,
+                        LineContext::WithContext)
+        << "Serves No is outwith bounds of unsigned integer";
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
+
+  CurrentRecipe->setServesNo((unsigned)ServesNo);
 
   getNextToken();
   if (CurrentToken.isNotAnyOf(TokenKind::EndOfParagraph, TokenKind::EndOfFile))

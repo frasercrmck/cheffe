@@ -102,7 +102,7 @@ void BakingDishOp::dump(std::ostream &OS) const
   OS << "(BakingDish " << BakingDishNo << ")";
 }
 
-int NumberOp::getNumberValue() const
+long long NumberOp::getNumberValue() const
 {
   return NumberValue;
 }
@@ -156,7 +156,7 @@ void CheffeMethodStep::addBakingDish(const unsigned BakingDishNo)
   MethodOps.push_back(std::make_shared<BakingDishOp>(BakingDishNo));
 }
 
-void CheffeMethodStep::addNumber(const int NumberValue)
+void CheffeMethodStep::addNumber(const long long NumberValue)
 {
   MethodOps.push_back(std::make_shared<NumberOp>(NumberValue));
 }

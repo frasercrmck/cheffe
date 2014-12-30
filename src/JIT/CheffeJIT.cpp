@@ -13,7 +13,7 @@
 namespace cheffe
 {
 
-typedef std::pair<bool, uint64_t> StackItemTy;
+typedef std::pair<bool, long long> StackItemTy;
 typedef std::deque<StackItemTy> StackTy;
 
 std::vector<StackTy> MixingBowls;
@@ -167,7 +167,7 @@ CheffeErrorCode CheffeJIT::executeRecipe()
       }
 
       const bool IsDry = Ingredient->IsDry;
-      const int Value = Ingredient->Value;
+      const long long Value = Ingredient->Value;
 
       auto MixingBowl =
           std::static_pointer_cast<MixingBowlOp>(MS->getOperand(1));

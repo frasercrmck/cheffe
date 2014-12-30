@@ -4,7 +4,7 @@
 namespace cheffe
 {
 
-void CheffeRecipeInfo::setServesNo(const int Serves)
+void CheffeRecipeInfo::setServesNo(const unsigned Serves)
 {
   ServesNo = Serves;
 }
