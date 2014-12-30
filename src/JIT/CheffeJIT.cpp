@@ -104,6 +104,10 @@ bool CheffeJIT::checkIngredientHasValue(
 
 CheffeErrorCode CheffeJIT::executeRecipe()
 {
+  // Clear up from any old execution
+  MixingBowls.clear();
+  BakingDishes.clear();
+
   if (!ProgramInfo)
   {
     return CheffeErrorCode::CHEFFE_ERROR;

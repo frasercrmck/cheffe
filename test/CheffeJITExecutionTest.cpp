@@ -120,3 +120,53 @@ TEST_F(JITExecutionTest, PourNothing)
 
   ASSERT_TRUE(Output.empty());
 }
+
+TEST_F(JITExecutionTest, Put1)
+{
+  const std::string FileName = "/JITExecution/put-1.ch";
+  DoTest(FileName.c_str());
+
+  const std::string Output = getStandardOut();
+
+  ASSERT_TRUE("111111\n");
+}
+
+TEST_F(JITExecutionTest, Put2)
+{
+  const std::string FileName = "/JITExecution/put-2.ch";
+  DoTest(FileName.c_str());
+
+  const std::string Output = getStandardOut();
+
+  ASSERT_TRUE("111111\n");
+}
+
+TEST_F(JITExecutionTest, Put3)
+{
+  const std::string FileName = "/JITExecution/put-3.ch";
+  DoTest(FileName.c_str());
+
+  const std::string Output = getStandardOut();
+
+  ASSERT_TRUE("111111\n");
+}
+
+TEST_F(JITExecutionTest, Put4)
+{
+  const std::string FileName = "/JITExecution/put-4.ch";
+  DoTest(FileName.c_str());
+
+  const std::string Output = getStandardOut();
+
+  ASSERT_TRUE("1111\n");
+}
+
+TEST_F(JITExecutionTest, Put5)
+{
+  const std::string FileName = "/JITExecution/put-5.ch";
+  DoTest(FileName.c_str());
+
+  const std::string Output = getStandardOut();
+
+  ASSERT_TRUE("11\n");
+}
