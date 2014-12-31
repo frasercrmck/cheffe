@@ -1,6 +1,7 @@
 #ifndef CHEFFE_NEST_INFO
 #define CHEFFE_NEST_INFO
 
+#include "cheffe.h"
 #include "IR/CheffeMethodStep.h"
 
 #include <memory>
@@ -46,6 +47,9 @@ public:
   bool popNest(std::shared_ptr<CheffeNest> &NestInfo);
 
   bool addBreak(std::shared_ptr<CheffeMethodStep> MethodStep);
+
+  CheffeErrorCode fixupNestMethodSteps(
+      const std::vector<std::shared_ptr<CheffeMethodStep>> &MethodList);
 
   void dumpInfo(std::ostream &OS) const;
 

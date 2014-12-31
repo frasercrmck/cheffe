@@ -213,6 +213,17 @@ CheffeErrorCode CheffeParser::parseRecipe()
       return CheffeErrorCode::CHEFFE_ERROR;
     }
 
+    Success =
+        RecipeNestInfo.fixupNestMethodSteps(CurrentRecipe->getMethodStepList());
+
+    if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
+    {
+      Diagnostics->report(SourceLocation(), DiagnosticKind::Error,
+                          LineContext::WithoutContext)
+          << "Could not fixup nest instructions";
+      return Success;
+    }
+
     RecipeNestInfo.clearInfo();
 
     // clang-format off
