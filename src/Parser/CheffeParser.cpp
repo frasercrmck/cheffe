@@ -478,6 +478,13 @@ CheffeErrorCode CheffeParser::parseIngredient(CheffeIngredient &Ingredient)
     }
   }
 
+  if (CurrentToken.is("the"))
+  {
+    Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Error,
+                        LineContext::WithContext)
+        << "Defining an ingredient beginning with 'the' will be ambiguous";
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
   const std::size_t BeginIngredientNamePos =
       CurrentToken.getSourceLoc().getBegin();
   SourceLocation EndIngredientDefLoc = CurrentToken.getSourceLoc();
