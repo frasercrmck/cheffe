@@ -1012,6 +1012,13 @@ CheffeParser::parseArithmeticMethodStep(const MethodStepKind Step)
   }
   else
   {
+    // Not in the spec, but in some examples:
+    //   "Add the potatoes [to nth mixing bowl]."
+    //   "Remove the onions [from nth mixing bowl]."
+    if (CurrentToken.is("the"))
+    {
+      getNextToken();
+    }
     const SourceLocation BeginIngredientLoc = CurrentToken.getSourceLoc();
     SourceLocation EndIngredientLoc = BeginIngredientLoc;
     while (CurrentToken.isNotAnyOf(Preposition.c_str(), TokenKind::FullStop,
