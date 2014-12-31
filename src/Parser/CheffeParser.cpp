@@ -1527,7 +1527,7 @@ CheffeErrorCode CheffeParser::parseVerbMethodStep()
       return CheffeErrorCode::CHEFFE_ERROR;
     }
 
-    const std::string FromVerb = LoopNestInfo[LoopNestInfo.size() - 1];
+    const std::string FromVerb = LoopNestInfo.back();
     LoopNestInfo.pop_back();
 
     // clang-format off
