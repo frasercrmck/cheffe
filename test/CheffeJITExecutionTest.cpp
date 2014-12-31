@@ -471,3 +471,35 @@ TEST_F(JITExecutionTest, Refrigerate3)
   const std::string Output = getStandardOut();
   ASSERT_EQ(Output, "1234554321\n");
 }
+
+TEST_F(JITExecutionTest, ControlFlow1)
+{
+  const std::string FileName = "/JITExecution/control-flow-1.ch";
+  DoTest(FileName.c_str());
+  const std::string Output = getStandardOut();
+  ASSERT_EQ(Output, "12345678910\n");
+}
+
+TEST_F(JITExecutionTest, ControlFlow2)
+{
+  const std::string FileName = "/JITExecution/control-flow-2.ch";
+  DoTest(FileName.c_str());
+  const std::string Output = getStandardOut();
+  ASSERT_EQ(Output, "**********\n");
+}
+
+TEST_F(JITExecutionTest, ControlFlow3)
+{
+  const std::string FileName = "/JITExecution/control-flow-3.ch";
+  DoTest(FileName.c_str());
+  const std::string Output = getStandardOut();
+  ASSERT_EQ(Output, "1 * 2 * 3 = 6\n");
+}
+
+TEST_F(JITExecutionTest, ControlFlow4)
+{
+  const std::string FileName = "/JITExecution/control-flow-4.ch";
+  DoTest(FileName.c_str());
+  const std::string Output = getStandardOut();
+  ASSERT_EQ(Output, "100\n");
+}
