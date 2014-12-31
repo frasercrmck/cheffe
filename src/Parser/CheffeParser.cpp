@@ -854,12 +854,8 @@ CheffeErrorCode CheffeParser::parseMethodStep()
   }
   else
   {
-    // Haven't defined a parse function for this method step yet. Consume until
-    // the full stop.
-    while (CurrentToken.isNotAnyOf(TokenKind::FullStop, TokenKind::EndOfFile))
-    {
-      getNextToken();
-    }
+    cheffe_unreachable("Invalid method step keyword!");
+    return CheffeErrorCode::CHEFFE_ERROR;
   }
 
   if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
