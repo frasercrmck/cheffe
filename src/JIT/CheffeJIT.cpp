@@ -467,6 +467,18 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
     }
   }
 
+  return returnFromRecipe(MixingBowls, BakingDishes, CallerMixingBowls,
+                          RecipeInfo->getServesNo(),
+                          RecipeInfo->getRecipeTitle());
+}
+
+CheffeErrorCode
+CheffeJIT::returnFromRecipe(std::vector<CheffeJIT::StackTy> &MixingBowls,
+                            std::vector<CheffeJIT::StackTy> &BakingDishes,
+                            std::vector<CheffeJIT::StackTy> &CallerMixingBowls,
+                            const unsigned BakingDishesOutputNo,
+                            const std::string &DebugRecipeTitle)
+{
   // Copy the contents of the 1st mixing bowl back to the caller recipe.
   if (!MixingBowls.empty())
   {
@@ -481,10 +493,8 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
     }
   }
 
-  const unsigned ServesNo = RecipeInfo->getServesNo();
-
   bool HaveOutputAnything = false;
-  for (unsigned i = 0; i < ServesNo && i < BakingDishes.size(); ++i)
+  for (unsigned i = 0; i < BakingDishesOutputNo && i < BakingDishes.size(); ++i)
   {
     while (!BakingDishes[i].empty())
     {
@@ -509,8 +519,8 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
     std::cout << std::endl;
   }
 
-  CHEFFE_DEBUG(dbgs() << "Ending execution of '" << RecipeInfo->getRecipeTitle()
-                      << "'" << std::endl << std::endl);
+  CHEFFE_DEBUG(dbgs() << "Ending execution of '" << DebugRecipeTitle << "'"
+                      << std::endl << std::endl);
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }

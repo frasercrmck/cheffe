@@ -47,6 +47,12 @@ private:
   getIngredientInfo(const std::shared_ptr<MethodOp> &MOp,
                     std::shared_ptr<CheffeIngredient> &IngredientInfo,
                     SourceLocation &IngredientLoc);
+
+  CheffeErrorCode returnFromRecipe(std::vector<StackTy> &MixingBowls,
+                                   std::vector<StackTy> &BakingDishes,
+                                   std::vector<StackTy> &CallerMixingBowls,
+                                   const unsigned BakingDishesOutputNo,
+                                   const std::string &DebugRecipeTitle);
 };
 
 } // end namespace cheffe
