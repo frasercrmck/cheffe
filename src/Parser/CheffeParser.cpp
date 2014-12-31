@@ -1117,7 +1117,15 @@ CheffeErrorCode CheffeParser::parseTakeMethodStep()
   auto IngredientInfo = getIngredientInfo(Ingredient, IngredientLoc,
                                           EmitDiagnosticIfUndef::Warning);
 
-  if (consumeAndExpectToken("refrigerator"))
+  getNextToken();
+  // Not in the spec, but in the "official" examples:
+  //   "Take potatoes from the refrigerator."
+  if (CurrentToken.is("the"))
+  {
+    getNextToken();
+  }
+
+  if (expectToken("refrigerator"))
   {
     return CheffeErrorCode::CHEFFE_ERROR;
   }
