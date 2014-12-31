@@ -14,6 +14,5 @@ Pour contents of the mixing bowl into the 3th baking dish.
 Pour contents of the 2nd mixing bowl into the 3th baking dish.
 Pour contents of the 4rd mixing bowl into the baking dish.
 Pour contents of the 4rd mixing bowl into the 2nd baking dish.
-Set aside.
 
 Serves 1.
