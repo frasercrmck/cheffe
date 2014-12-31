@@ -17,24 +17,21 @@ Token CheffeParser::getNextToken()
   return CurrentToken = Lexer.getToken();
 }
 
-std::pair<bool, std::shared_ptr<CheffeIngredient>>
-CheffeParser::getIngredientInfo(const std::string &IngredientName,
-                                const SourceLocation IngredientLoc,
-                                const EmitDiagnosticIfUndef Diagnostic)
+// Emits a diagnostic and returns true if the ingredient is undefined
+bool CheffeParser::getIngredientInfo(
+    const std::string &IngredientName, const SourceLocation IngredientLoc,
+    std::shared_ptr<CheffeIngredient> &Ingredient)
 {
-  auto Ingredient = CurrentRecipe->getIngredient(IngredientName);
+  Ingredient = CurrentRecipe->getIngredient(IngredientName);
   if (Ingredient != nullptr)
   {
-    return std::make_pair(false, Ingredient);
+    return false;
   }
-  if (Diagnostic == EmitDiagnosticIfUndef::Warning)
-  {
-    Diagnostics->report(IngredientLoc, DiagnosticKind::Warning,
-                        LineContext::WithContext)
-        << "Ingredient '" << IngredientName
-        << "' was not defined in the Ingredients paragraph";
-  }
-  return std::make_pair(true, nullptr);
+  Diagnostics->report(IngredientLoc, DiagnosticKind::Error,
+                      LineContext::WithContext)
+      << "Ingredient '" << IngredientName
+      << "' was not defined in the Ingredients paragraph";
+  return true;
 }
 
 std::unique_ptr<CheffeProgramInfo> CheffeParser::takeProgramInfo()
@@ -935,13 +932,16 @@ CheffeParser::parsePutOrFoldMethodStep(const MethodStepKind Step)
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
-  const std::string Ingredient = Lexer.getTextSpan(
+  const std::string IngredientName = Lexer.getTextSpan(
       BeginIngredientLoc.getBegin(), EndIngredientLoc.getEnd());
 
   const SourceLocation IngredientLoc(BeginIngredientLoc, EndIngredientLoc);
 
-  auto IngredientInfo = getIngredientInfo(Ingredient, IngredientLoc,
-                                          EmitDiagnosticIfUndef::Warning);
+  std::shared_ptr<CheffeIngredient> Ingredient = nullptr;
+  if (getIngredientInfo(IngredientName, IngredientLoc, Ingredient))
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
 
   getNextToken();
 
@@ -975,7 +975,7 @@ CheffeParser::parsePutOrFoldMethodStep(const MethodStepKind Step)
   }
 
   auto MethodStep = CurrentRecipe->addNewMethodStep(Step);
-  MethodStep->addIngredient(IngredientInfo, IngredientLoc);
+  MethodStep->addIngredient(Ingredient, IngredientLoc);
   MethodStep->addMixingBowl(MixingBowlNo);
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
@@ -1028,16 +1028,19 @@ CheffeParser::parseArithmeticMethodStep(const MethodStepKind Step)
       getNextToken();
     }
 
-    const std::string Ingredient = Lexer.getTextSpan(
+    const std::string IngredientName = Lexer.getTextSpan(
         BeginIngredientLoc.getBegin(), EndIngredientLoc.getEnd());
 
     const SourceLocation IngredientLoc(BeginIngredientLoc, EndIngredientLoc);
 
-    auto IngredientInfo = getIngredientInfo(Ingredient, IngredientLoc,
-                                            EmitDiagnosticIfUndef::Warning);
+    std::shared_ptr<CheffeIngredient> Ingredient = nullptr;
+    if (getIngredientInfo(IngredientName, IngredientLoc, Ingredient))
+    {
+      return CheffeErrorCode::CHEFFE_ERROR;
+    }
 
     MethodStep = CurrentRecipe->addNewMethodStep(Step);
-    MethodStep->addIngredient(IngredientInfo, IngredientLoc);
+    MethodStep->addIngredient(Ingredient, IngredientLoc);
   }
 
   unsigned MixingBowlNo = 1;
@@ -1109,13 +1112,16 @@ CheffeErrorCode CheffeParser::parseTakeMethodStep()
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
-  const std::string Ingredient = Lexer.getTextSpan(
+  const std::string IngredientName = Lexer.getTextSpan(
       BeginIngredientLoc.getBegin(), EndIngredientLoc.getEnd());
 
   const SourceLocation IngredientLoc(BeginIngredientLoc, EndIngredientLoc);
 
-  auto IngredientInfo = getIngredientInfo(Ingredient, IngredientLoc,
-                                          EmitDiagnosticIfUndef::Warning);
+  std::shared_ptr<CheffeIngredient> Ingredient = nullptr;
+  if (getIngredientInfo(IngredientName, IngredientLoc, Ingredient))
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
 
   getNextToken();
   // Not in the spec, but in the "official" examples:
@@ -1136,7 +1142,7 @@ CheffeErrorCode CheffeParser::parseTakeMethodStep()
   }
 
   auto MethodStep = CurrentRecipe->addNewMethodStep(MethodStepKind::Take);
-  MethodStep->addIngredient(IngredientInfo, IngredientLoc);
+  MethodStep->addIngredient(Ingredient, IngredientLoc);
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
@@ -1208,17 +1214,20 @@ CheffeErrorCode CheffeParser::parseLiquefyMethodStep()
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
-  const std::string Ingredient = Lexer.getTextSpan(
+  const std::string IngredientName = Lexer.getTextSpan(
       BeginIngredientLoc.getBegin(), EndIngredientLoc.getEnd());
 
   const SourceLocation IngredientLoc(BeginIngredientLoc, EndIngredientLoc);
 
-  auto IngredientInfo = getIngredientInfo(Ingredient, IngredientLoc,
-                                          EmitDiagnosticIfUndef::Warning);
+  std::shared_ptr<CheffeIngredient> Ingredient = nullptr;
+  if (getIngredientInfo(IngredientName, IngredientLoc, Ingredient))
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
 
   auto MethodStep =
       CurrentRecipe->addNewMethodStep(MethodStepKind::LiquefyIngredient);
-  MethodStep->addIngredient(IngredientInfo, IngredientLoc);
+  MethodStep->addIngredient(Ingredient, IngredientLoc);
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
@@ -1293,13 +1302,16 @@ CheffeErrorCode CheffeParser::parseStirMethodStep()
     getNextToken();
   }
 
-  const std::string Ingredient = Lexer.getTextSpan(
+  const std::string IngredientName = Lexer.getTextSpan(
       BeginIngredientLoc.getBegin(), EndIngredientLoc.getEnd());
 
   const SourceLocation IngredientLoc(BeginIngredientLoc, EndIngredientLoc);
 
-  auto IngredientInfo = getIngredientInfo(Ingredient, IngredientLoc,
-                                          EmitDiagnosticIfUndef::Warning);
+  std::shared_ptr<CheffeIngredient> Ingredient = nullptr;
+  if (getIngredientInfo(IngredientName, IngredientLoc, Ingredient))
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
 
   if (expectToken("into"))
   {
@@ -1337,7 +1349,7 @@ CheffeErrorCode CheffeParser::parseStirMethodStep()
 
   auto MethodStep =
       CurrentRecipe->addNewMethodStep(MethodStepKind::StirIngredient);
-  MethodStep->addIngredient(IngredientInfo, IngredientLoc);
+  MethodStep->addIngredient(Ingredient, IngredientLoc);
   MethodStep->addMixingBowl(MixingBowlNo);
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
@@ -1536,8 +1548,7 @@ CheffeErrorCode CheffeParser::parseVerbMethodStep()
   getNextToken();
 
   SourceLocation IngredientLoc;
-  std::pair<bool, std::shared_ptr<CheffeIngredient>> IngredientInfo =
-      std::make_pair(true, nullptr);
+  std::shared_ptr<CheffeIngredient> Ingredient = nullptr;
 
   if (CurrentToken.isNot("until"))
   {
@@ -1557,26 +1568,28 @@ CheffeErrorCode CheffeParser::parseVerbMethodStep()
       getNextToken();
     }
 
-    const std::string Ingredient = Lexer.getTextSpan(
+    const std::string IngredientName = Lexer.getTextSpan(
         BeginIngredientLoc.getBegin(), EndIngredientLoc.getEnd());
 
     IngredientLoc = SourceLocation(BeginIngredientLoc, EndIngredientLoc);
 
-    IngredientInfo = getIngredientInfo(Ingredient, IngredientLoc,
-                                       EmitDiagnosticIfUndef::Warning);
+    if (getIngredientInfo(IngredientName, IngredientLoc, Ingredient))
+    {
+      return CheffeErrorCode::CHEFFE_ERROR;
+    }
   }
 
   if (CurrentToken.isNot("until"))
   {
     auto MethodStep = CurrentRecipe->addNewMethodStep(MethodStepKind::Verb);
-    if (IngredientInfo.first)
+    if (!Ingredient)
     {
       Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Error,
                           LineContext::WithContext)
           << "Verb method steps must specify an ingredient";
       return CheffeErrorCode::CHEFFE_ERROR;
     }
-    MethodStep->addIngredient(IngredientInfo, IngredientLoc);
+    MethodStep->addIngredient(Ingredient, IngredientLoc);
     RecipeScopeInfo.addScope(Verb, MethodStep);
   }
   else
@@ -1626,7 +1639,7 @@ CheffeErrorCode CheffeParser::parseVerbMethodStep()
     getNextToken();
     auto MethodStep =
         CurrentRecipe->addNewMethodStep(MethodStepKind::UntilVerbed);
-    MethodStep->addIngredient(IngredientInfo, IngredientLoc);
+    MethodStep->addIngredient(Ingredient, IngredientLoc);
 
     // Add the Ingredient that the matching Verb method step uses to this
     // UntilVerbed's method step.

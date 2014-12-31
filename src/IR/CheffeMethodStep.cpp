@@ -58,14 +58,9 @@ void MethodOp::dump(std::ostream &OS) const
   (void)OS;
 }
 
-bool IngredientOp::isUndefined() const
-{
-  return IsUndefined;
-}
-
 std::shared_ptr<CheffeIngredient> IngredientOp::getIngredient() const
 {
-  return IsUndefined ? nullptr : Ingredient;
+  return Ingredient;
 }
 
 SourceLocation IngredientOp::getSourceLoc() const
@@ -76,13 +71,13 @@ SourceLocation IngredientOp::getSourceLoc() const
 void IngredientOp::dump(std::ostream &OS) const
 {
   OS << "(Ingredient ";
-  if (IsUndefined)
+  if (Ingredient)
   {
-    OS << "<undefined>";
+    OS << *Ingredient;
   }
   else
   {
-    OS << *Ingredient;
+    OS << "<undef>";
   }
   OS << ")";
 }
@@ -149,28 +144,16 @@ void CheffeMethodStep::setSourceLoc(const SourceLocation Loc)
 }
 
 void CheffeMethodStep::addIngredient(
-    const std::pair<bool, std::shared_ptr<CheffeIngredient>> &IngredientInfo,
+    const std::shared_ptr<CheffeIngredient> &Ingredient,
     const SourceLocation SourceLoc)
 {
-  addIngredient(IngredientInfo.first, IngredientInfo.second, SourceLoc);
-}
-
-void CheffeMethodStep::addIngredient(
-    const bool IsUndefined, const std::shared_ptr<CheffeIngredient> &Ingredient,
-    const SourceLocation SourceLoc)
-{
-  assert(((IsUndefined && Ingredient == nullptr) ||
-          (!IsUndefined && Ingredient != nullptr)) &&
-         "Invalid ingredient information");
-  MethodOps.push_back(
-      std::make_shared<IngredientOp>(IsUndefined, Ingredient, SourceLoc));
+  MethodOps.push_back(std::make_shared<IngredientOp>(Ingredient, SourceLoc));
 }
 
 void CheffeMethodStep::addIngredient(std::shared_ptr<IngredientOp> IngredientOp)
 {
   assert(IngredientOp != nullptr && "Invalid ingredient information");
-  addIngredient(IngredientOp->isUndefined(), IngredientOp->getIngredient(),
-                IngredientOp->getSourceLoc());
+  addIngredient(IngredientOp->getIngredient(), IngredientOp->getSourceLoc());
 }
 
 void CheffeMethodStep::addMixingBowl(const unsigned MixingBowlNo)

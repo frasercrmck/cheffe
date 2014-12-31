@@ -128,24 +128,6 @@ TEST_F(DiagnosticsTest, MismatchedTimeUnit2)
   ASSERT_TRUE(std::regex_search(Warnings, DiagnosticRegex));
 }
 
-TEST_F(DiagnosticsTest, UndefinedIngredient)
-{
-  const std::string FileName = "/Parser/undefined-ingredient.ch";
-  DoTest(FileName.c_str(), std::make_pair(0u, 1u));
-
-  const std::string Warnings = getStandardError();
-
-  CheckFileNameDiagnostic(Warnings, FileName, "10", "6");
-
-  std::regex DiagnosticRegex(
-      "Ingredient '(\\w+)' was not defined in the Ingredients paragraph");
-
-  std::smatch IngredientMatch;
-  ASSERT_TRUE(std::regex_search(Warnings, IngredientMatch, DiagnosticRegex));
-
-  ASSERT_EQ(IngredientMatch.str(1), "chicken");
-}
-
 TEST_F(DiagnosticsTest, IllegalMethodKeyword)
 {
   const std::string FileName = "/Parser/illegal-method-keyword.ch";
