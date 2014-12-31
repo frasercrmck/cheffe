@@ -34,6 +34,8 @@ const std::set<StringPair> ValidVerbKeywords = {{"Sift", "Sifted"},
                                                 {"Caramelise", "Caramelised"},
                                                 {"Cook", "Cooked"},
                                                 {"Bake", "Baked"},
+                                                {"Dissolve", "Dissolved"},
+                                                {"Agitate", "Agitated"},
                                                 {"Cool", "Cooled"},
                                                 {"Water", "Watered"},
                                                 {"Heat", "Heated"}};
