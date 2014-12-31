@@ -58,6 +58,11 @@ void MethodOp::dump(std::ostream &OS) const
   (void)OS;
 }
 
+bool IngredientOp::isUndefined() const
+{
+  return IsUndefined;
+}
+
 std::shared_ptr<CheffeIngredient> IngredientOp::getIngredient() const
 {
   return IsUndefined ? nullptr : Ingredient;

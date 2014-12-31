@@ -71,6 +71,8 @@ public:
   {
   }
 
+  bool isUndefined() const;
+
   std::shared_ptr<CheffeIngredient> getIngredient() const;
 
   SourceLocation getSourceLoc() const;
