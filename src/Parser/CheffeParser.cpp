@@ -1648,9 +1648,29 @@ CheffeErrorCode CheffeParser::parseRefrigerateMethodStep()
 
     NumberOfHours = CurrentToken.getNumVal();
 
-    if (consumeAndExpectToken("hours"))
+    getNextToken();
+    if (expectToken(TokenKind::Identifier))
     {
       return CheffeErrorCode::CHEFFE_ERROR;
+    }
+    if (CurrentToken.isNotAnyOf("hour", "hours"))
+    {
+      Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Error,
+                          LineContext::WithContext)
+          << "Expected 'hour' or 'hours', got " << CurrentToken;
+      return CheffeErrorCode::CHEFFE_ERROR;
+    }
+    if (CurrentToken.is("hour") && NumberOfHours != 1)
+    {
+      Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Warning,
+                          LineContext::WithContext)
+          << "Plural time period used with 'hour'";
+    }
+    else if (CurrentToken.is("hours") && NumberOfHours == 1)
+    {
+      Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Warning,
+                          LineContext::WithContext)
+          << "Singular time period used with 'hours'";
     }
 
     getNextToken();
