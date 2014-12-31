@@ -1173,6 +1173,13 @@ CheffeErrorCode CheffeParser::parseLiquefyMethodStep()
     return CheffeErrorCode::CHEFFE_SUCCESS;
   }
 
+  // Not in the spec, but in the "official" examples:
+  //   "Liquefy the potatoes."
+  if (CurrentToken.is("the"))
+  {
+    getNextToken();
+  }
+
   const SourceLocation BeginIngredientLoc = CurrentToken.getSourceLoc();
   SourceLocation EndIngredientLoc = BeginIngredientLoc;
   while (CurrentToken.isNotAnyOf(TokenKind::FullStop, TokenKind::EndOfFile))
