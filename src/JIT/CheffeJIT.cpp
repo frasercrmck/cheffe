@@ -149,6 +149,7 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
     switch (MS->getMethodStepKind())
     {
     default:
+      cheffe_unreachable("Impossible Method Step Kind");
       return CheffeErrorCode::CHEFFE_ERROR;
     case MethodStepKind::Take:
     {
@@ -444,6 +445,76 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
       }
       std::random_shuffle(MixingBowls[MixingBowlNo - 1].begin(),
                           MixingBowls[MixingBowlNo - 1].end(), randomGenerator);
+      break;
+    }
+    case MethodStepKind::Verb:
+    {
+      SourceLocation IngredientLoc;
+      std::shared_ptr<CheffeIngredient> Ingredient = nullptr;
+
+      const CheffeErrorCode Success =
+          getIngredientInfo(MS->getOperand(0), Ingredient, IngredientLoc);
+      if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
+      {
+        return CheffeErrorCode::CHEFFE_ERROR;
+      }
+
+      const long long Distance = std::static_pointer_cast<NumberOp>(
+                                     MS->getOperand(1))->getNumberValue();
+      assert(Distance > 0 && "Invalid distance");
+
+      if (Ingredient->Value == 0)
+      {
+        MSI += Distance;
+      }
+      break;
+    }
+    case MethodStepKind::UntilVerbed:
+    {
+      SourceLocation UntilIngredientLoc;
+      std::shared_ptr<CheffeIngredient> UntilIngredient = nullptr;
+
+      CheffeErrorCode Success = getIngredientInfo(
+          MS->getOperand(0), UntilIngredient, UntilIngredientLoc);
+
+      if (Success == CheffeErrorCode::CHEFFE_SUCCESS)
+      {
+        assert(UntilIngredient && "Ingredient cannot be nullptr");
+        if (!checkIngredientHasValue(UntilIngredient, UntilIngredientLoc))
+        {
+          return CheffeErrorCode::CHEFFE_ERROR;
+        }
+
+        --UntilIngredient->Value;
+      }
+
+      SourceLocation FromIngredientLoc;
+      std::shared_ptr<CheffeIngredient> FromIngredient = nullptr;
+
+      Success = getIngredientInfo(MS->getOperand(1), FromIngredient,
+                                  FromIngredientLoc);
+      if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
+      {
+        return CheffeErrorCode::CHEFFE_ERROR;
+      }
+
+      const long long Distance = std::static_pointer_cast<NumberOp>(
+                                     MS->getOperand(2))->getNumberValue();
+      assert(Distance < 0 && "Invalid distance");
+
+      if (FromIngredient->Value != 0)
+      {
+        MSI += Distance;
+      }
+      break;
+    }
+    case MethodStepKind::SetAside:
+    {
+      const long long Distance = std::static_pointer_cast<NumberOp>(
+                                     MS->getOperand(0))->getNumberValue();
+      assert(Distance > 0 && "Invalid distance");
+
+      MSI += Distance;
       break;
     }
     case MethodStepKind::Serve:
