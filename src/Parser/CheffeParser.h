@@ -3,7 +3,7 @@
 
 #include "cheffe.h"
 #include "CheffeCommon.h"
-#include "Parser/CheffeNestInfo.h"
+#include "Parser/CheffeScopeInfo.h"
 #include "Lexer/CheffeLexer.h"
 #include "IR/CheffeProgramInfo.h"
 #include "Utils/CheffeDiagnosticHandler.h"
@@ -103,7 +103,7 @@ private:
   std::shared_ptr<CheffeRecipeInfo> CurrentRecipe;
   std::unique_ptr<CheffeProgramInfo> ProgramInfo;
 
-  CheffeNestInfo RecipeNestInfo;
+  CheffeScopeInfo RecipeScopeInfo;
 
   CheffeErrorCode parseRecipeTitle(std::string &RecipeTitle,
                                    SourceLocation &RecipeTitleLoc);

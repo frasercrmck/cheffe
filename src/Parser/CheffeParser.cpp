@@ -203,9 +203,9 @@ CheffeErrorCode CheffeParser::parseRecipe()
       return Success;
     }
 
-    CHEFFE_DEBUG(dbgs() << std::endl; RecipeNestInfo.dumpInfo(dbgs()));
+    CHEFFE_DEBUG(dbgs() << std::endl; RecipeScopeInfo.dumpInfo(dbgs()));
 
-    if (!RecipeNestInfo.empty())
+    if (!RecipeScopeInfo.empty())
     {
       Diagnostics->report(SourceLocation(), DiagnosticKind::Error,
                           LineContext::WithoutContext)
@@ -213,8 +213,8 @@ CheffeErrorCode CheffeParser::parseRecipe()
       return CheffeErrorCode::CHEFFE_ERROR;
     }
 
-    Success =
-        RecipeNestInfo.fixupNestMethodSteps(CurrentRecipe->getMethodStepList());
+    Success = RecipeScopeInfo.fixupScopeMethodSteps(
+        CurrentRecipe->getMethodStepList());
 
     if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
     {
@@ -224,7 +224,7 @@ CheffeErrorCode CheffeParser::parseRecipe()
       return Success;
     }
 
-    RecipeNestInfo.clearInfo();
+    RecipeScopeInfo.clearInfo();
 
     // clang-format off
     CHEFFE_DEBUG(
@@ -1527,7 +1527,7 @@ CheffeErrorCode CheffeParser::parseVerbMethodStep()
       return CheffeErrorCode::CHEFFE_ERROR;
     }
     MethodStep->addIngredient(IngredientInfo, IngredientLoc);
-    RecipeNestInfo.addNest(Verb, MethodStep);
+    RecipeScopeInfo.addScope(Verb, MethodStep);
   }
   else
   {
@@ -1538,17 +1538,17 @@ CheffeErrorCode CheffeParser::parseVerbMethodStep()
 
     const std::string UntilVerb = CurrentToken.getIdentifierString();
 
-    std::shared_ptr<CheffeNest> Nest = nullptr;
-    if (RecipeNestInfo.popNest(Nest))
+    std::shared_ptr<CheffeScope> Scope = nullptr;
+    if (RecipeScopeInfo.popScope(Scope))
     {
       Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Error,
                           LineContext::WithContext)
           << "Mismatched scope: empty scope stack";
       return CheffeErrorCode::CHEFFE_ERROR;
     }
-    assert(Nest && "Nest information shall not be nullptr");
+    assert(Scope && "Scope information shall not be nullptr");
 
-    const std::string FromVerb = Nest->BeginVerb;
+    const std::string FromVerb = Scope->BeginVerb;
 
     // clang-format off
     CHEFFE_DEBUG(
@@ -1580,13 +1580,13 @@ CheffeErrorCode CheffeParser::parseVerbMethodStep()
 
     // Add the Ingredient that the matching Verb method step uses to this
     // UntilVerbed's method step.
-    assert(Nest->BeginNest &&
+    assert(Scope->BeginScope &&
            "MethodStep at beginning of loop shall not be nullptr");
-    MethodStep->addIngredient(
-        std::static_pointer_cast<IngredientOp>(Nest->BeginNest->getOperand(0)));
+    MethodStep->addIngredient(std::static_pointer_cast<IngredientOp>(
+        Scope->BeginScope->getOperand(0)));
 
     // Register this UntilVerbed method step as the end of the current nest.
-    Nest->EndNest = MethodStep;
+    Scope->EndScope = MethodStep;
   }
 
   if (expectToken(TokenKind::FullStop))
@@ -1608,7 +1608,7 @@ CheffeErrorCode CheffeParser::parseSetAsideMethodStep()
 
   auto MethodStep = CurrentRecipe->addNewMethodStep(MethodStepKind::SetAside);
 
-  if (RecipeNestInfo.addBreak(MethodStep))
+  if (RecipeScopeInfo.addBreak(MethodStep))
   {
     Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Error,
                         LineContext::WithContext)

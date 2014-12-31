@@ -1,60 +1,62 @@
-#include "Parser/CheffeNestInfo.h"
+#include "Parser/CheffeScopeInfo.h"
 
 namespace cheffe
 {
 
-void CheffeNestInfo::clearInfo()
+void CheffeScopeInfo::clearInfo()
 {
-  NestList.clear();
-  while (!NestStack.empty())
+  ScopeList.clear();
+  while (!ScopeStack.empty())
   {
-    NestStack.pop();
+    ScopeStack.pop();
   }
 }
 
-void CheffeNestInfo::addNest(const std::string &BeginVerb,
-                             std::shared_ptr<CheffeMethodStep> BeginMethodStep)
+void CheffeScopeInfo::addScope(
+    const std::string &BeginVerb,
+    std::shared_ptr<CheffeMethodStep> BeginMethodStep)
 {
-  NestStack.push(NestList.size());
-  NestList.push_back(std::make_shared<CheffeNest>(BeginVerb, BeginMethodStep));
+  ScopeStack.push(ScopeList.size());
+  ScopeList.push_back(
+      std::make_shared<CheffeScope>(BeginVerb, BeginMethodStep));
 }
 
-bool CheffeNestInfo::empty() const
+bool CheffeScopeInfo::empty() const
 {
-  return NestStack.empty();
+  return ScopeStack.empty();
 }
 
-bool CheffeNestInfo::popNest(std::shared_ptr<CheffeNest> &NestInfo)
+bool CheffeScopeInfo::popScope(std::shared_ptr<CheffeScope> &ScopeInfo)
 {
-  if (NestStack.empty())
+  if (ScopeStack.empty())
   {
     return true;
   }
 
-  const auto LastNestId = NestStack.top();
-  NestStack.pop();
+  const auto LastScopeId = ScopeStack.top();
+  ScopeStack.pop();
 
-  assert(LastNestId < NestList.size() && "Invalid nest index");
-  NestInfo = NestList[LastNestId];
+  assert(LastScopeId < ScopeList.size() && "Invalid nest index");
+  ScopeInfo = ScopeList[LastScopeId];
   return false;
 }
 
-bool CheffeNestInfo::addBreak(std::shared_ptr<CheffeMethodStep> MethodStep)
+bool CheffeScopeInfo::addBreak(std::shared_ptr<CheffeMethodStep> MethodStep)
 {
-  if (NestStack.empty())
+  if (ScopeStack.empty())
   {
     return true;
   }
 
-  const auto LastNestId = NestStack.top();
-  assert(LastNestId < NestList.size() && "Invalid nest index");
+  const auto LastScopeId = ScopeStack.top();
+  assert(LastScopeId < ScopeList.size() && "Invalid nest index");
 
-  if (!NestList[LastNestId])
+  if (!ScopeList[LastScopeId])
   {
     return true;
   }
 
-  NestList[LastNestId]->BreakList.push_back(MethodStep);
+  ScopeList[LastScopeId]->BreakList.push_back(MethodStep);
   return false;
 }
 
@@ -66,31 +68,31 @@ bool CheffeNestInfo::addBreak(std::shared_ptr<CheffeMethodStep> MethodStep)
 //   beginning of the scope
 // * Each Set Aside method scope in the nest get an offset to the end of the
 //   scope.
-CheffeErrorCode CheffeNestInfo::fixupNestMethodSteps(
+CheffeErrorCode CheffeScopeInfo::fixupScopeMethodSteps(
     const std::vector<std::shared_ptr<CheffeMethodStep>> &MethodList)
 {
-  for (auto &Nest : NestList)
+  for (auto &Scope : ScopeList)
   {
-    if (!Nest)
+    if (!Scope)
     {
       return CheffeErrorCode::CHEFFE_ERROR;
     }
-    if (!Nest->BeginNest || !Nest->EndNest)
+    if (!Scope->BeginScope || !Scope->EndScope)
     {
       return CheffeErrorCode::CHEFFE_ERROR;
     }
-    const auto BeginNestMethodStep = Nest->BeginNest;
+    const auto BeginScopeMethodStep = Scope->BeginScope;
 
     auto BeginFound = std::find(std::begin(MethodList), std::end(MethodList),
-                                BeginNestMethodStep);
+                                BeginScopeMethodStep);
     if (BeginFound == std::end(MethodList))
     {
       return CheffeErrorCode::CHEFFE_ERROR;
     }
 
-    const auto EndNestMethodStep = Nest->EndNest;
+    const auto EndScopeMethodStep = Scope->EndScope;
     auto EndFound = std::find(std::begin(MethodList), std::end(MethodList),
-                              EndNestMethodStep);
+                              EndScopeMethodStep);
     if (EndFound == std::end(MethodList))
     {
       return CheffeErrorCode::CHEFFE_ERROR;
@@ -98,10 +100,10 @@ CheffeErrorCode CheffeNestInfo::fixupNestMethodSteps(
 
     const auto BeginningToEnd = std::distance(BeginFound, EndFound);
 
-    BeginNestMethodStep->addNumber(BeginningToEnd);
-    EndNestMethodStep->addNumber(-BeginningToEnd);
+    BeginScopeMethodStep->addNumber(BeginningToEnd);
+    EndScopeMethodStep->addNumber(-BeginningToEnd);
 
-    for (auto &Break : Nest->BreakList)
+    for (auto &Break : Scope->BreakList)
     {
       auto BreakFound =
           std::find(std::begin(MethodList), std::end(MethodList), Break);
@@ -117,31 +119,31 @@ CheffeErrorCode CheffeNestInfo::fixupNestMethodSteps(
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
 
-void CheffeNestInfo::dumpInfo(std::ostream &OS) const
+void CheffeScopeInfo::dumpInfo(std::ostream &OS) const
 {
-  for (auto &Nest : NestList)
+  for (auto &Scope : ScopeList)
   {
     OS << "=================" << std::endl;
-    OS << "Begin Of Nest:" << std::endl << "\t";
-    if (Nest->BeginNest)
+    OS << "Begin Of Scope:" << std::endl << "\t";
+    if (Scope->BeginScope)
     {
-      OS << *Nest->BeginNest;
+      OS << *Scope->BeginScope;
     }
     else
     {
       OS << "undef" << std::endl;
     }
-    OS << "End Of Nest:" << std::endl << "\t";
-    if (Nest->EndNest)
+    OS << "End Of Scope:" << std::endl << "\t";
+    if (Scope->EndScope)
     {
-      OS << *Nest->EndNest;
+      OS << *Scope->EndScope;
     }
     else
     {
       OS << "undef" << std::endl;
     }
     OS << "Break List:" << std::endl;
-    for (auto &Break : Nest->BreakList)
+    for (auto &Break : Scope->BreakList)
     {
       OS << "\t";
       if (Break)

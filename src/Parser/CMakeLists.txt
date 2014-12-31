@@ -1,7 +1,7 @@
 set(
   cheffe-src-files
   CheffeParser.cpp
-  CheffeNestInfo.cpp
+  CheffeScopeInfo.cpp
 )
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../ )
