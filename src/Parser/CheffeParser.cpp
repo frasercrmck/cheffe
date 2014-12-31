@@ -1088,6 +1088,13 @@ CheffeErrorCode CheffeParser::parseTakeMethodStep()
 {
   getNextToken();
 
+  // Not in the spec, but in the "official" examples:
+  //   "Take the potatoes from refrigerator."
+  if (CurrentToken.is("the"))
+  {
+    getNextToken();
+  }
+
   const SourceLocation BeginIngredientLoc = CurrentToken.getSourceLoc();
   SourceLocation EndIngredientLoc = BeginIngredientLoc;
   while (CurrentToken.isNotAnyOf("from", TokenKind::FullStop,
