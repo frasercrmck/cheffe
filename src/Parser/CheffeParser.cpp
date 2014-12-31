@@ -1477,7 +1477,6 @@ CheffeErrorCode CheffeParser::parseVerbMethodStep()
   const std::string Verb = CurrentToken.getIdentifierString();
   getNextToken();
 
-  bool HasIngredient = false;
   SourceLocation IngredientLoc;
   std::pair<bool, std::shared_ptr<CheffeIngredient>> IngredientInfo =
       std::make_pair(true, nullptr);
@@ -1500,15 +1499,20 @@ CheffeErrorCode CheffeParser::parseVerbMethodStep()
 
     IngredientInfo = getIngredientInfo(Ingredient, IngredientLoc,
                                        EmitDiagnosticIfUndef::Warning);
-    HasIngredient = true;
   }
-
-  std::shared_ptr<CheffeMethodStep> MethodStep = nullptr;
 
   if (CurrentToken.isNot("until"))
   {
     LoopNestInfo.push_back(Verb);
-    MethodStep = CurrentRecipe->addNewMethodStep(MethodStepKind::Verb);
+    auto MethodStep = CurrentRecipe->addNewMethodStep(MethodStepKind::Verb);
+    if (IngredientInfo.first)
+    {
+      Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Error,
+                          LineContext::WithContext)
+          << "Verb method steps must specify an ingredient";
+      return CheffeErrorCode::CHEFFE_ERROR;
+    }
+    MethodStep->addIngredient(IngredientInfo, IngredientLoc);
   }
   else
   {
@@ -1554,13 +1558,8 @@ CheffeErrorCode CheffeParser::parseVerbMethodStep()
       return CheffeErrorCode::CHEFFE_ERROR;
     }
     getNextToken();
-    MethodStep = CurrentRecipe->addNewMethodStep(MethodStepKind::UntilVerbed);
-  }
-
-  assert(MethodStep != nullptr && "Method step was undefined");
-
-  if (HasIngredient)
-  {
+    auto MethodStep =
+        CurrentRecipe->addNewMethodStep(MethodStepKind::UntilVerbed);
     MethodStep->addIngredient(IngredientInfo, IngredientLoc);
   }
 
