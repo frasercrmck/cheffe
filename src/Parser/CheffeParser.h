@@ -32,6 +32,9 @@ const std::set<StringPair> ValidVerbKeywords = {{"Sift", "Sifted"},
                                                 {"Melt", "Melted"},
                                                 {"Caramelise", "Caramelised"},
                                                 {"Cook", "Cooked"},
+                                                {"Bake", "Baked"},
+                                                {"Cool", "Cooled"},
+                                                {"Water", "Watered"},
                                                 {"Heat", "Heated"}};
 
 const std::unordered_set<std::string> ValidMeasureTypes = {"heaped", "level"};
