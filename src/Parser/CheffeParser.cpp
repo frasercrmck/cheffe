@@ -1628,7 +1628,7 @@ CheffeErrorCode CheffeParser::parseServeMethodStep()
 }
 
 // Parses the "Refrigerate" method step:
-// Refrigerate [for number hours].
+// Refrigerate [for number hour[s]].
 CheffeErrorCode CheffeParser::parseRefrigerateMethodStep()
 {
   getNextToken();
