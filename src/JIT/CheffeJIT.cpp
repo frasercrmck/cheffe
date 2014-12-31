@@ -472,14 +472,18 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
     case MethodStepKind::UntilVerbed:
     {
       SourceLocation UntilIngredientLoc;
-      std::shared_ptr<CheffeIngredient> UntilIngredient = nullptr;
+      std::shared_ptr<CheffeIngredient> UntilIngredient =
+          std::static_pointer_cast<IngredientOp>(MS->getOperand(0))
+              ->getIngredient();
 
-      CheffeErrorCode Success = getIngredientInfo(
-          MS->getOperand(0), UntilIngredient, UntilIngredientLoc);
-
-      if (Success == CheffeErrorCode::CHEFFE_SUCCESS)
+      if (UntilIngredient)
       {
-        assert(UntilIngredient && "Ingredient cannot be nullptr");
+        CheffeErrorCode Success = getIngredientInfo(
+            MS->getOperand(0), UntilIngredient, UntilIngredientLoc);
+        if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
+        {
+          return Success;
+        }
         if (!checkIngredientHasValue(UntilIngredient, UntilIngredientLoc))
         {
           return CheffeErrorCode::CHEFFE_ERROR;
@@ -491,8 +495,8 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
       SourceLocation FromIngredientLoc;
       std::shared_ptr<CheffeIngredient> FromIngredient = nullptr;
 
-      Success = getIngredientInfo(MS->getOperand(1), FromIngredient,
-                                  FromIngredientLoc);
+      CheffeErrorCode Success = getIngredientInfo(
+          MS->getOperand(1), FromIngredient, FromIngredientLoc);
       if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
       {
         return CheffeErrorCode::CHEFFE_ERROR;
