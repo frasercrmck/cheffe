@@ -183,6 +183,8 @@ public:
                      const std::shared_ptr<CheffeIngredient> &Ingredient,
                      const SourceLocation SourceLoc);
 
+  void addIngredient(std::shared_ptr<IngredientOp> IngredientOp);
+
   void addMixingBowl(const unsigned MixingBowlNo);
 
   void addBakingDish(const unsigned BakingDishNo);

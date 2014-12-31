@@ -166,6 +166,13 @@ void CheffeMethodStep::addIngredient(
       std::make_shared<IngredientOp>(IsUndefined, Ingredient, SourceLoc));
 }
 
+void CheffeMethodStep::addIngredient(std::shared_ptr<IngredientOp> IngredientOp)
+{
+  assert(IngredientOp != nullptr && "Invalid ingredient information");
+  addIngredient(IngredientOp->isUndefined(), IngredientOp->getIngredient(),
+                IngredientOp->getSourceLoc());
+}
+
 void CheffeMethodStep::addMixingBowl(const unsigned MixingBowlNo)
 {
   MethodOps.push_back(std::make_shared<MixingBowlOp>(MixingBowlNo));
