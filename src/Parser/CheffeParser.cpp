@@ -1519,6 +1519,9 @@ CheffeErrorCode CheffeParser::parseVerbMethodStep()
 
   if (CurrentToken.isNot("until"))
   {
+    // Not in the spec, but in the "official" examples:
+    //   "Cook potatoes."
+    //   "Cook potatoes until cooked."
     if (CurrentToken.is("the"))
     {
       getNextToken();
