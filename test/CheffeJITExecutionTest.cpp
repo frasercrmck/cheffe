@@ -447,3 +447,27 @@ TEST_F(JITExecutionTest, MixBowl1)
 
   ASSERT_TRUE(Expected.empty());
 }
+
+TEST_F(JITExecutionTest, Refrigerate1)
+{
+  const std::string FileName = "/JITExecution/refrigerate-1.ch";
+  DoTest(FileName.c_str());
+  const std::string Output = getStandardOut();
+  ASSERT_TRUE(Output.empty());
+}
+
+TEST_F(JITExecutionTest, Refrigerate2)
+{
+  const std::string FileName = "/JITExecution/refrigerate-2.ch";
+  DoTest(FileName.c_str());
+  const std::string Output = getStandardOut();
+  ASSERT_EQ(Output, "12345\n");
+}
+
+TEST_F(JITExecutionTest, Refrigerate3)
+{
+  const std::string FileName = "/JITExecution/refrigerate-3.ch";
+  DoTest(FileName.c_str());
+  const std::string Output = getStandardOut();
+  ASSERT_EQ(Output, "1234554321\n");
+}

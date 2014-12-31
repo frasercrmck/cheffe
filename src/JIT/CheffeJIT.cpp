@@ -464,6 +464,13 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
 
       break;
     }
+    case MethodStepKind::Refrigerate:
+    {
+      const long long NumberOfHours = std::static_pointer_cast<NumberOp>(
+                                          MS->getOperand(0))->getNumberValue();
+      return returnFromRecipe(MixingBowls, BakingDishes, CallerMixingBowls,
+                              NumberOfHours, RecipeInfo->getRecipeTitle());
+    }
     }
   }
 
