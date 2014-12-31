@@ -914,6 +914,13 @@ CheffeParser::parsePutOrFoldMethodStep(const MethodStepKind Step)
     cheffe_unreachable("invalid method step kind");
   }
 
+  // Not in the spec, but in some examples:
+  //   "Put the potatoes into mixing bowl."
+  if (CurrentToken.is("the"))
+  {
+    getNextToken();
+  }
+
   const SourceLocation BeginIngredientLoc = CurrentToken.getSourceLoc();
   SourceLocation EndIngredientLoc = BeginIngredientLoc;
   while (CurrentToken.isNotAnyOf("into", TokenKind::FullStop,
