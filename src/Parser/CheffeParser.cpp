@@ -1509,9 +1509,13 @@ CheffeErrorCode CheffeParser::parseVerbMethodStep()
   SourceLocation IngredientLoc;
   std::pair<bool, std::shared_ptr<CheffeIngredient>> IngredientInfo =
       std::make_pair(true, nullptr);
-  if (CurrentToken.is("the"))
+
+  if (CurrentToken.isNot("until"))
   {
-    getNextToken();
+    if (CurrentToken.is("the"))
+    {
+      getNextToken();
+    }
     const SourceLocation BeginIngredientLoc = CurrentToken.getSourceLoc();
     SourceLocation EndIngredientLoc = BeginIngredientLoc;
     while (CurrentToken.isNotAnyOf("until", TokenKind::FullStop,
