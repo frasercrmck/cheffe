@@ -1436,6 +1436,13 @@ CheffeErrorCode CheffeParser::parseCleanMethodStep()
 {
   getNextToken();
 
+  // Not in the spec, but in some examples:
+  //   "Clean the [nth] mixing bowl.
+  if (CurrentToken.is("the"))
+  {
+    getNextToken();
+  }
+
   unsigned MixingBowlNo = 1;
   CheffeErrorCode IsValidOrdinal = parsePossibleOrdinalIdentifier(MixingBowlNo);
   if (IsValidOrdinal != CheffeErrorCode::CHEFFE_SUCCESS)
