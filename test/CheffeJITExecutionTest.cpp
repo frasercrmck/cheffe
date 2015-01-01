@@ -534,3 +534,11 @@ TEST_F(JITExecutionTest, Exp)
   const std::string Output = getStandardOut();
   ASSERT_EQ(Output, "729%\n");
 }
+
+TEST_F(JITExecutionTest, Loops)
+{
+  const std::string FileName = "/JITExecution/loops.ch";
+  DoTest(FileName.c_str());
+  const std::string Output = getStandardOut();
+  ASSERT_EQ(Output, "*\n**\n***\n****\n*****\n%\n");
+}
