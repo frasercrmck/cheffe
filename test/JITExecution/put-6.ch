@@ -11,7 +11,6 @@ Ingredients.
 
 Method.
 Put lamb into mixing bowl.
-Put soy sauce into the mixing bowl.
 Put tabasco sauce into the mixing bowl.
 Put soy sauce into the 1st mixing bowl.
 Put stock into mixing bowl.

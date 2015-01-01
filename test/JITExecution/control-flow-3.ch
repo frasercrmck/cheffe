@@ -10,7 +10,6 @@ Ingredients.
 
 Method.
 Put aubergine into the 2nd mixing bowl.
-Put soy sauce into the 2nd mixing bowl.
 Put tabasco sauce into the 2nd mixing bowl.
 Put soy sauce into the 2nd mixing bowl.
 Serve with Soy Sauce Glaze.
@@ -35,7 +34,6 @@ Cook the noodles.
   Remove aubergine from the mixing bowl.
   Fold spring onions into the mixing bowl.
   Cook the spring onions.
-    Put soy sauce into the mixing bowl.
     Put tabasco sauce into the mixing bowl.
     Put soy sauce into the mixing bowl.
     Set aside.

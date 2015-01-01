@@ -129,7 +129,7 @@ TEST_F(JITExecutionTest, Put1)
 
   const std::string Output = getStandardOut();
 
-  ASSERT_EQ(Output, "111111\n");
+  ASSERT_EQ(Output, "1 1 1 1 1 1%\n");
 }
 
 TEST_F(JITExecutionTest, Put2)
@@ -139,7 +139,7 @@ TEST_F(JITExecutionTest, Put2)
 
   const std::string Output = getStandardOut();
 
-  ASSERT_EQ(Output, "111111\n");
+  ASSERT_EQ(Output, "1 1 1 1 1 1%\n");
 }
 
 TEST_F(JITExecutionTest, Put3)
@@ -149,7 +149,7 @@ TEST_F(JITExecutionTest, Put3)
 
   const std::string Output = getStandardOut();
 
-  ASSERT_EQ(Output, "111111\n");
+  ASSERT_EQ(Output, "1 1 1 1 1 1%\n");
 }
 
 TEST_F(JITExecutionTest, Put4)
@@ -159,7 +159,7 @@ TEST_F(JITExecutionTest, Put4)
 
   const std::string Output = getStandardOut();
 
-  ASSERT_EQ(Output, "1111\n");
+  ASSERT_EQ(Output, "1 1 1 1%\n");
 }
 
 TEST_F(JITExecutionTest, Put5)
@@ -169,7 +169,7 @@ TEST_F(JITExecutionTest, Put5)
 
   const std::string Output = getStandardOut();
 
-  ASSERT_EQ(Output, "11\n");
+  ASSERT_EQ(Output, "1 1%\n");
 }
 
 TEST_F(JITExecutionTest, Put6)
@@ -179,7 +179,7 @@ TEST_F(JITExecutionTest, Put6)
 
   const std::string Output = getStandardOut();
 
-  ASSERT_EQ(Output, "x = 1\n");
+  ASSERT_EQ(Output, "x = 1%\n");
 }
 
 TEST_F(JITExecutionTest, HelloWorld)
@@ -189,7 +189,7 @@ TEST_F(JITExecutionTest, HelloWorld)
 
   const std::string Output = getStandardOut();
 
-  ASSERT_EQ(Output, "Hello world!\n");
+  ASSERT_EQ(Output, "Hello world!%\n");
 }
 
 TEST_F(JITExecutionTest, HelloWorldFull)
@@ -199,7 +199,7 @@ TEST_F(JITExecutionTest, HelloWorldFull)
 
   const std::string Output = getStandardOut();
 
-  ASSERT_EQ(Output, "Hello world!\n");
+  ASSERT_EQ(Output, "Hello world!%\n");
 }
 
 TEST_F(JITExecutionTest, AddDry1)
@@ -209,7 +209,7 @@ TEST_F(JITExecutionTest, AddDry1)
 
   const std::string Output = getStandardOut();
 
-  ASSERT_EQ(Output, "10\n");
+  ASSERT_EQ(Output, "10%\n");
 }
 
 TEST_F(JITExecutionTest, Add1)
@@ -219,7 +219,7 @@ TEST_F(JITExecutionTest, Add1)
 
   const std::string Output = getStandardOut();
 
-  ASSERT_EQ(Output, "3\n");
+  ASSERT_EQ(Output, "3%\n");
 }
 
 TEST_F(JITExecutionTest, Add2)
@@ -229,7 +229,7 @@ TEST_F(JITExecutionTest, Add2)
 
   const std::string Output = getStandardOut();
 
-  ASSERT_EQ(Output, "42\n");
+  ASSERT_EQ(Output, "42%\n");
 }
 
 TEST_F(JITExecutionTest, Remove1)
@@ -239,7 +239,7 @@ TEST_F(JITExecutionTest, Remove1)
 
   const std::string Output = getStandardOut();
 
-  ASSERT_EQ(Output, "-1\n");
+  ASSERT_EQ(Output, "-1%\n");
 }
 
 TEST_F(JITExecutionTest, Remove2)
@@ -249,7 +249,7 @@ TEST_F(JITExecutionTest, Remove2)
 
   const std::string Output = getStandardOut();
 
-  ASSERT_EQ(Output, "1\n");
+  ASSERT_EQ(Output, "1%\n");
 }
 
 TEST_F(JITExecutionTest, Combine1)
@@ -259,7 +259,7 @@ TEST_F(JITExecutionTest, Combine1)
 
   const std::string Output = getStandardOut();
 
-  ASSERT_EQ(Output, "16\n");
+  ASSERT_EQ(Output, "16%\n");
 }
 
 TEST_F(JITExecutionTest, Combine2)
@@ -269,7 +269,7 @@ TEST_F(JITExecutionTest, Combine2)
 
   const std::string Output = getStandardOut();
 
-  ASSERT_EQ(Output, "4398046511104\n");
+  ASSERT_EQ(Output, "4398046511104%\n");
 }
 
 TEST_F(JITExecutionTest, Divide1)
@@ -279,7 +279,7 @@ TEST_F(JITExecutionTest, Divide1)
 
   const std::string Output = getStandardOut();
 
-  ASSERT_EQ(Output, "16\n");
+  ASSERT_EQ(Output, "16%\n");
 }
 
 TEST_F(JITExecutionTest, Divide2)
@@ -289,7 +289,7 @@ TEST_F(JITExecutionTest, Divide2)
 
   const std::string Output = getStandardOut();
 
-  ASSERT_EQ(Output, "0\n");
+  ASSERT_EQ(Output, "0%\n");
 }
 
 TEST_F(JITExecutionTest, Fold1)
@@ -299,7 +299,7 @@ TEST_F(JITExecutionTest, Fold1)
 
   const std::string Output = getStandardOut();
 
-  ASSERT_EQ(Output, "1\n");
+  ASSERT_EQ(Output, "1%\n");
 }
 
 TEST_F(JITExecutionTest, Fold2)
@@ -309,7 +309,7 @@ TEST_F(JITExecutionTest, Fold2)
 
   const std::string Output = getStandardOut();
 
-  ASSERT_EQ(Output, "0\n");
+  ASSERT_EQ(Output, "0%\n");
 }
 
 TEST_F(JITExecutionTest, Serve1)
@@ -319,7 +319,7 @@ TEST_F(JITExecutionTest, Serve1)
 
   const std::string Output = getStandardOut();
 
-  ASSERT_EQ(Output, "240\n");
+  ASSERT_EQ(Output, "240%\n");
 }
 
 TEST_F(JITExecutionTest, LiquefyIngr1)
@@ -329,7 +329,7 @@ TEST_F(JITExecutionTest, LiquefyIngr1)
 
   const std::string Output = getStandardOut();
 
-  ASSERT_EQ(Output, "*\n");
+  ASSERT_EQ(Output, "*%\n");
 }
 
 TEST_F(JITExecutionTest, LiquefyIngr2)
@@ -339,7 +339,7 @@ TEST_F(JITExecutionTest, LiquefyIngr2)
 
   const std::string Output = getStandardOut();
 
-  ASSERT_EQ(Output, "*42\n");
+  ASSERT_EQ(Output, "* 42%\n");
 }
 
 TEST_F(JITExecutionTest, StirBowl1)
@@ -347,7 +347,7 @@ TEST_F(JITExecutionTest, StirBowl1)
   const std::string FileName = "/JITExecution/stir-bowl-1.ch";
   DoTest(FileName.c_str());
   const std::string Output = getStandardOut();
-  ASSERT_EQ(Output, "4212345\n");
+  ASSERT_EQ(Output, "42 1 2 3 4 5%\n");
 }
 
 TEST_F(JITExecutionTest, StirBowl2)
@@ -355,7 +355,7 @@ TEST_F(JITExecutionTest, StirBowl2)
   const std::string FileName = "/JITExecution/stir-bowl-2.ch";
   DoTest(FileName.c_str());
   const std::string Output = getStandardOut();
-  ASSERT_EQ(Output, "1422345\n");
+  ASSERT_EQ(Output, "1 42 2 3 4 5%\n");
 }
 
 TEST_F(JITExecutionTest, StirBowl3)
@@ -363,7 +363,7 @@ TEST_F(JITExecutionTest, StirBowl3)
   const std::string FileName = "/JITExecution/stir-bowl-3.ch";
   DoTest(FileName.c_str());
   const std::string Output = getStandardOut();
-  ASSERT_EQ(Output, "1242345\n");
+  ASSERT_EQ(Output, "1 2 42 3 4 5%\n");
 }
 
 TEST_F(JITExecutionTest, StirBowl4)
@@ -371,7 +371,7 @@ TEST_F(JITExecutionTest, StirBowl4)
   const std::string FileName = "/JITExecution/stir-bowl-4.ch";
   DoTest(FileName.c_str());
   const std::string Output = getStandardOut();
-  ASSERT_EQ(Output, "1234245\n");
+  ASSERT_EQ(Output, "1 2 3 42 4 5%\n");
 }
 
 TEST_F(JITExecutionTest, StirBowl5)
@@ -379,7 +379,7 @@ TEST_F(JITExecutionTest, StirBowl5)
   const std::string FileName = "/JITExecution/stir-bowl-5.ch";
   DoTest(FileName.c_str());
   const std::string Output = getStandardOut();
-  ASSERT_EQ(Output, "1234425\n");
+  ASSERT_EQ(Output, "1 2 3 4 42 5%\n");
 }
 
 TEST_F(JITExecutionTest, StirBowl6)
@@ -387,7 +387,7 @@ TEST_F(JITExecutionTest, StirBowl6)
   const std::string FileName = "/JITExecution/stir-bowl-6.ch";
   DoTest(FileName.c_str());
   const std::string Output = getStandardOut();
-  ASSERT_EQ(Output, "1234542\n");
+  ASSERT_EQ(Output, "1 2 3 4 5 42%\n");
 }
 
 TEST_F(JITExecutionTest, StirBowl7)
@@ -395,7 +395,7 @@ TEST_F(JITExecutionTest, StirBowl7)
   const std::string FileName = "/JITExecution/stir-bowl-7.ch";
   DoTest(FileName.c_str());
   const std::string Output = getStandardOut();
-  ASSERT_EQ(Output, "1234542\n");
+  ASSERT_EQ(Output, "1 2 3 4 5 42%\n");
 }
 
 TEST_F(JITExecutionTest, StirIngredient1)
@@ -403,7 +403,7 @@ TEST_F(JITExecutionTest, StirIngredient1)
   const std::string FileName = "/JITExecution/stir-ingr-1.ch";
   DoTest(FileName.c_str());
   const std::string Output = getStandardOut();
-  ASSERT_EQ(Output, "1234245\n");
+  ASSERT_EQ(Output, "1 2 3 42 4 5%\n");
 }
 
 TEST_F(JITExecutionTest, CleanBowl1)
@@ -411,7 +411,7 @@ TEST_F(JITExecutionTest, CleanBowl1)
   const std::string FileName = "/JITExecution/clean-bowl-1.ch";
   DoTest(FileName.c_str());
   const std::string Output = getStandardOut();
-  ASSERT_EQ(Output, "42\n");
+  ASSERT_EQ(Output, "42%\n");
 }
 
 TEST_F(JITExecutionTest, CleanBowl2)
@@ -419,7 +419,7 @@ TEST_F(JITExecutionTest, CleanBowl2)
   const std::string FileName = "/JITExecution/clean-bowl-2.ch";
   DoTest(FileName.c_str());
   const std::string Output = getStandardOut();
-  ASSERT_EQ(Output, "424321\n");
+  ASSERT_EQ(Output, "42 4 3 2 1%\n");
 }
 
 TEST_F(JITExecutionTest, CleanBowl3)
@@ -427,7 +427,7 @@ TEST_F(JITExecutionTest, CleanBowl3)
   const std::string FileName = "/JITExecution/clean-bowl-3.ch";
   DoTest(FileName.c_str());
   const std::string Output = getStandardOut();
-  ASSERT_EQ(Output, "424321\n");
+  ASSERT_EQ(Output, "42 4 3 2 1%\n");
 }
 
 TEST_F(JITExecutionTest, MixBowl1)
@@ -436,10 +436,14 @@ TEST_F(JITExecutionTest, MixBowl1)
   DoTest(FileName.c_str());
   const std::string Output = getStandardOut();
 
-  std::set<char> Expected = {'5', '4', '3', '2', '1', '\n'};
+  std::set<char> Expected = {'5', '4', '3', '2', '1', '%', '\n'};
 
   for (auto Char : Output)
   {
+    if (Char == ' ')
+    {
+      continue;
+    }
     auto Iter = Expected.find(Char);
     ASSERT_NE(Iter, std::end(Expected));
     Expected.erase(Iter);
@@ -461,7 +465,7 @@ TEST_F(JITExecutionTest, Refrigerate2)
   const std::string FileName = "/JITExecution/refrigerate-2.ch";
   DoTest(FileName.c_str());
   const std::string Output = getStandardOut();
-  ASSERT_EQ(Output, "12345\n");
+  ASSERT_EQ(Output, "1 2 3 4 5%\n");
 }
 
 TEST_F(JITExecutionTest, Refrigerate3)
@@ -469,7 +473,7 @@ TEST_F(JITExecutionTest, Refrigerate3)
   const std::string FileName = "/JITExecution/refrigerate-3.ch";
   DoTest(FileName.c_str());
   const std::string Output = getStandardOut();
-  ASSERT_EQ(Output, "1234554321\n");
+  ASSERT_EQ(Output, "1 2 3 4 5 5 4 3 2 1%\n");
 }
 
 TEST_F(JITExecutionTest, ControlFlow1)
@@ -477,7 +481,7 @@ TEST_F(JITExecutionTest, ControlFlow1)
   const std::string FileName = "/JITExecution/control-flow-1.ch";
   DoTest(FileName.c_str());
   const std::string Output = getStandardOut();
-  ASSERT_EQ(Output, "12345678910\n");
+  ASSERT_EQ(Output, "1 2 3 4 5 6 7 8 9 10%\n");
 }
 
 TEST_F(JITExecutionTest, ControlFlow2)
@@ -485,7 +489,7 @@ TEST_F(JITExecutionTest, ControlFlow2)
   const std::string FileName = "/JITExecution/control-flow-2.ch";
   DoTest(FileName.c_str());
   const std::string Output = getStandardOut();
-  ASSERT_EQ(Output, "**********\n");
+  ASSERT_EQ(Output, "**********%\n");
 }
 
 TEST_F(JITExecutionTest, ControlFlow3)
@@ -493,7 +497,7 @@ TEST_F(JITExecutionTest, ControlFlow3)
   const std::string FileName = "/JITExecution/control-flow-3.ch";
   DoTest(FileName.c_str());
   const std::string Output = getStandardOut();
-  ASSERT_EQ(Output, "1 * 2 * 3 = 6\n");
+  ASSERT_EQ(Output, "1 * 2 * 3 = 6%\n");
 }
 
 TEST_F(JITExecutionTest, ControlFlow4)
@@ -501,5 +505,5 @@ TEST_F(JITExecutionTest, ControlFlow4)
   const std::string FileName = "/JITExecution/control-flow-4.ch";
   DoTest(FileName.c_str());
   const std::string Output = getStandardOut();
-  ASSERT_EQ(Output, "100\n");
+  ASSERT_EQ(Output, "100%\n");
 }

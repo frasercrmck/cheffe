@@ -580,16 +580,20 @@ CheffeJIT::returnFromRecipe(std::vector<CheffeJIT::StackTy> &MixingBowls,
   {
     while (!BakingDishes[i].empty())
     {
-      HaveOutputAnything = true;
       auto Item = popStackItem(BakingDishes, i);
       if (Item.first)
       {
+        if (HaveOutputAnything)
+        {
+          std::cout << " ";
+        }
         std::cout << Item.second;
       }
       else
       {
         std::cout << (char)Item.second;
       }
+      HaveOutputAnything = true;
     }
   }
 
@@ -598,7 +602,7 @@ CheffeJIT::returnFromRecipe(std::vector<CheffeJIT::StackTy> &MixingBowls,
   // newline theirselves?
   if (HaveOutputAnything)
   {
-    std::cout << std::endl;
+    std::cout << "%" << std::endl;
   }
 
   CHEFFE_DEBUG(dbgs() << "Ending execution of '" << DebugRecipeTitle << "'"
