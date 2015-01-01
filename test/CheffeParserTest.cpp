@@ -188,6 +188,26 @@ TEST_F(GoodParserTest, MethodStepRefrigerate)
   TestParse("/Parser/method-step-refrigerate.ch");
 }
 
+TEST_F(GoodParserTest, Sections1)
+{
+  TestParse("/Parser/sections-1.ch");
+}
+
+TEST_F(GoodParserTest, Sections2)
+{
+  TestParse("/Parser/sections-2.ch");
+}
+
+TEST_F(GoodParserTest, Sections3)
+{
+  TestParse("/Parser/sections-3.ch");
+}
+
+TEST_F(GoodParserTest, Sections4)
+{
+  TestParse("/Parser/sections-4.ch");
+}
+
 TEST_F(BadParserTest, BadComments)
 {
   TestParse("/Parser/bad-comments.ch");
