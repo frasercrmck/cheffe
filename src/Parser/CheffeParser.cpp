@@ -592,6 +592,9 @@ CheffeErrorCode CheffeParser::parseCookingTime()
   const bool IsValidTimeUnit = isValidTimeUnit(TimeUnit, TimeUnitKind);
   if (!IsValidTimeUnit)
   {
+    Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Error,
+                        LineContext::WithContext)
+        << "Invalid time measurement: must be hour[s] or minute[s]";
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
