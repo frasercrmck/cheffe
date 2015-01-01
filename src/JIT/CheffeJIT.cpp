@@ -605,14 +605,6 @@ CheffeJIT::returnFromRecipe(std::vector<CheffeJIT::StackTy> &MixingBowls,
     }
   }
 
-  // The spec is a bit weird in that it says to output the contents of the
-  // baking dish, even if those are numbers. Is the user supposed to add a
-  // newline theirselves?
-  if (HaveOutputAnything)
-  {
-    std::cout << "%" << std::endl;
-  }
-
   CHEFFE_DEBUG(dbgs() << "Ending execution of '" << DebugRecipeTitle << "'"
                       << std::endl << std::endl);
 
