@@ -9,6 +9,12 @@
 namespace cheffe
 {
 
+enum class IgnoreWhiteSpace
+{
+  True,
+  False
+};
+
 class CheffeLexer
 {
 private:
@@ -30,8 +36,9 @@ public:
   // Gets a char from the input
   int getNextChar();
 
-  // Peeks at the next char from the input
-  int peekNextChar() const;
+  // Peeks at the next char from the input stream. Can optionally ignore any
+  // space or tab characters while peeking.
+  int peekNextChar(IgnoreWhiteSpace Ignore = IgnoreWhiteSpace::False) const;
 
   // Returns a token from the input, consuming one or more characters.
   Token getToken();

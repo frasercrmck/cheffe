@@ -29,13 +29,23 @@ int CheffeLexer::getNextChar()
   return Char;
 }
 
-int CheffeLexer::peekNextChar() const
+// Peeks at the next char from the input stream. Can optionally ignore any
+// space or tab characters while peeking.
+int CheffeLexer::peekNextChar(IgnoreWhiteSpace Ignore) const
 {
-  if (static_cast<std::size_t>(CurrentPos) >= File.Source.size())
+  int NextChar = -1;
+  std::size_t Pos = CurrentPos;
+  do
   {
-    return -1;
-  }
-  return File[CurrentPos];
+    if (static_cast<std::size_t>(Pos) >= File.Source.size())
+    {
+      return -1;
+    }
+    NextChar = File[Pos++];
+  } while (Ignore == IgnoreWhiteSpace::True &&
+           (NextChar == ' ' || NextChar == '\t'));
+
+  return NextChar;
 }
 
 std::string CheffeLexer::getTextSpan(const std::size_t Begin,
@@ -69,7 +79,7 @@ Token CheffeLexer::getToken()
       Tok.SourceLoc.ColumnNo = ColumnNumber;
 
       getNextChar();
-      if (peekNextChar() == '\n')
+      if (peekNextChar(IgnoreWhiteSpace::True) == '\n')
       {
         getNextChar();
         Tok.Kind = TokenKind::EndOfParagraph;
