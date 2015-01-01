@@ -2,7 +2,6 @@
 #define CHEFFE_JIT
 
 #include "cheffe.h"
-#include "CheffeCommon.h"
 #include "IR/CheffeIngredient.h"
 #include "IR/CheffeMethodStep.h"
 #include "IR/CheffeProgramInfo.h"

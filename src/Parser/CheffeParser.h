@@ -2,7 +2,6 @@
 #define CHEFFE_PARSER
 
 #include "cheffe.h"
-#include "CheffeCommon.h"
 #include "Parser/CheffeScopeInfo.h"
 #include "Lexer/CheffeLexer.h"
 #include "IR/CheffeProgramInfo.h"
