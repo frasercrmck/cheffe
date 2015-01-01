@@ -627,3 +627,11 @@ TEST_F(JITExecutionTest, MultiTable)
 
   ASSERT_EQ(Pos, Output.length());
 }
+
+TEST_F(JITExecutionTest, ResetIngredientValues)
+{
+  const std::string FileName = "/JITExecution/reset-ingredient-values.ch";
+  DoTest(FileName.c_str());
+  const std::string Output = getStandardOut();
+  ASSERT_EQ(Output, "2 2 2");
+}
