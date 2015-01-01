@@ -1,8 +1,8 @@
 #ifndef CHEFFE_LEXER
 #define CHEFFE_LEXER
 
-#include "cheffe.h"
 #include "CheffeToken.h"
+#include "Utils/CheffeFileHandler.h"
 
 #include <string>
 

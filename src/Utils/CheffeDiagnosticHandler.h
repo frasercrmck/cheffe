@@ -1,8 +1,8 @@
 #ifndef CHEFFE_DIAGNOSTIC_HANDLER
 #define CHEFFE_DIAGNOSTIC_HANDLER
 
-#include "cheffe.h"
 #include "Lexer/CheffeToken.h"
+#include "Utils/CheffeFileHandler.h"
 #include "Utils/CheffeErrorHandling.h"
 #include <iostream>
 #include <sstream>
