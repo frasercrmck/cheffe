@@ -1302,9 +1302,26 @@ CheffeErrorCode CheffeParser::parseStirMethodStep()
 
     const long long NumberOfMinutes = CurrentToken.getNumVal();
 
-    if (consumeAndExpectToken("minutes"))
+    getNextToken();
+    if (CurrentToken.isNotAnyOf("minute", "minutes"))
     {
+      Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Error,
+                          LineContext::WithContext)
+          << "Expected 'minute' or 'minutes', got " << CurrentToken;
       return CheffeErrorCode::CHEFFE_ERROR;
+    }
+
+    if (CurrentToken.is("minute") && NumberOfMinutes != 1)
+    {
+      Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Warning,
+                          LineContext::WithContext)
+          << "Plural time period used with 'minute'";
+    }
+    else if (CurrentToken.is("minutes") && NumberOfMinutes == 1)
+    {
+      Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Warning,
+                          LineContext::WithContext)
+          << "Singular time period used with 'minutes'";
     }
 
     if (consumeAndExpectToken(TokenKind::FullStop))
