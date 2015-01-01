@@ -124,7 +124,7 @@ private:
                                    SourceLocation &RecipeTitleLoc);
   CheffeErrorCode parseCommentBlock();
   CheffeErrorCode parseIngredientsList();
-  CheffeErrorCode parseIngredient(CheffeIngredient &Ingredient);
+  CheffeErrorCode parseIngredient();
   CheffeErrorCode parseCookingTime();
   CheffeErrorCode parseOvenTemperature();
   CheffeErrorCode parseMethod();

@@ -422,23 +422,21 @@ CheffeErrorCode CheffeParser::parseIngredientsList()
   while (
       CurrentToken.isNotAnyOf(TokenKind::EndOfParagraph, TokenKind::EndOfFile))
   {
-    CheffeIngredient Ingredient;
-    CheffeErrorCode Success = parseIngredient(Ingredient);
+    CheffeErrorCode Success = parseIngredient();
     if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
     {
       return Success;
     }
-    CHEFFE_DEBUG(dbgs() << "INGREDIENT: " << Ingredient << std::endl);
-
-    CurrentRecipe->addIngredientDefinition(Ingredient);
   }
   CHEFFE_DEBUG(dbgs() << std::endl);
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
 
-CheffeErrorCode CheffeParser::parseIngredient(CheffeIngredient &Ingredient)
+CheffeErrorCode CheffeParser::parseIngredient()
 {
+  CheffeIngredient Ingredient;
+
   getNextToken();
   const SourceLocation BeginIngredientDefLoc = CurrentToken.getSourceLoc();
 
@@ -523,6 +521,10 @@ CheffeErrorCode CheffeParser::parseIngredient(CheffeIngredient &Ingredient)
 
   Ingredient.DefLoc =
       SourceLocation(BeginIngredientDefLoc, EndIngredientDefLoc);
+
+  CHEFFE_DEBUG(dbgs() << "INGREDIENT: " << Ingredient << std::endl);
+
+  CurrentRecipe->addIngredientDefinition(Ingredient);
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
