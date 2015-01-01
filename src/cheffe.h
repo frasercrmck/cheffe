@@ -10,4 +10,5 @@ enum class CheffeErrorCode
 };
 
 } // end namespace cheffe
-#endif
+
+#endif // CHEFFE_H
