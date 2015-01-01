@@ -1468,7 +1468,16 @@ CheffeErrorCode CheffeParser::parseCleanMethodStep()
 // Pour contents of the [nth] mixing bowl into the [pth] baking dish.
 CheffeErrorCode CheffeParser::parsePourMethodStep()
 {
-  if (consumeAndExpectToken("contents"))
+  getNextToken();
+
+  // Not in the spec, but in some examples:
+  //   "Pour the contents of the [nth] mixing bowl into the [pth] baking dish.
+  if (CurrentToken.is("the"))
+  {
+    getNextToken();
+  }
+
+  if (expectToken("contents"))
   {
     return CheffeErrorCode::CHEFFE_ERROR;
   }
