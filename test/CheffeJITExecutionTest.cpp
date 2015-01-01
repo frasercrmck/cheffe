@@ -507,3 +507,12 @@ TEST_F(JITExecutionTest, ControlFlow4)
   const std::string Output = getStandardOut();
   ASSERT_EQ(Output, "100%\n");
 }
+
+TEST_F(JITExecutionTest, FizzBuzz)
+{
+  const std::string FileName = "/JITExecution/fizzbuzz.ch";
+  DoTest(FileName.c_str());
+  const std::string Output = getStandardOut();
+  ASSERT_EQ(Output, "1 2 Fizz 4 Buzz Fizz 7 8 Fizz Buzz 11 Fizz 13 14 Fizz "
+                    "Buzz 16 17 Fizz 19 Buzz%\n");
+}
