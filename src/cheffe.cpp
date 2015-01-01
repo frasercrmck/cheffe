@@ -23,6 +23,7 @@ static void printUsage()
             << "  -debug-only <value>  Enable only the debug output associated "
                                        "with <value>" << std::endl
             << "                       Examples:" << std::endl
+            << "                         - \"jit\"" << std::endl
             << "                         - \"parser\"" << std::endl
             << "  -help                Print usage and exit" << std::endl
             << std::endl;
