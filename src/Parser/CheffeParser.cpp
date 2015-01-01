@@ -1026,6 +1026,14 @@ CheffeParser::parseArithmeticMethodStep(const MethodStepKind Step)
 
   std::shared_ptr<CheffeMethodStep> MethodStep = nullptr;
 
+  // Not in the spec, but in some examples:
+  //   "Add the potatoes [to [nth] mixing bowl]."
+  //   "Add the dry ingredients [to [nth] mixing bowl]."
+  if (CurrentToken.is("the"))
+  {
+    getNextToken();
+  }
+
   if (Step == MethodStepKind::Add && CurrentToken.is("dry"))
   {
     if (consumeAndExpectToken("ingredients"))
@@ -1037,13 +1045,6 @@ CheffeParser::parseArithmeticMethodStep(const MethodStepKind Step)
   }
   else
   {
-    // Not in the spec, but in some examples:
-    //   "Add the potatoes [to nth mixing bowl]."
-    //   "Remove the onions [from nth mixing bowl]."
-    if (CurrentToken.is("the"))
-    {
-      getNextToken();
-    }
     const SourceLocation BeginIngredientLoc = CurrentToken.getSourceLoc();
     SourceLocation EndIngredientLoc = BeginIngredientLoc;
     while (CurrentToken.isNotAnyOf(Preposition.c_str(), TokenKind::FullStop,
