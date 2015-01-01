@@ -552,3 +552,41 @@ TEST_F(JITExecutionTest, Loops)
   const std::string Output = getStandardOut();
   ASSERT_EQ(Output, "*\n**\n***\n****\n*****\n");
 }
+
+TEST_F(JITExecutionTest, 99Bottles)
+{
+  const std::string FileName = "/JITExecution/99-bottles.ch";
+  DoTest(FileName.c_str());
+  const std::string Output = getStandardOut();
+
+  ASSERT_FALSE(Output.empty());
+
+  unsigned Pos = 0;
+  std::stringstream sstream;
+  const std::string TakeOneDown = "\nTake one down and pass it around";
+  for (unsigned BottlesLeft = 99; BottlesLeft >= 1; --BottlesLeft)
+  {
+    sstream << "\n " << BottlesLeft << " bottles of beer on the wall";
+    ASSERT_EQ(Output.substr(Pos, sstream.str().length()), sstream.str());
+    Pos += sstream.str().length();
+    sstream.str("");
+
+    sstream << "\n " << BottlesLeft << " bottles of beer";
+    ASSERT_EQ(Output.substr(Pos, sstream.str().length()), sstream.str());
+    Pos += sstream.str().length();
+    sstream.str("");
+
+    ASSERT_EQ(Output.substr(Pos, sstream.str().length()), sstream.str());
+    Pos += sstream.str().length();
+    sstream.str("");
+
+    ASSERT_EQ(Output.substr(Pos, TakeOneDown.length()), TakeOneDown);
+    Pos += TakeOneDown.length();
+  }
+
+  const std::string NoMoreLeft = "\nNo more bottles of beer\n";
+  ASSERT_EQ(Output.substr(Pos, NoMoreLeft.length()), NoMoreLeft);
+  Pos += NoMoreLeft.length();
+
+  ASSERT_EQ(Pos, Output.length());
+}
