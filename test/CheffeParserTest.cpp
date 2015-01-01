@@ -208,6 +208,11 @@ TEST_F(GoodParserTest, Sections4)
   TestParse("/Parser/sections-4.ch");
 }
 
+TEST_F(GoodParserTest, SectionsWhiteSpace)
+{
+  TestParse("/Parser/sections-whitespace.ch");
+}
+
 TEST_F(BadParserTest, BadComments)
 {
   TestParse("/Parser/bad-comments.ch");
