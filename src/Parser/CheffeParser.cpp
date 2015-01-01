@@ -134,6 +134,9 @@ CheffeErrorCode CheffeParser::parseRecipe()
 {
   CheffeErrorCode Success = CheffeErrorCode::CHEFFE_SUCCESS;
 
+  // Grab the first token
+  getNextToken();
+
   do
   {
     std::string RecipeTitle;
@@ -200,6 +203,11 @@ CheffeErrorCode CheffeParser::parseRecipe()
       return Success;
     }
 
+    while (CurrentToken.isBlankLine())
+    {
+      getNextToken();
+    }
+
     CHEFFE_DEBUG(dbgs() << std::endl; RecipeScopeInfo.dumpInfo(dbgs()));
 
     if (!RecipeScopeInfo.empty())
@@ -261,9 +269,18 @@ template <typename T> bool CheffeParser::expectToken(const T &Kind)
 CheffeErrorCode CheffeParser::parseRecipeTitle(std::string &RecipeTitle,
                                                SourceLocation &RecipeTitleLoc)
 {
-  getNextToken();
+  while (CurrentToken.isBlankLine())
+  {
+    getNextToken();
+  }
+
   const SourceLocation BeginTitleLoc = CurrentToken.getSourceLoc();
   SourceLocation EndTitleLoc = BeginTitleLoc;
+
+  if (expectToken(TokenKind::Identifier))
+  {
+    return CheffeErrorCode::CHEFFE_ERROR;
+  }
 
   // Parse the Recipe Title.
   while (CurrentToken.isNotAnyOf(TokenKind::FullStop, TokenKind::EndOfParagraph,
@@ -307,16 +324,17 @@ CheffeErrorCode CheffeParser::parseRecipeTitle(std::string &RecipeTitle,
 
 CheffeErrorCode CheffeParser::parseCommentBlock()
 {
-  const std::string Ingredients = "Ingredients.\n";
+  while (CurrentToken.isBlankLine())
+  {
+    getNextToken();
+  }
 
-  // Look ahead to see if we in fact have no comment block in this recipe.
-  std::string LookAhead = Lexer.lookAhead(Ingredients.size());
-  if (LookAhead == Ingredients)
+  // Check to see whether we have a comment block or not
+  if (CurrentToken.is("Ingredients"))
   {
     return CheffeErrorCode::CHEFFE_SUCCESS;
   }
 
-  getNextToken();
   const std::size_t CommentsBeginPos = CurrentToken.getSourceLoc().getBegin();
   while (
       CurrentToken.isNotAnyOf(TokenKind::EndOfParagraph, TokenKind::EndOfFile))
@@ -370,10 +388,16 @@ bool CheffeParser::isValidMeasure(const std::string &Measure,
 
 CheffeErrorCode CheffeParser::parseIngredientsList()
 {
+  while (CurrentToken.isBlankLine())
+  {
+    getNextToken();
+  }
+
   assert(CurrentRecipe != nullptr &&
          "We should already have set a current recipe by now!");
+
   // Eat the 'Ingredients' token
-  if (consumeAndExpectToken("Ingredients"))
+  if (expectToken("Ingredients"))
   {
     return CheffeErrorCode::CHEFFE_ERROR;
   }
@@ -528,18 +552,15 @@ bool CheffeParser::isValidTimeUnit(const std::string &TimeUnit,
 
 CheffeErrorCode CheffeParser::parseCookingTime()
 {
-  const std::string CookingTimeStr = "Cooking time:";
-
-  // Look ahead to see if we in fact have no comment block in this recipe.
-  std::string LookAhead = Lexer.lookAhead(CookingTimeStr.size());
-  if (LookAhead != CookingTimeStr)
+  while (CurrentToken.isBlankLine())
   {
-    return CheffeErrorCode::CHEFFE_SUCCESS;
+    getNextToken();
   }
 
-  if (consumeAndExpectToken("Cooking"))
+  // Check to see if we in fact have no cooking time block in this recipe.
+  if (CurrentToken.isNot("Cooking"))
   {
-    return CheffeErrorCode::CHEFFE_ERROR;
+    return CheffeErrorCode::CHEFFE_SUCCESS;
   }
 
   if (consumeAndExpectToken("time"))
@@ -606,18 +627,15 @@ CheffeErrorCode CheffeParser::parseCookingTime()
 
 CheffeErrorCode CheffeParser::parseOvenTemperature()
 {
-  const std::string OvenTemperature = "Pre-heat oven to";
-
-  // Look ahead to see if we in fact have no comment block in this recipe.
-  std::string LookAhead = Lexer.lookAhead(OvenTemperature.size());
-  if (LookAhead != OvenTemperature)
+  while (CurrentToken.isBlankLine())
   {
-    return CheffeErrorCode::CHEFFE_SUCCESS;
+    getNextToken();
   }
 
-  if (consumeAndExpectToken("Pre"))
+  // Check to see if we in fact have no oven temperature block in this recipe.
+  if (CurrentToken.isNot("Pre"))
   {
-    return CheffeErrorCode::CHEFFE_ERROR;
+    return CheffeErrorCode::CHEFFE_SUCCESS;
   }
 
   if (consumeAndExpectToken(TokenKind::Hyphen))
@@ -714,8 +732,13 @@ CheffeErrorCode CheffeParser::parseOvenTemperature()
 
 CheffeErrorCode CheffeParser::parseMethod()
 {
-  // Eat the 'Method' token
-  if (consumeAndExpectToken("Method"))
+  // Eat any new lines or end-of-paragraphs
+  while (CurrentToken.isBlankLine())
+  {
+    getNextToken();
+  }
+
+  if (expectToken("Method"))
   {
     return CheffeErrorCode::CHEFFE_ERROR;
   }
@@ -1788,23 +1811,20 @@ CheffeErrorCode CheffeParser::parseRefrigerateMethodStep()
 
 CheffeErrorCode CheffeParser::parseServesStatement()
 {
+  while (CurrentToken.isBlankLine())
+  {
+    getNextToken();
+  }
+
   if (CurrentToken.is(TokenKind::EndOfFile))
   {
     return CheffeErrorCode::CHEFFE_SUCCESS;
   }
 
-  const std::string ServesStr = "Serves";
-
-  // Look ahead to see if we in fact have no serves statement in this recipe.
-  std::string LookAhead = Lexer.lookAhead(ServesStr.size());
-  if (LookAhead != ServesStr)
+  // Check to see if we in fact have no serves statement in this recipe.
+  if (CurrentToken.isNot("Serves"))
   {
     return CheffeErrorCode::CHEFFE_SUCCESS;
-  }
-
-  if (consumeAndExpectToken(ServesStr))
-  {
-    return CheffeErrorCode::CHEFFE_ERROR;
   }
 
   if (consumeAndExpectToken(TokenKind::Number))
@@ -1832,24 +1852,8 @@ CheffeErrorCode CheffeParser::parseServesStatement()
 
   CurrentRecipe->setServesNo((unsigned)ServesNo);
 
+  // Consume the full stop
   getNextToken();
-  if (CurrentToken.isNotAnyOf(TokenKind::EndOfParagraph, TokenKind::EndOfFile))
-  {
-    if (expectToken(TokenKind::NewLine))
-    {
-      return CheffeErrorCode::CHEFFE_ERROR;
-    }
-
-    getNextToken();
-    if (CurrentToken.isNotAnyOf(TokenKind::EndOfParagraph,
-                                TokenKind::EndOfFile))
-    {
-      Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Error,
-                          LineContext::WithoutContext)
-          << "Invalid Serves Statement";
-      return CheffeErrorCode::CHEFFE_ERROR;
-    }
-  }
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
