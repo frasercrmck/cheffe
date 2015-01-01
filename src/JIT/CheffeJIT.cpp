@@ -79,6 +79,7 @@ bool CheffeJIT::checkIngredientHasValue(
 
 CheffeErrorCode CheffeJIT::executeProgram()
 {
+  std::srand(std::time(0));
   if (!ProgramInfo)
   {
     return CheffeErrorCode::CHEFFE_ERROR;
@@ -110,7 +111,6 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
                          std::vector<StackTy> &CallerMixingBowls,
                          std::vector<StackTy> &CallerBakingDishes)
 {
-  std::srand(std::time(0));
   if (!RecipeInfo)
   {
     return CheffeErrorCode::CHEFFE_ERROR;
