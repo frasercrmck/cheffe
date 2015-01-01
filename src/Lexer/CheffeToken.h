@@ -203,6 +203,11 @@ public:
     return *this;
   }
 
+  bool isBlankLine() const
+  {
+    return isAnyOf(TokenKind::NewLine, TokenKind::EndOfParagraph);
+  }
+
   //==== is() ====//
   bool is(TokenKind Tok) const
   {
