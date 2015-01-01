@@ -66,7 +66,7 @@ bool CheffeJIT::checkIngredientHasValue(
     const std::shared_ptr<CheffeIngredient> &Ingredient,
     const SourceLocation IngredientLoc)
 {
-  if (Ingredient->HasValue)
+  if (Ingredient->RuntimeValueData.HasValue)
   {
     return true;
   }
@@ -111,6 +111,8 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
                          std::vector<StackTy> &CallerMixingBowls,
                          std::vector<StackTy> &CallerBakingDishes)
 {
+  RecipeInfo->resetIngredientsToInitialValues();
+
   if (!RecipeInfo)
   {
     return CheffeErrorCode::CHEFFE_ERROR;
@@ -171,8 +173,8 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
         std::cout << "Invalid input.  Try again: ";
       }
 
-      Ingredient->HasValue = true;
-      Ingredient->Value = NewValue;
+      Ingredient->RuntimeValueData.HasValue = true;
+      Ingredient->RuntimeValueData.Value = NewValue;
       break;
     }
     case MethodStepKind::Put:
@@ -192,8 +194,8 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
         return CheffeErrorCode::CHEFFE_ERROR;
       }
 
-      const bool IsDry = Ingredient->IsDry;
-      const long long Value = Ingredient->Value;
+      const bool IsDry = Ingredient->RuntimeValueData.IsDry;
+      const long long Value = Ingredient->RuntimeValueData.Value;
 
       auto MixingBowl =
           std::static_pointer_cast<MixingBowlOp>(MS->getOperand(1));
@@ -221,8 +223,8 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
 
       auto TopOfStack = popStackItem(MixingBowls, MixingBowlNo - 1);
 
-      Ingredient->HasValue = true;
-      Ingredient->Value = TopOfStack.second;
+      Ingredient->RuntimeValueData.HasValue = true;
+      Ingredient->RuntimeValueData.Value = TopOfStack.second;
       break;
     }
     case MethodStepKind::AddDry:
@@ -242,7 +244,7 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
         {
           return CheffeErrorCode::CHEFFE_ERROR;
         }
-        DrySum += Item->Value;
+        DrySum += Item->RuntimeValueData.Value;
       }
 
       pushStackItem(MixingBowls, std::make_pair(true, DrySum),
@@ -273,7 +275,7 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
           std::static_pointer_cast<MixingBowlOp>(MS->getOperand(1));
       const unsigned MixingBowlNo = MixingBowl->getMixingBowlNo();
 
-      const long long Value = Ingredient->Value;
+      const long long Value = Ingredient->RuntimeValueData.Value;
       auto NewValue = popStackItem(MixingBowls, MixingBowlNo - 1);
 
       switch (MS->getMethodStepKind())
@@ -338,7 +340,7 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
         return Success;
       }
 
-      Ingredient->IsDry = false;
+      Ingredient->RuntimeValueData.IsDry = false;
 
       break;
     }
@@ -389,7 +391,7 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
         {
           return CheffeErrorCode::CHEFFE_ERROR;
         }
-        Number = Ingredient->Value;
+        Number = Ingredient->RuntimeValueData.Value;
       }
       // If we haven't put any ingredients into this mixing bowl already, or if
       // we're not going to stir anything, then don't bother trying
@@ -463,7 +465,7 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
                                      MS->getOperand(1))->getNumberValue();
       assert(Distance > 0 && "Invalid distance");
 
-      if (Ingredient->Value == 0)
+      if (Ingredient->RuntimeValueData.Value == 0)
       {
         MSI += Distance;
       }
@@ -489,7 +491,7 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
           return CheffeErrorCode::CHEFFE_ERROR;
         }
 
-        --UntilIngredient->Value;
+        --UntilIngredient->RuntimeValueData.Value;
       }
 
       SourceLocation FromIngredientLoc;
@@ -506,7 +508,7 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
                                      MS->getOperand(2))->getNumberValue();
       assert(Distance < 0 && "Invalid distance");
 
-      if (FromIngredient->Value != 0)
+      if (FromIngredient->RuntimeValueData.Value != 0)
       {
         MSI += Distance;
       }

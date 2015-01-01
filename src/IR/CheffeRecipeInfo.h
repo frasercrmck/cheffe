@@ -40,6 +40,8 @@ public:
 
   const std::vector<std::shared_ptr<CheffeMethodStep>> &getMethodStepList();
 
+  void resetIngredientsToInitialValues();
+
 private:
   unsigned ServesNo;
   std::string RecipeTitle;

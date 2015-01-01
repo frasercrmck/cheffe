@@ -443,8 +443,8 @@ CheffeErrorCode CheffeParser::parseIngredient()
   if (CurrentToken.is(TokenKind::Number))
   {
     // Value
-    Ingredient.HasValue = true;
-    Ingredient.Value = CurrentToken.getNumVal();
+    Ingredient.InitialValueData.HasValue = true;
+    Ingredient.InitialValueData.Value = CurrentToken.getNumVal();
     getNextToken();
   }
 
@@ -488,7 +488,7 @@ CheffeErrorCode CheffeParser::parseIngredient()
       return CheffeErrorCode::CHEFFE_ERROR;
     }
 
-    Ingredient.IsDry = MeasureKind != MeasureKindTy::Wet;
+    Ingredient.InitialValueData.IsDry = MeasureKind != MeasureKindTy::Wet;
 
     Ingredient.Measure = IdentifierString;
 
@@ -521,6 +521,8 @@ CheffeErrorCode CheffeParser::parseIngredient()
 
   Ingredient.DefLoc =
       SourceLocation(BeginIngredientDefLoc, EndIngredientDefLoc);
+
+  Ingredient.RuntimeValueData = Ingredient.InitialValueData;
 
   CHEFFE_DEBUG(dbgs() << "INGREDIENT: " << Ingredient << std::endl);
 

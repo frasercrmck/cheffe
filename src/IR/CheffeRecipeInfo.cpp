@@ -45,7 +45,7 @@ CheffeRecipeInfo::getDryIngredients() const
   std::vector<std::shared_ptr<CheffeIngredient>> DryIngredients;
   for (auto &Ingredient : Ingredients)
   {
-    if (Ingredient.second->IsDry)
+    if (Ingredient.second->RuntimeValueData.IsDry)
     {
       DryIngredients.push_back(Ingredient.second);
     }
@@ -66,6 +66,14 @@ CheffeRecipeInfo::addNewMethodStep(const MethodStepKind Kind)
 std::shared_ptr<CheffeMethodStep> CheffeRecipeInfo::getLastMethodStep() const
 {
   return MethodSteps.empty() ? nullptr : MethodSteps.back();
+}
+
+void CheffeRecipeInfo::resetIngredientsToInitialValues()
+{
+  for (auto Ingredient : Ingredients)
+  {
+    Ingredient.second->resetToInitialValue();
+  }
 }
 
 const std::vector<std::shared_ptr<CheffeMethodStep>> &
