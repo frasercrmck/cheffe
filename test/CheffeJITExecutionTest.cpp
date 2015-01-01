@@ -590,3 +590,40 @@ TEST_F(JITExecutionTest, 99Bottles)
 
   ASSERT_EQ(Pos, Output.length());
 }
+
+TEST_F(JITExecutionTest, MultiTable)
+{
+  const std::string FileName = "/JITExecution/multi-table.ch";
+  DoTest(FileName.c_str());
+  const std::string Output = getStandardOut();
+
+  ASSERT_FALSE(Output.empty());
+
+  unsigned Pos = 0;
+  std::stringstream sstream;
+
+  const std::string FirstRow =
+      "x\t 1\t 2\t 3\t 4\t 5\t 6\t 7\t 8\t 9\t 10\t 11\t 12\n";
+  ASSERT_EQ(Output.substr(Pos, Pos + FirstRow.length()), FirstRow);
+  Pos += FirstRow.length();
+
+  for (unsigned y = 1; y <= 12; ++y)
+  {
+    sstream << " " << y;
+    for (unsigned x = 1; x <= 12; ++x)
+    {
+      sstream << "\t";
+      if (x >= y)
+      {
+        sstream << " " << (x * y);
+      }
+    }
+    sstream << "\n";
+
+    ASSERT_EQ(Output.substr(Pos, sstream.str().length()), sstream.str());
+    Pos += sstream.str().length();
+    sstream.str("");
+  }
+
+  ASSERT_EQ(Pos, Output.length());
+}
