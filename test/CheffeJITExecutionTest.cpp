@@ -192,6 +192,16 @@ TEST_F(JITExecutionTest, HelloWorld)
   ASSERT_EQ(Output, "Hello world!%\n");
 }
 
+TEST_F(JITExecutionTest, HelloWorldCake)
+{
+  const std::string FileName = "/JITExecution/hello-cake.ch";
+  DoTest(FileName.c_str());
+
+  const std::string Output = getStandardOut();
+
+  ASSERT_EQ(Output, "Hello world!%\n");
+}
+
 TEST_F(JITExecutionTest, HelloWorldFull)
 {
   const std::string FileName = "/JITExecution/hello-full.ch";
