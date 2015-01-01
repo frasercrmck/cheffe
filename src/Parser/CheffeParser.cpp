@@ -1,6 +1,7 @@
 #include "Parser/CheffeParser.h"
 #include "IR/CheffeMethodStep.h"
 #include "IR/CheffeIngredient.h"
+#include "Utils/CheffeUtils.h"
 #include "Utils/CheffeDebugUtils.h"
 
 #include <cassert>
@@ -1577,25 +1578,6 @@ CheffeErrorCode CheffeParser::parsePourMethodStep()
   MethodStep->addBakingDish(BakingDishNo);
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
-}
-
-static bool AreLowerCasedStringsEqual(const std::string &LHS,
-                                      const std::string &RHS)
-{
-  if (LHS.size() != RHS.size())
-  {
-    return false;
-  }
-  auto LHSIt = std::begin(LHS);
-  auto RHSIt = std::begin(RHS);
-  while (LHSIt++ != std::end(LHS) && RHSIt++ != std::end(RHS))
-  {
-    if (std::tolower(*LHSIt) != std::tolower(*RHSIt))
-    {
-      return false;
-    }
-  }
-  return true;
 }
 
 // Parsers the "Verb" method steps. One of the following two:

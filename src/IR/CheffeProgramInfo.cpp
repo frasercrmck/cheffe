@@ -1,3 +1,4 @@
+#include "Utils/CheffeUtils.h"
 #include "IR/CheffeProgramInfo.h"
 
 namespace cheffe
@@ -6,7 +7,12 @@ namespace cheffe
 std::shared_ptr<CheffeRecipeInfo>
 CheffeProgramInfo::getRecipe(const std::string &RecipeTitle) const
 {
-  auto RecipeIter = RecipeInfo.find(RecipeTitle);
+  auto RecipeIter =
+      std::find_if(std::begin(RecipeInfo), std::end(RecipeInfo),
+                   [&RecipeTitle](const decltype(RecipeInfo)::value_type Recipe)
+                   {
+        return AreLowerCasedStringsEqual(RecipeTitle, Recipe.first);
+      });
   return RecipeIter == std::end(RecipeInfo) ? nullptr : RecipeIter->second;
 }
 
