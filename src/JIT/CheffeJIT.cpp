@@ -605,8 +605,12 @@ CheffeJIT::returnFromRecipe(std::vector<CheffeJIT::StackTy> &MixingBowls,
     }
   }
 
-  CHEFFE_DEBUG(dbgs() << "Ending execution of '" << DebugRecipeTitle << "'"
-                      << std::endl << std::endl);
+  // clang-format off
+  CHEFFE_DEBUG(
+    dbgs() << std::endl << "Ending execution of '"
+           << DebugRecipeTitle << "'" << std::endl << std::endl
+  );
+  // clang-format on
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
