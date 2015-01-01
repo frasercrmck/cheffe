@@ -684,9 +684,11 @@ CheffeErrorCode CheffeParser::parseOvenTemperature()
     }
 
     HasGasMark = true;
+
+    getNextToken();
   }
 
-  if (consumeAndExpectToken(TokenKind::FullStop))
+  if (expectToken(TokenKind::FullStop))
   {
     return CheffeErrorCode::CHEFFE_ERROR;
   }
