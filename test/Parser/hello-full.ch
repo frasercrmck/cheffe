@@ -15,7 +15,7 @@ Ingredients.
 
 Cooking time: 1 hour.
 
-Pre-heat oven to 180 degrees Celcius (gas mark 6).
+Pre-heat oven to 180 degrees Celsius (gas mark 6).
 
 Method.
 Put potatoes into the mixing bowl. Put dijon mustard into the mixing bowl. Put lard into the mixing bowl. Put red salmon into the mixing bowl. Put oil into the mixing bowl. Put water into the mixing bowl. Put zucchinis into the mixing bowl. Put oil into the mixing bowl. Put lard into the mixing bowl. Put lard into the mixing bowl. Put eggs into the mixing bowl. Put haricot beans into the mixing bowl. Liquefy contents of the mixing bowl. Pour contents of the mixing bowl into the baking dish.

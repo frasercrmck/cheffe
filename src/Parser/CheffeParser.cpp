@@ -651,7 +651,7 @@ CheffeErrorCode CheffeParser::parseOvenTemperature()
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
-  if (consumeAndExpectToken("Celcius"))
+  if (consumeAndExpectToken("Celsius"))
   {
     return CheffeErrorCode::CHEFFE_ERROR;
   }
