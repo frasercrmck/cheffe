@@ -529,6 +529,14 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
       std::shared_ptr<CheffeRecipeInfo> CalleeRecipeInfo =
           ProgramInfo->getRecipe(CalleeRecipeName);
 
+      if (!CalleeRecipeInfo)
+      {
+        Diagnostics->report(Recipe->getSourceLoc(), DiagnosticKind::Error,
+                            LineContext::WithContext)
+            << "Cannot find recipe '" << CalleeRecipeName << "' to execute";
+        return CheffeErrorCode::CHEFFE_ERROR;
+      }
+
       const CheffeErrorCode CalleeSuccess =
           executeRecipe(CalleeRecipeInfo, MixingBowls, BakingDishes);
 

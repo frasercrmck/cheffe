@@ -112,6 +112,11 @@ void NumberOp::dump(std::ostream &OS) const
   OS << "(Number " << NumberValue << ")";
 }
 
+SourceLocation RecipeOp::getSourceLoc() const
+{
+  return SourceLoc;
+}
+
 std::string RecipeOp::getRecipeName() const
 {
   return RecipeName;
@@ -171,9 +176,10 @@ void CheffeMethodStep::addNumber(const long long NumberValue)
   MethodOps.push_back(std::make_shared<NumberOp>(NumberValue));
 }
 
-void CheffeMethodStep::addRecipe(const std::string &RecipeName)
+void CheffeMethodStep::addRecipe(const std::string &RecipeName,
+                                 const SourceLocation SourceLoc)
 {
-  MethodOps.push_back(std::make_shared<RecipeOp>(RecipeName));
+  MethodOps.push_back(std::make_shared<RecipeOp>(RecipeName, SourceLoc));
 }
 
 std::ostream &operator<<(std::ostream &OS, const CheffeMethodStep &MethodStep)

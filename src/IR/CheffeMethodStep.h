@@ -144,16 +144,20 @@ public:
   {
   }
 
-  RecipeOp(const std::string &Recipe) : MethodOp(), RecipeName(Recipe)
+  RecipeOp(const std::string &Recipe, const SourceLocation SourceLoc)
+      : MethodOp(), RecipeName(Recipe), SourceLoc(SourceLoc)
   {
   }
 
   std::string getRecipeName() const;
 
+  SourceLocation getSourceLoc() const;
+
   void dump(std::ostream &OS) const override;
 
 private:
   std::string RecipeName = "";
+  SourceLocation SourceLoc;
 };
 
 class CheffeMethodStep
@@ -181,7 +185,7 @@ public:
 
   void addNumber(const long long NumberValue);
 
-  void addRecipe(const std::string &RecipeName);
+  void addRecipe(const std::string &RecipeName, const SourceLocation SourceLoc);
 
   friend std::ostream &operator<<(std::ostream &OS,
                                   const CheffeMethodStep &MethodStep);

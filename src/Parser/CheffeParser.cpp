@@ -1777,7 +1777,7 @@ CheffeErrorCode CheffeParser::parseServeMethodStep()
   }
 
   auto MethodStep = CurrentRecipe->addNewMethodStep(MethodStepKind::Serve);
-  MethodStep->addRecipe(Recipe);
+  MethodStep->addRecipe(Recipe, SourceLocation(BeginRecipeLoc, EndRecipeLoc));
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
