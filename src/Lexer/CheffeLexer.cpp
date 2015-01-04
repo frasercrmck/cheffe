@@ -55,14 +55,6 @@ std::string CheffeLexer::getTextSpan(const std::size_t Begin,
   return File.Source.substr(Begin, End - Begin);
 }
 
-std::string CheffeLexer::lookAhead(const std::size_t NumChars) const
-{
-  assert(CurrentPos < File.Source.size() && "");
-  // This std::string constructor handles the case if
-  // CurrentPos + NumChars exceeds File.size().
-  return File.Source.substr(CurrentPos, NumChars);
-}
-
 Token CheffeLexer::getToken()
 {
   Token Tok(TokenKind::Unknown);

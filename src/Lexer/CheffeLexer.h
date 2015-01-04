@@ -43,9 +43,6 @@ public:
   // Returns a token from the input, consuming one or more characters.
   Token getToken();
 
-  // Looks ahead NumChars chars, or until the end of the file.
-  std::string lookAhead(const std::size_t NumChars) const;
-
   // Returns a copy of the span of text from the input file.
   std::string getTextSpan(const std::size_t Begin, const std::size_t End) const;
 
