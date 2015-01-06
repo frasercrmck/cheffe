@@ -72,12 +72,12 @@ public:
     Driver.setDiagnosticHandler(Diagnostics);
 
     auto ProgramInfo = std::unique_ptr<CheffeProgramInfo>(nullptr);
-    CheffeErrorCode Success = Driver.compileRecipe(ProgramInfo);
+    CheffeErrorCode Success = Driver.compileProgram(ProgramInfo);
 
     ASSERT_EQ(Success, CheffeErrorCode::CHEFFE_SUCCESS);
     Diagnostics->flushDiagnostics();
 
-    Success = Driver.executeRecipe(ProgramInfo);
+    Success = Driver.executeProgram(ProgramInfo);
 
     ASSERT_EQ(Success, CheffeErrorCode::CHEFFE_SUCCESS);
     Diagnostics->flushDiagnostics();

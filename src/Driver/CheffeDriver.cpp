@@ -16,7 +16,7 @@ void CheffeDriver::setDiagnosticHandler(
 }
 
 CheffeErrorCode
-CheffeDriver::compileRecipe(std::unique_ptr<CheffeProgramInfo> &ProgramInfo)
+CheffeDriver::compileProgram(std::unique_ptr<CheffeProgramInfo> &ProgramInfo)
 {
   if (File.Source.empty())
   {
@@ -31,7 +31,7 @@ CheffeDriver::compileRecipe(std::unique_ptr<CheffeProgramInfo> &ProgramInfo)
   Diagnostics->setSourceFile(File);
   CheffeParser Parser(File, Diagnostics);
 
-  CheffeErrorCode Success = Parser.parseRecipe();
+  CheffeErrorCode Success = Parser.parseProgram();
 
   if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
   {
@@ -49,7 +49,7 @@ CheffeDriver::compileRecipe(std::unique_ptr<CheffeProgramInfo> &ProgramInfo)
 }
 
 CheffeErrorCode
-CheffeDriver::executeRecipe(std::unique_ptr<CheffeProgramInfo> &ProgramInfo)
+CheffeDriver::executeProgram(std::unique_ptr<CheffeProgramInfo> &ProgramInfo)
 {
   CheffeJIT JIT(std::move(ProgramInfo), Diagnostics);
 

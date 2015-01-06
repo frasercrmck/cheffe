@@ -117,7 +117,7 @@ public:
     StrictChef = 0;
   }
 
-  CheffeErrorCode parseRecipe();
+  CheffeErrorCode parseProgram();
 
   std::unique_ptr<CheffeProgramInfo> takeProgramInfo();
 

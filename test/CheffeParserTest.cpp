@@ -37,7 +37,7 @@ public:
     Driver.setDiagnosticHandler(Diagnostics);
 
     auto ProgramInfo = std::unique_ptr<CheffeProgramInfo>(nullptr);
-    Error = Driver.compileRecipe(ProgramInfo);
+    Error = Driver.compileProgram(ProgramInfo);
   }
 };
 

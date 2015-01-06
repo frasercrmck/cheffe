@@ -63,7 +63,7 @@ public:
     Driver.setDiagnosticHandler(Diagnostics);
 
     auto ProgramInfo = std::unique_ptr<CheffeProgramInfo>(nullptr);
-    Driver.compileRecipe(ProgramInfo);
+    Driver.compileProgram(ProgramInfo);
 
     ASSERT_EQ(ExpectedDiagnosticCount.first, Diagnostics->getErrorCount())
         << "Expected " << ExpectedDiagnosticCount.first << " errors, found "

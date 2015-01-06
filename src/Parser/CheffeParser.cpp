@@ -148,7 +148,7 @@ CheffeErrorCode CheffeParser::checkOrdinalIdentifier(const unsigned Number,
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
 
-CheffeErrorCode CheffeParser::parseRecipe()
+CheffeErrorCode CheffeParser::parseProgram()
 {
   CheffeErrorCode Success = CheffeErrorCode::CHEFFE_SUCCESS;
 

@@ -17,8 +17,8 @@ public:
   {
   }
 
-  CheffeErrorCode compileRecipe(std::unique_ptr<CheffeProgramInfo> &ProgramInfo);
-  CheffeErrorCode executeRecipe(std::unique_ptr<CheffeProgramInfo> &ProgramInfo);
+  CheffeErrorCode compileProgram(std::unique_ptr<CheffeProgramInfo> &ProgramInfo);
+  CheffeErrorCode executeProgram(std::unique_ptr<CheffeProgramInfo> &ProgramInfo);
 
   void setSourceFile(const CheffeSourceFile &File);
 

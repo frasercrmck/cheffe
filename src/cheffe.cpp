@@ -92,7 +92,7 @@ int main(int argc, char **argv)
 
   auto ProgramInfo = std::unique_ptr<CheffeProgramInfo>(nullptr);
 
-  CheffeErrorCode Success = Driver.compileRecipe(ProgramInfo);
+  CheffeErrorCode Success = Driver.compileProgram(ProgramInfo);
 
   Diagnostics->flushDiagnostics();
 
@@ -102,7 +102,7 @@ int main(int argc, char **argv)
     return 1;
   }
 
-  Success = Driver.executeRecipe(ProgramInfo);
+  Success = Driver.executeProgram(ProgramInfo);
 
   Diagnostics->flushDiagnostics();
 
