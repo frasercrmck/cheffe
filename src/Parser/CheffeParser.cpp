@@ -18,6 +18,23 @@ Token CheffeParser::getNextToken()
   return CurrentToken = Lexer.getToken();
 }
 
+bool CheffeParser::checkNonStandardTokenAndConsume(const std::string &Str)
+{
+  if (CurrentToken.is(Str))
+  {
+    if (StrictChef)
+    {
+      Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Error,
+                          LineContext::WithContext)
+          << "Unexpected '" << Str << "'. Try using '-chef-strict' option";
+      return true;
+    }
+    getNextToken();
+    return false;
+  }
+  return false;
+}
+
 // Emits a diagnostic and returns true if the ingredient is undefined
 bool CheffeParser::getIngredientInfo(
     const std::string &IngredientName, const SourceLocation IngredientLoc,
@@ -946,9 +963,9 @@ CheffeParser::parsePutOrFoldMethodStep(const MethodStepKind Step)
 
   // Not in the spec, but in some examples:
   //   "Put the potatoes into mixing bowl."
-  if (CurrentToken.is("the"))
+  if (checkNonStandardTokenAndConsume("the"))
   {
-    getNextToken();
+    return CheffeErrorCode::CHEFFE_ERROR;
   }
 
   const SourceLocation BeginIngredientLoc = CurrentToken.getSourceLoc();
@@ -980,9 +997,9 @@ CheffeParser::parsePutOrFoldMethodStep(const MethodStepKind Step)
 
   // Not in the spec, but in the "official" examples:
   //   "Put potatoes into the mixing bowl."
-  if (CurrentToken.is("the"))
+  if (checkNonStandardTokenAndConsume("the"))
   {
-    getNextToken();
+    return CheffeErrorCode::CHEFFE_ERROR;
   }
 
   unsigned MixingBowlNo = 1;
@@ -1037,9 +1054,9 @@ CheffeParser::parseArithmeticMethodStep(const MethodStepKind Step)
   // Not in the spec, but in some examples:
   //   "Add the potatoes [to [nth] mixing bowl]."
   //   "Add the dry ingredients [to [nth] mixing bowl]."
-  if (CurrentToken.is("the"))
+  if (checkNonStandardTokenAndConsume("the"))
   {
-    getNextToken();
+    return CheffeErrorCode::CHEFFE_ERROR;
   }
 
   if (Step == MethodStepKind::Add && CurrentToken.is("dry"))
@@ -1090,9 +1107,9 @@ CheffeParser::parseArithmeticMethodStep(const MethodStepKind Step)
 
   // Not in the spec, but in the "official" examples:
   //   "Put potatoes into the mixing bowl."
-  if (CurrentToken.is("the"))
+  if (checkNonStandardTokenAndConsume("the"))
   {
-    getNextToken();
+    return CheffeErrorCode::CHEFFE_ERROR;
   }
 
   CheffeErrorCode IsValidOrdinal = parsePossibleOrdinalIdentifier(MixingBowlNo);
@@ -1127,9 +1144,9 @@ CheffeErrorCode CheffeParser::parseTakeMethodStep()
 
   // Not in the spec, but in the "official" examples:
   //   "Take the potatoes from refrigerator."
-  if (CurrentToken.is("the"))
+  if (checkNonStandardTokenAndConsume("the"))
   {
-    getNextToken();
+    return CheffeErrorCode::CHEFFE_ERROR;
   }
 
   const SourceLocation BeginIngredientLoc = CurrentToken.getSourceLoc();
@@ -1160,9 +1177,9 @@ CheffeErrorCode CheffeParser::parseTakeMethodStep()
   getNextToken();
   // Not in the spec, but in the "official" examples:
   //   "Take potatoes from the refrigerator."
-  if (CurrentToken.is("the"))
+  if (checkNonStandardTokenAndConsume("the"))
   {
-    getNextToken();
+    return CheffeErrorCode::CHEFFE_ERROR;
   }
 
   if (expectToken("refrigerator"))
@@ -1230,9 +1247,9 @@ CheffeErrorCode CheffeParser::parseLiquefyMethodStep()
 
   // Not in the spec, but in the "official" examples:
   //   "Liquefy the potatoes."
-  if (CurrentToken.is("the"))
+  if (checkNonStandardTokenAndConsume("the"))
   {
-    getNextToken();
+    return CheffeErrorCode::CHEFFE_ERROR;
   }
 
   const SourceLocation BeginIngredientLoc = CurrentToken.getSourceLoc();
@@ -1464,9 +1481,9 @@ CheffeErrorCode CheffeParser::parseCleanMethodStep()
 
   // Not in the spec, but in some examples:
   //   "Clean the [nth] mixing bowl.
-  if (CurrentToken.is("the"))
+  if (checkNonStandardTokenAndConsume("the"))
   {
-    getNextToken();
+    return CheffeErrorCode::CHEFFE_ERROR;
   }
 
   unsigned MixingBowlNo = 1;
@@ -1505,9 +1522,9 @@ CheffeErrorCode CheffeParser::parsePourMethodStep()
 
   // Not in the spec, but in some examples:
   //   "Pour the contents of the [nth] mixing bowl into the [pth] baking dish.
-  if (CurrentToken.is("the"))
+  if (checkNonStandardTokenAndConsume("the"))
   {
-    getNextToken();
+    return CheffeErrorCode::CHEFFE_ERROR;
   }
 
   if (expectToken("contents"))

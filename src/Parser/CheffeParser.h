@@ -114,6 +114,7 @@ public:
       : Lexer(SrcFile), CurrentToken(), Diagnostics(Diags),
         CurrentRecipe(nullptr), ProgramInfo(new CheffeProgramInfo())
   {
+    StrictChef = 0;
   }
 
   CheffeErrorCode parseRecipe();
@@ -126,6 +127,8 @@ public:
 private:
   CheffeLexer Lexer;
   Token CurrentToken;
+
+  unsigned StrictChef : 1;
 
   std::shared_ptr<CheffeDiagnosticHandler> Diagnostics;
 
@@ -166,6 +169,8 @@ private:
 
   bool isValidTimeUnit(const std::string &TimeUnit, TimeUnitKindTy &Kind);
   bool isValidMeasure(const std::string &Measure, MeasureKindTy &Kind);
+
+  bool checkNonStandardTokenAndConsume(const std::string &Str);
 
   Token getNextToken();
 
