@@ -549,27 +549,22 @@ CheffeErrorCode CheffeParser::parseIngredient()
 }
 
 bool CheffeParser::isValidTimeUnit(const std::string &TimeUnit,
-                                   TimeUnitKindTy &Kind)
+                                   StringPair &MatchingPair)
 {
-  Kind = TimeUnitKindTy::Invalid;
+  MatchingPair = {"", ""};
   auto TimeUnitFindResult =
-      std::find(std::begin(ValidSingularTimeUnits),
-                std::end(ValidSingularTimeUnits), TimeUnit);
-  if (TimeUnitFindResult != std::end(ValidSingularTimeUnits))
+      std::find_if(std::begin(ValidTimeUnits), std::end(ValidTimeUnits),
+                   [&TimeUnit](StringPair UnitPair)
+                   {
+        return UnitPair.first == TimeUnit || UnitPair.second == TimeUnit;
+      });
+  if (TimeUnitFindResult == std::end(ValidTimeUnits))
   {
-    Kind = TimeUnitKindTy::Singular;
-    return true;
+    return false;
   }
 
-  TimeUnitFindResult = std::find(std::begin(ValidPluralTimeUnits),
-                                 std::end(ValidPluralTimeUnits), TimeUnit);
-  if (TimeUnitFindResult != std::end(ValidPluralTimeUnits))
-  {
-    Kind = TimeUnitKindTy::Plural;
-    return true;
-  }
-
-  return false;
+  MatchingPair = *TimeUnitFindResult;
+  return true;
 }
 
 CheffeErrorCode CheffeParser::parseCookingTime()
@@ -607,8 +602,8 @@ CheffeErrorCode CheffeParser::parseCookingTime()
   }
   const std::string TimeUnit = CurrentToken.getIdentifierString();
 
-  TimeUnitKindTy TimeUnitKind;
-  const bool IsValidTimeUnit = isValidTimeUnit(TimeUnit, TimeUnitKind);
+  StringPair MatchingPair;
+  const bool IsValidTimeUnit = isValidTimeUnit(TimeUnit, MatchingPair);
   if (!IsValidTimeUnit)
   {
     Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Error,
@@ -617,17 +612,17 @@ CheffeErrorCode CheffeParser::parseCookingTime()
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
-  if (Time == 1 && TimeUnitKind == TimeUnitKindTy::Plural)
-  {
-    Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Warning,
-                        LineContext::WithContext)
-        << "Singular cooking time specified with plural time unit";
-  }
-  else if (Time != 1 && TimeUnitKind == TimeUnitKindTy::Singular)
+  if (CurrentToken.is(MatchingPair.first) && Time != 1)
   {
     Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Warning,
                         LineContext::WithContext)
         << "Plural cooking time specified with singular time unit";
+  }
+  else if (CurrentToken.is(MatchingPair.second) && Time == 1)
+  {
+    Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Warning,
+                        LineContext::WithContext)
+        << "Singular cooking time specified with plural time unit";
   }
 
   if (consumeAndExpectToken(TokenKind::FullStop))

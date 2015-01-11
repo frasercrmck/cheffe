@@ -16,10 +16,8 @@
 namespace cheffe
 {
 
-const std::unordered_set<std::string> ValidSingularTimeUnits = {"hour",
-                                                                "minute"};
-const std::unordered_set<std::string> ValidPluralTimeUnits = {"hours",
-                                                              "minutes"};
+const std::set<std::pair<std::string, std::string>> ValidTimeUnits = {
+    {"hour", "hours"}, {"minute", "minutes"}};
 
 const std::unordered_set<std::string> ValidMethodSteps = {
     "Take",   "Put",     "Fold",    "Add",        "Remove", "Combine",
@@ -83,13 +81,6 @@ const std::unordered_set<std::string> ValidWetMeasures = {"ml", "l", "dash",
 
 const std::unordered_set<std::string> ValidUnspecifiedMeasures = {
     "cup", "cups", "teaspoon", "teaspoons", "tablespoon", "tablespoons"};
-
-enum class TimeUnitKindTy
-{
-  Singular,
-  Plural,
-  Invalid
-};
 
 enum class MeasureKindTy
 {
@@ -167,7 +158,7 @@ private:
                          const SourceLocation IngredientLoc,
                          std::shared_ptr<CheffeIngredient> &Ingredient);
 
-  bool isValidTimeUnit(const std::string &TimeUnit, TimeUnitKindTy &Kind);
+  bool isValidTimeUnit(const std::string &TimeUnit, StringPair &MatchingPair);
   bool isValidMeasure(const std::string &Measure, MeasureKindTy &Kind);
 
   bool checkNonStandardTokenAndConsume(const std::string &Str);
