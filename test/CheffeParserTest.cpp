@@ -93,16 +93,6 @@ TEST_F(GoodParserTest, IngredientNoInitialValue)
   TestParse("/Parser/ingredient-no-initial-value.ch");
 }
 
-TEST_F(GoodParserTest, MismatchedCookingTime)
-{
-  TestParse("/Parser/mismatched-cooking-time.ch");
-}
-
-TEST_F(GoodParserTest, MismatchedCookingTime2)
-{
-  TestParse("/Parser/mismatched-cooking-time-2.ch");
-}
-
 TEST_F(GoodParserTest, IngredientNoMeasure)
 {
   TestParse("/Parser/ingredient-no-measure.ch");

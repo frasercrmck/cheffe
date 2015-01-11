@@ -98,9 +98,9 @@ private:
   ErrorStreamRedirector Redirector;
 };
 
-TEST_F(DiagnosticsTest, MismatchedTimeUnit)
+TEST_F(DiagnosticsTest, BadPluralityCookingTime1)
 {
-  const std::string FileName = "/Parser/mismatched-cooking-time.ch";
+  const std::string FileName = "/Diagnostics/bad-plurality-cooking-time-1.ch";
   DoTest(FileName.c_str(), std::make_pair(0u, 1u));
 
   const std::string Warnings = getStandardError();
@@ -112,9 +112,9 @@ TEST_F(DiagnosticsTest, MismatchedTimeUnit)
   ASSERT_TRUE(std::regex_search(Warnings, DiagnosticRegex));
 }
 
-TEST_F(DiagnosticsTest, MismatchedTimeUnit2)
+TEST_F(DiagnosticsTest, BadPluralityCookingTime2)
 {
-  const std::string FileName = "/Parser/mismatched-cooking-time-2.ch";
+  const std::string FileName = "/Diagnostics/bad-plurality-cooking-time-2.ch";
   DoTest(FileName.c_str(), std::make_pair(0u, 1u));
 
   const std::string Warnings = getStandardError();
