@@ -35,6 +35,31 @@ bool CheffeParser::checkNonStandardTokenAndConsume(const std::string &Str)
   return false;
 }
 
+bool CheffeParser::checkCurrentTokenPlurality(const long long Number,
+                                              const std::string &Singular,
+                                              const std::string &Plural,
+                                              const std::string &Name)
+{
+  if (CurrentToken.is(Singular) && Number != 1)
+  {
+    Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Warning,
+                        LineContext::WithContext)
+        << "Plural " << Name << " used alongside '" << Singular << "'";
+  }
+  else if (CurrentToken.is(Plural) && Number == 1)
+  {
+    Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Warning,
+                        LineContext::WithContext)
+        << "Singular " << Name << " used alongside '" << Plural << "'";
+  }
+  else
+  {
+    return false;
+  }
+
+  return true;
+}
+
 // Emits a diagnostic and returns true if the ingredient is undefined
 bool CheffeParser::getIngredientInfo(
     const std::string &IngredientName, const SourceLocation IngredientLoc,
@@ -612,18 +637,8 @@ CheffeErrorCode CheffeParser::parseCookingTime()
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
-  if (CurrentToken.is(MatchingPair.first) && Time != 1)
-  {
-    Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Warning,
-                        LineContext::WithContext)
-        << "Plural cooking time specified with singular time unit";
-  }
-  else if (CurrentToken.is(MatchingPair.second) && Time == 1)
-  {
-    Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Warning,
-                        LineContext::WithContext)
-        << "Singular cooking time specified with plural time unit";
-  }
+  checkCurrentTokenPlurality(Time, MatchingPair.first, MatchingPair.second,
+                             "cooking time");
 
   if (consumeAndExpectToken(TokenKind::FullStop))
   {
@@ -1331,18 +1346,8 @@ CheffeErrorCode CheffeParser::parseStirMethodStep()
       return CheffeErrorCode::CHEFFE_ERROR;
     }
 
-    if (CurrentToken.is("minute") && NumberOfMinutes != 1)
-    {
-      Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Warning,
-                          LineContext::WithContext)
-          << "Plural time period used with 'minute'";
-    }
-    else if (CurrentToken.is("minutes") && NumberOfMinutes == 1)
-    {
-      Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Warning,
-                          LineContext::WithContext)
-          << "Singular time period used with 'minutes'";
-    }
+    checkCurrentTokenPlurality(NumberOfMinutes, "minute", "minutes",
+                               "time period");
 
     if (consumeAndExpectToken(TokenKind::FullStop))
     {
@@ -1816,18 +1821,8 @@ CheffeErrorCode CheffeParser::parseRefrigerateMethodStep()
           << "Expected 'hour' or 'hours', got " << CurrentToken;
       return CheffeErrorCode::CHEFFE_ERROR;
     }
-    if (CurrentToken.is("hour") && NumberOfHours != 1)
-    {
-      Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Warning,
-                          LineContext::WithContext)
-          << "Plural time period used with 'hour'";
-    }
-    else if (CurrentToken.is("hours") && NumberOfHours == 1)
-    {
-      Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Warning,
-                          LineContext::WithContext)
-          << "Singular time period used with 'hours'";
-    }
+
+    checkCurrentTokenPlurality(NumberOfHours, "hour", "hours", "time period");
 
     getNextToken();
   }

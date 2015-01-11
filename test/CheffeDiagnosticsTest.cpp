@@ -107,8 +107,7 @@ TEST_F(DiagnosticsTest, MismatchedTimeUnit)
 
   CheckFileNameDiagnostic(Warnings, FileName, "8", "17");
 
-  std::regex DiagnosticRegex(
-      "Singular cooking time specified with plural time unit");
+  std::regex DiagnosticRegex("Singular cooking time used alongside 'hours'");
 
   ASSERT_TRUE(std::regex_search(Warnings, DiagnosticRegex));
 }
@@ -122,8 +121,7 @@ TEST_F(DiagnosticsTest, MismatchedTimeUnit2)
 
   CheckFileNameDiagnostic(Warnings, FileName, "8", "17");
 
-  std::regex DiagnosticRegex(
-      "Plural cooking time specified with singular time unit");
+  std::regex DiagnosticRegex("Plural cooking time used alongside 'hour'");
 
   ASSERT_TRUE(std::regex_search(Warnings, DiagnosticRegex));
 }

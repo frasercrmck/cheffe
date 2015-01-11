@@ -161,6 +161,11 @@ private:
   bool isValidTimeUnit(const std::string &TimeUnit, StringPair &MatchingPair);
   bool isValidMeasure(const std::string &Measure, MeasureKindTy &Kind);
 
+  bool checkCurrentTokenPlurality(const long long Number,
+                                  const std::string &Singular,
+                                  const std::string &Plural,
+                                  const std::string &Name);
+
   bool checkNonStandardTokenAndConsume(const std::string &Str);
 
   Token getNextToken();
