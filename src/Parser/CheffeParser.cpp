@@ -100,9 +100,8 @@ CheffeParser::parsePossibleOrdinalIdentifier(unsigned &MixingBowlNo)
   {
     return CheffeErrorCode::CHEFFE_ERROR;
   }
-  CheffeErrorCode IsValidOrdinal =
-      checkOrdinalIdentifier(Number, CurrentToken.getIdentifierString());
-  if (IsValidOrdinal != CheffeErrorCode::CHEFFE_SUCCESS)
+
+  if (!isValidOrdinalIdentifier(Number, CurrentToken.getIdentifierString()))
   {
     Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Warning,
                         LineContext::WithContext)
@@ -123,12 +122,12 @@ CheffeParser::parsePossibleOrdinalIdentifier(unsigned &MixingBowlNo)
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
 
-CheffeErrorCode CheffeParser::checkOrdinalIdentifier(const unsigned Number,
-                                                     const std::string &Suffix)
+bool CheffeParser::isValidOrdinalIdentifier(const unsigned Number,
+                                            const std::string &Suffix)
 {
   if (Suffix.empty())
   {
-    return CheffeErrorCode::CHEFFE_ERROR;
+    return false;
   }
 
   std::string ExpectedSuffix;
@@ -165,12 +164,7 @@ CheffeErrorCode CheffeParser::checkOrdinalIdentifier(const unsigned Number,
     break;
   }
 
-  if (Suffix != ExpectedSuffix)
-  {
-    return CheffeErrorCode::CHEFFE_ERROR;
-  }
-
-  return CheffeErrorCode::CHEFFE_SUCCESS;
+  return Suffix == ExpectedSuffix;
 }
 
 CheffeErrorCode CheffeParser::parseProgram()

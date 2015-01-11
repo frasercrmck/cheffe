@@ -112,8 +112,8 @@ public:
 
   std::unique_ptr<CheffeProgramInfo> takeProgramInfo();
 
-  static CheffeErrorCode checkOrdinalIdentifier(const unsigned Number,
-                                                const std::string &Sequence);
+  static bool isValidOrdinalIdentifier(const unsigned Number,
+                                       const std::string &Sequence);
 
 private:
   CheffeLexer Lexer;
