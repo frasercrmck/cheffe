@@ -126,6 +126,62 @@ TEST_F(DiagnosticsTest, MismatchedTimeUnit2)
   ASSERT_TRUE(std::regex_search(Warnings, DiagnosticRegex));
 }
 
+TEST_F(DiagnosticsTest, BadPluralityServe1)
+{
+  const std::string FileName = "/Diagnostics/bad-plurality-serve-1.ch";
+  DoTest(FileName.c_str(), std::make_pair(0u, 1u));
+
+  const std::string Warnings = getStandardError();
+
+  CheckFileNameDiagnostic(Warnings, FileName, "9", "28");
+
+  std::regex DiagnosticRegex("Singular time period used alongside 'minutes'");
+
+  ASSERT_TRUE(std::regex_search(Warnings, DiagnosticRegex));
+}
+
+TEST_F(DiagnosticsTest, BadPluralityServe2)
+{
+  const std::string FileName = "/Diagnostics/bad-plurality-serve-2.ch";
+  DoTest(FileName.c_str(), std::make_pair(0u, 1u));
+
+  const std::string Warnings = getStandardError();
+
+  CheckFileNameDiagnostic(Warnings, FileName, "9", "28");
+
+  std::regex DiagnosticRegex("Plural time period used alongside 'minute'");
+
+  ASSERT_TRUE(std::regex_search(Warnings, DiagnosticRegex));
+}
+
+TEST_F(DiagnosticsTest, BadPluralityRefrigerate1)
+{
+  const std::string FileName = "/Diagnostics/bad-plurality-refrigerate-1.ch";
+  DoTest(FileName.c_str(), std::make_pair(0u, 1u));
+
+  const std::string Warnings = getStandardError();
+
+  CheckFileNameDiagnostic(Warnings, FileName, "9", "19");
+
+  std::regex DiagnosticRegex("Singular time period used alongside 'hours'");
+
+  ASSERT_TRUE(std::regex_search(Warnings, DiagnosticRegex));
+}
+
+TEST_F(DiagnosticsTest, BadPluralityRefrigerate2)
+{
+  const std::string FileName = "/Diagnostics/bad-plurality-refrigerate-2.ch";
+  DoTest(FileName.c_str(), std::make_pair(0u, 1u));
+
+  const std::string Warnings = getStandardError();
+
+  CheckFileNameDiagnostic(Warnings, FileName, "9", "19");
+
+  std::regex DiagnosticRegex("Plural time period used alongside 'hour'");
+
+  ASSERT_TRUE(std::regex_search(Warnings, DiagnosticRegex));
+}
+
 TEST_F(DiagnosticsTest, IllegalMethodKeyword)
 {
   const std::string FileName = "/Parser/illegal-method-keyword.ch";
