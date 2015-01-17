@@ -198,3 +198,50 @@ TEST_F(DiagnosticsTest, IllegalMethodKeyword)
 
   ASSERT_EQ(KeywordMatch.str(1), "Test");
 }
+
+TEST_F(DiagnosticsTest, OrdinalIdentifiers)
+{
+  enum : unsigned
+  {
+    ExpectedWarningCount = 15u
+  };
+  const std::string FileName = "/Diagnostics/ordinal-identifiers.ch";
+  DoTest(FileName.c_str(), std::make_pair(0u, ExpectedWarningCount));
+
+  std::string Warnings = getStandardError();
+
+  std::regex DiagnosticRegex("Incorrect use of ordinal identifier: mismatch "
+                             "between number and suffix");
+
+  unsigned MatchCount = 0;
+  std::smatch KeywordMatch;
+
+  const std::pair<const char *, const char *>
+      LineColumnInfo[ExpectedWarningCount] = {{"7", "16"},
+                                              {"8", "16"},
+                                              {"9", "16"},
+                                              {"10", "14"},
+                                              {"11", "19"},
+                                              {"11", "54"},
+                                              {"11", "88"},
+                                              {"12", "25"},
+                                              {"13", "26"},
+                                              {"14", "12"},
+                                              {"15", "23"},
+                                              {"16", "11"},
+                                              {"17", "9"},
+                                              {"18", "23"},
+                                              {"18", "50"}};
+
+  while (std::regex_search(Warnings, KeywordMatch, DiagnosticRegex))
+  {
+    ASSERT_TRUE(MatchCount <= ExpectedWarningCount);
+    CheckFileNameDiagnostic(Warnings, FileName,
+                            LineColumnInfo[MatchCount].first,
+                            LineColumnInfo[MatchCount].second);
+    ++MatchCount;
+    Warnings = KeywordMatch.suffix().str();
+  }
+
+  ASSERT_EQ(MatchCount, ExpectedWarningCount);
+}
