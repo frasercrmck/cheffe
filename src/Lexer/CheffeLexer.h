@@ -27,11 +27,14 @@ private:
   bool IgnoreNewLines;
 
 public:
-  CheffeLexer(const CheffeSourceFile &SrcFile)
-      : CurrentPos(0), File(SrcFile), LineNumber(1), ColumnNumber(1),
+  CheffeLexer()
+      : CurrentPos(0), File(), LineNumber(1), ColumnNumber(1),
         IgnoreNewLines(false)
   {
   }
+
+  // Sets the source file to work on
+  void setSourceFile(const CheffeSourceFile &SrcFile);
 
   // Gets a char from the input
   int getNextChar();

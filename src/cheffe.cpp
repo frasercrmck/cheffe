@@ -33,6 +33,7 @@ static void printUsage()
 
 int main(int argc, char **argv)
 {
+  CheffeDriver Driver;
   std::string FileName;
   for (int i = 1; i < argc; ++i)
   {
@@ -83,7 +84,6 @@ int main(int argc, char **argv)
     return 1;
   }
 
-  CheffeDriver Driver;
   Driver.setSourceFile(InFile);
 
   auto Diagnostics = std::make_shared<CheffeDiagnosticHandler>();

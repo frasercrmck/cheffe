@@ -100,15 +100,18 @@ const std::map<MethodStepKind, std::string> MethodStepPrepositions = {
 class CheffeParser
 {
 public:
-  CheffeParser(const CheffeSourceFile &SrcFile,
-               std::shared_ptr<CheffeDiagnosticHandler> Diags)
-      : Lexer(SrcFile), CurrentToken(), Diagnostics(Diags),
-        CurrentRecipe(nullptr), ProgramInfo(new CheffeProgramInfo())
+  CheffeParser()
+      : Lexer(), CurrentToken(), Diagnostics(nullptr), CurrentRecipe(nullptr),
+        ProgramInfo(new CheffeProgramInfo())
   {
     StrictChef = 0;
   }
 
   CheffeErrorCode parseProgram();
+
+  void setSourceFile(const CheffeSourceFile &SrcFile);
+
+  void setDiagnosticHandler(std::shared_ptr<CheffeDiagnosticHandler> Diags);
 
   std::unique_ptr<CheffeProgramInfo> takeProgramInfo();
 

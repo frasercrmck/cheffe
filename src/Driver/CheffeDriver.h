@@ -2,6 +2,7 @@
 #define CHEFFE_DRIVER
 
 #include "cheffe.h"
+#include "Parser/CheffeParser.h"
 #include "IR/CheffeProgramInfo.h"
 #include "Utils/CheffeDiagnosticHandler.h"
 
@@ -25,6 +26,7 @@ public:
   void setDiagnosticHandler(std::shared_ptr<CheffeDiagnosticHandler> Diags);
 
 private:
+  CheffeParser Parser;
   CheffeSourceFile File;
   std::shared_ptr<CheffeDiagnosticHandler> Diagnostics;
 };

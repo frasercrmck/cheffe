@@ -5,6 +5,11 @@
 namespace cheffe
 {
 
+void CheffeLexer::setSourceFile(const CheffeSourceFile &SrcFile)
+{
+  File = SrcFile;
+}
+
 void CheffeLexer::setIgnoreNewLines(const bool Ignore)
 {
   IgnoreNewLines = Ignore;

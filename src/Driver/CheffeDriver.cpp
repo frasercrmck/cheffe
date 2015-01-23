@@ -13,6 +13,7 @@ void CheffeDriver::setDiagnosticHandler(
     std::shared_ptr<CheffeDiagnosticHandler> Diags)
 {
   Diagnostics = Diags;
+  Parser.setDiagnosticHandler(Diags);
 }
 
 CheffeErrorCode
@@ -28,8 +29,8 @@ CheffeDriver::compileProgram(std::unique_ptr<CheffeProgramInfo> &ProgramInfo)
     return CheffeErrorCode::CHEFFE_ERROR;
   }
 
+  Parser.setSourceFile(File);
   Diagnostics->setSourceFile(File);
-  CheffeParser Parser(File, Diagnostics);
 
   CheffeErrorCode Success = Parser.parseProgram();
 

@@ -18,6 +18,17 @@ Token CheffeParser::getNextToken()
   return CurrentToken = Lexer.getToken();
 }
 
+void CheffeParser::setSourceFile(const CheffeSourceFile &SrcFile)
+{
+  Lexer.setSourceFile(SrcFile);
+}
+
+void CheffeParser::setDiagnosticHandler(
+    std::shared_ptr<CheffeDiagnosticHandler> Diags)
+{
+  Diagnostics = Diags;
+}
+
 bool CheffeParser::checkNonStandardTokenAndConsume(const std::string &Str)
 {
   if (CurrentToken.is(Str))
