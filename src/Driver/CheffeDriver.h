@@ -25,6 +25,8 @@ public:
 
   void setDiagnosticHandler(std::shared_ptr<CheffeDiagnosticHandler> Diags);
 
+  std::shared_ptr<CheffeParserOptions> getParserOptions() const;
+
 private:
   CheffeParser Parser;
   CheffeSourceFile File;

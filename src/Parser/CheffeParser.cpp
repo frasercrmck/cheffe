@@ -18,6 +18,11 @@ Token CheffeParser::getNextToken()
   return CurrentToken = Lexer.getToken();
 }
 
+std::shared_ptr<CheffeParserOptions> CheffeParser::getOptions() const
+{
+  return Options;
+}
+
 void CheffeParser::setSourceFile(const CheffeSourceFile &SrcFile)
 {
   Lexer.setSourceFile(SrcFile);
@@ -33,11 +38,12 @@ bool CheffeParser::checkNonStandardTokenAndConsume(const std::string &Str)
 {
   if (CurrentToken.is(Str))
   {
-    if (StrictChef)
+    if (Options->StrictChef)
     {
       Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Error,
                           LineContext::WithContext)
-          << "Unexpected '" << Str << "'. Try using '-chef-strict' option";
+          << "Unexpected '" << Str
+          << "'. Try using the '-chef-strict off' option";
       return true;
     }
     getNextToken();

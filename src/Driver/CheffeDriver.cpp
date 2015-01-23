@@ -16,6 +16,11 @@ void CheffeDriver::setDiagnosticHandler(
   Parser.setDiagnosticHandler(Diags);
 }
 
+std::shared_ptr<CheffeParserOptions> CheffeDriver::getParserOptions() const
+{
+  return Parser.getOptions();
+}
+
 CheffeErrorCode
 CheffeDriver::compileProgram(std::unique_ptr<CheffeProgramInfo> &ProgramInfo)
 {

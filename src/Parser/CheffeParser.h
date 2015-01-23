@@ -97,14 +97,32 @@ const std::map<MethodStepKind, std::string> MethodStepPrepositions = {
     {MethodStepKind::Divide, "into"},
 };
 
+class CheffeParserOptions
+{
+  friend class CheffeParser;
+
+public:
+  CheffeParserOptions()
+  {
+    StrictChef = false;
+  }
+
+  void setStrictChef(const bool Switch)
+  {
+    StrictChef = Switch;
+  }
+
+private:
+  unsigned StrictChef : 1;
+};
+
 class CheffeParser
 {
 public:
   CheffeParser()
       : Lexer(), CurrentToken(), Diagnostics(nullptr), CurrentRecipe(nullptr),
-        ProgramInfo(new CheffeProgramInfo())
+        ProgramInfo(new CheffeProgramInfo()), Options(new CheffeParserOptions())
   {
-    StrictChef = 0;
   }
 
   CheffeErrorCode parseProgram();
@@ -115,6 +133,8 @@ public:
 
   std::unique_ptr<CheffeProgramInfo> takeProgramInfo();
 
+  std::shared_ptr<CheffeParserOptions> getOptions() const;
+
   static bool isValidOrdinalIdentifier(const unsigned Number,
                                        const std::string &Sequence);
 
@@ -122,12 +142,12 @@ private:
   CheffeLexer Lexer;
   Token CurrentToken;
 
-  unsigned StrictChef : 1;
-
   std::shared_ptr<CheffeDiagnosticHandler> Diagnostics;
 
   std::shared_ptr<CheffeRecipeInfo> CurrentRecipe;
   std::unique_ptr<CheffeProgramInfo> ProgramInfo;
+
+  std::shared_ptr<CheffeParserOptions> Options;
 
   CheffeScopeInfo RecipeScopeInfo;
 

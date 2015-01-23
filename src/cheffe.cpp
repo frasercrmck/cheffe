@@ -25,6 +25,9 @@ static void printUsage()
             << "                       Examples:" << std::endl
             << "                         - \"jit\"" << std::endl
             << "                         - \"parser\"" << std::endl
+            << "  -strict-chef on/off  Adhere strictly to the chef spec"
+                                       << std::endl
+            << "                       Default: off" << std::endl
             << "  -help                Print usage and exit" << std::endl
             << std::endl;
   // clang-format on
@@ -54,6 +57,33 @@ int main(int argc, char **argv)
         setCurrentDebugType(argv[++i]);
         continue;
       }
+    }
+    if (!std::strcmp(argv[i], "-strict-chef"))
+    {
+      if (i == argc - 1)
+      {
+        std::cerr << "Option -strict-chef expects a value" << std::endl;
+        return 1;
+      }
+      bool StrictChef = false;
+      const char* OptionValue = argv[++i];
+      if (!std::strcmp(OptionValue, "on"))
+      {
+        StrictChef = true;
+      }
+      else if (!std::strcmp(OptionValue, "off"))
+      {
+        StrictChef = false;
+      }
+      else
+      {
+        std::cerr << "Invalid value '" << OptionValue
+                  << "' for option -strict-chef" << std::endl;
+        return 1;
+      }
+
+      Driver.getParserOptions()->setStrictChef(StrictChef);
+      continue;
     }
 
     // Input file is last in argument list
