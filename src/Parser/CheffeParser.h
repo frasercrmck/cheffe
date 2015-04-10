@@ -179,7 +179,7 @@ private:
 
   bool getIngredientInfo(const std::string &IngredientName,
                          const SourceLocation IngredientLoc,
-                         std::shared_ptr<CheffeIngredient> &Ingredient);
+                         CheffeIngredient **Ingredient);
 
   bool isValidTimeUnit(const std::string &TimeUnit, StringPair &MatchingPair);
   bool isValidMeasure(const std::string &Measure, MeasureKindTy &Kind);

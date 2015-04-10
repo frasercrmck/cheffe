@@ -12,12 +12,11 @@
 
 namespace cheffe
 {
-CheffeErrorCode
-CheffeJIT::getIngredientInfo(const std::shared_ptr<MethodOp> &MOp,
-                             std::shared_ptr<CheffeIngredient> &IngredientInfo,
-                             SourceLocation &IngredientLoc)
+CheffeErrorCode CheffeJIT::getIngredientInfo(const MethodOp *MOp,
+                                             CheffeIngredient **IngredientInfo,
+                                             SourceLocation &IngredientLoc)
 {
-  auto Ingredient = std::static_pointer_cast<IngredientOp>(MOp);
+  auto *Ingredient = (IngredientOp *)MOp;
   if (!Ingredient->getIngredient())
   {
     Diagnostics->report(Ingredient->getSourceLoc(), DiagnosticKind::Error,
@@ -27,7 +26,7 @@ CheffeJIT::getIngredientInfo(const std::shared_ptr<MethodOp> &MOp,
   }
 
   IngredientLoc = Ingredient->getSourceLoc();
-  IngredientInfo = Ingredient->getIngredient();
+  *IngredientInfo = Ingredient->getIngredient();
 
   return CheffeErrorCode::CHEFFE_SUCCESS;
 }
@@ -62,9 +61,8 @@ CheffeJIT::popStackItem(std::vector<CheffeJIT::StackTy> &Stack,
   return StackItem;
 }
 
-bool CheffeJIT::checkIngredientHasValue(
-    const std::shared_ptr<CheffeIngredient> &Ingredient,
-    const SourceLocation IngredientLoc)
+bool CheffeJIT::checkIngredientHasValue(const CheffeIngredient *Ingredient,
+                                        const SourceLocation IngredientLoc)
 {
   if (Ingredient->RuntimeValueData.HasValue)
   {
@@ -145,8 +143,8 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
   for (auto MSI = std::begin(MethodSteps), MSE = std::end(MethodSteps);
        MSI != MSE; ++MSI)
   {
-    auto MS = *MSI;
-    CHEFFE_DEBUG(dbgs() << *MS);
+    auto *MS = *MSI;
+    CHEFFE_DEBUG(dbgs() << MS);
 
     switch (MS->getMethodStepKind())
     {
@@ -156,10 +154,10 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
     case MethodStepKind::Take:
     {
       SourceLocation IngredientLoc;
-      std::shared_ptr<CheffeIngredient> Ingredient = nullptr;
+      CheffeIngredient *Ingredient = nullptr;
 
       const CheffeErrorCode Success =
-          getIngredientInfo(MS->getOperand(0), Ingredient, IngredientLoc);
+          getIngredientInfo(MS->getOperand(0), &Ingredient, IngredientLoc);
       if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
       {
         return CheffeErrorCode::CHEFFE_ERROR;
@@ -180,10 +178,10 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
     case MethodStepKind::Put:
     {
       SourceLocation IngredientLoc;
-      std::shared_ptr<CheffeIngredient> Ingredient = nullptr;
+      CheffeIngredient *Ingredient = nullptr;
 
       const CheffeErrorCode Success =
-          getIngredientInfo(MS->getOperand(0), Ingredient, IngredientLoc);
+          getIngredientInfo(MS->getOperand(0), &Ingredient, IngredientLoc);
       if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
       {
         return CheffeErrorCode::CHEFFE_ERROR;
@@ -197,8 +195,7 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
       const bool IsDry = Ingredient->RuntimeValueData.IsDry;
       const long long Value = Ingredient->RuntimeValueData.Value;
 
-      auto MixingBowl =
-          std::static_pointer_cast<MixingBowlOp>(MS->getOperand(1));
+      auto *MixingBowl = (MixingBowlOp *)MS->getOperand(1);
       const unsigned MixingBowlNo = MixingBowl->getMixingBowlNo();
 
       pushStackItem(MixingBowls, std::make_pair(IsDry, Value),
@@ -208,17 +205,16 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
     case MethodStepKind::Fold:
     {
       SourceLocation IngredientLoc;
-      std::shared_ptr<CheffeIngredient> Ingredient = nullptr;
+      CheffeIngredient *Ingredient = nullptr;
 
       const CheffeErrorCode Success =
-          getIngredientInfo(MS->getOperand(0), Ingredient, IngredientLoc);
+          getIngredientInfo(MS->getOperand(0), &Ingredient, IngredientLoc);
       if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
       {
         return CheffeErrorCode::CHEFFE_ERROR;
       }
 
-      auto MixingBowl =
-          std::static_pointer_cast<MixingBowlOp>(MS->getOperand(1));
+      auto *MixingBowl = (MixingBowlOp *)MS->getOperand(1);
       const unsigned MixingBowlNo = MixingBowl->getMixingBowlNo();
 
       auto TopOfStack = popStackItem(MixingBowls, MixingBowlNo - 1);
@@ -229,8 +225,7 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
     }
     case MethodStepKind::AddDry:
     {
-      auto MixingBowl =
-          std::static_pointer_cast<MixingBowlOp>(MS->getOperand(0));
+      auto *MixingBowl = (MixingBowlOp *)MS->getOperand(0);
       const unsigned MixingBowlNo = MixingBowl->getMixingBowlNo();
       if (MixingBowlNo > MixingBowls.size())
       {
@@ -257,10 +252,10 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
     case MethodStepKind::Divide:
     {
       SourceLocation IngredientLoc;
-      std::shared_ptr<CheffeIngredient> Ingredient = nullptr;
+      CheffeIngredient *Ingredient = nullptr;
 
       const CheffeErrorCode Success =
-          getIngredientInfo(MS->getOperand(0), Ingredient, IngredientLoc);
+          getIngredientInfo(MS->getOperand(0), &Ingredient, IngredientLoc);
       if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
       {
         return Success;
@@ -271,8 +266,7 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
         return CheffeErrorCode::CHEFFE_ERROR;
       }
 
-      auto MixingBowl =
-          std::static_pointer_cast<MixingBowlOp>(MS->getOperand(1));
+      auto *MixingBowl = (MixingBowlOp *)MS->getOperand(1);
       const unsigned MixingBowlNo = MixingBowl->getMixingBowlNo();
 
       const long long Value = Ingredient->RuntimeValueData.Value;
@@ -303,10 +297,8 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
     case MethodStepKind::Pour:
     {
       // FIXME: No safety here if the indices are wrong!
-      auto MixingBowl =
-          std::static_pointer_cast<MixingBowlOp>(MS->getOperand(0));
-      auto BakingDish =
-          std::static_pointer_cast<BakingDishOp>(MS->getOperand(1));
+      auto *MixingBowl = (MixingBowlOp *)MS->getOperand(0);
+      auto *BakingDish = (BakingDishOp *)MS->getOperand(1);
 
       const unsigned MixingBowlNo = MixingBowl->getMixingBowlNo();
       const unsigned BakingDishNo = BakingDish->getBakingDishNo();
@@ -331,10 +323,10 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
     case MethodStepKind::LiquefyIngredient:
     {
       SourceLocation IngredientLoc;
-      std::shared_ptr<CheffeIngredient> Ingredient = nullptr;
+      CheffeIngredient *Ingredient = nullptr;
 
       const CheffeErrorCode Success =
-          getIngredientInfo(MS->getOperand(0), Ingredient, IngredientLoc);
+          getIngredientInfo(MS->getOperand(0), &Ingredient, IngredientLoc);
       if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
       {
         return Success;
@@ -346,8 +338,7 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
     }
     case MethodStepKind::LiquefyBowl:
     {
-      auto MixingBowl =
-          std::static_pointer_cast<MixingBowlOp>(MS->getOperand(0));
+      auto *MixingBowl = (MixingBowlOp *)MS->getOperand(0);
       const unsigned MixingBowlNo = MixingBowl->getMixingBowlNo();
       // If we haven't put anything into this mixing bowl, don't bother trying
       // to loop
@@ -366,22 +357,20 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
     case MethodStepKind::StirIngredient:
     {
       const bool IsBowl = MS->getMethodStepKind() == MethodStepKind::StirBowl;
-      auto MixingBowl = std::static_pointer_cast<MixingBowlOp>(
-          MS->getOperand(IsBowl ? 0 : 1));
+      auto *MixingBowl = (MixingBowlOp *)MS->getOperand(IsBowl ? 0 : 1);
       const unsigned MixingBowlNo = MixingBowl->getMixingBowlNo();
 
       long long Number = 0;
       if (IsBowl)
       {
-        Number = std::static_pointer_cast<NumberOp>(MS->getOperand(1))
-                     ->getNumberValue();
+        Number = ((NumberOp *)MS->getOperand(1))->getNumberValue();
       }
       else
       {
         SourceLocation IngredientLoc;
-        std::shared_ptr<CheffeIngredient> Ingredient = nullptr;
+        CheffeIngredient *Ingredient = nullptr;
         const CheffeErrorCode Success =
-            getIngredientInfo(MS->getOperand(0), Ingredient, IngredientLoc);
+            getIngredientInfo(MS->getOperand(0), &Ingredient, IngredientLoc);
         if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
         {
           return CheffeErrorCode::CHEFFE_ERROR;
@@ -419,8 +408,7 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
     }
     case MethodStepKind::Clean:
     {
-      const auto MixingBowl =
-          std::static_pointer_cast<MixingBowlOp>(MS->getOperand(0));
+      const auto *MixingBowl = (MixingBowlOp *)MS->getOperand(0);
       const unsigned MixingBowlNo = MixingBowl->getMixingBowlNo();
 
       // If there's already nothing in the mixing bowl, don't bother cleaning
@@ -435,8 +423,7 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
     }
     case MethodStepKind::Mix:
     {
-      const auto MixingBowl =
-          std::static_pointer_cast<MixingBowlOp>(MS->getOperand(0));
+      const auto *MixingBowl = (MixingBowlOp *)MS->getOperand(0);
       const unsigned MixingBowlNo = MixingBowl->getMixingBowlNo();
 
       // If there's already nothing in the mixing bowl, don't bother cleaning
@@ -452,17 +439,17 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
     case MethodStepKind::Verb:
     {
       SourceLocation IngredientLoc;
-      std::shared_ptr<CheffeIngredient> Ingredient = nullptr;
+      CheffeIngredient *Ingredient = nullptr;
 
       const CheffeErrorCode Success =
-          getIngredientInfo(MS->getOperand(0), Ingredient, IngredientLoc);
+          getIngredientInfo(MS->getOperand(0), &Ingredient, IngredientLoc);
       if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
       {
         return CheffeErrorCode::CHEFFE_ERROR;
       }
 
-      const long long Distance = std::static_pointer_cast<NumberOp>(
-                                     MS->getOperand(1))->getNumberValue();
+      const long long Distance =
+          ((NumberOp *)MS->getOperand(1))->getNumberValue();
       assert(Distance > 0 && "Invalid distance");
 
       if (Ingredient->RuntimeValueData.Value == 0)
@@ -474,14 +461,13 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
     case MethodStepKind::UntilVerbed:
     {
       SourceLocation UntilIngredientLoc;
-      std::shared_ptr<CheffeIngredient> UntilIngredient =
-          std::static_pointer_cast<IngredientOp>(MS->getOperand(0))
-              ->getIngredient();
+      CheffeIngredient *UntilIngredient =
+          ((IngredientOp *)(MS->getOperand(0)))->getIngredient();
 
       if (UntilIngredient)
       {
         CheffeErrorCode Success = getIngredientInfo(
-            MS->getOperand(0), UntilIngredient, UntilIngredientLoc);
+            MS->getOperand(0), &UntilIngredient, UntilIngredientLoc);
         if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
         {
           return Success;
@@ -495,17 +481,17 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
       }
 
       SourceLocation FromIngredientLoc;
-      std::shared_ptr<CheffeIngredient> FromIngredient = nullptr;
+      CheffeIngredient *FromIngredient = nullptr;
 
       CheffeErrorCode Success = getIngredientInfo(
-          MS->getOperand(1), FromIngredient, FromIngredientLoc);
+          MS->getOperand(1), &FromIngredient, FromIngredientLoc);
       if (Success != CheffeErrorCode::CHEFFE_SUCCESS)
       {
         return CheffeErrorCode::CHEFFE_ERROR;
       }
 
-      const long long Distance = std::static_pointer_cast<NumberOp>(
-                                     MS->getOperand(2))->getNumberValue();
+      const long long Distance =
+          ((NumberOp *)(MS->getOperand(2)))->getNumberValue();
       assert(Distance < 0 && "Invalid distance");
 
       if (FromIngredient->RuntimeValueData.Value != 0)
@@ -516,8 +502,8 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
     }
     case MethodStepKind::SetAside:
     {
-      const long long Distance = std::static_pointer_cast<NumberOp>(
-                                     MS->getOperand(0))->getNumberValue();
+      const long long Distance =
+          ((NumberOp *)MS->getOperand(0))->getNumberValue();
       assert(Distance > 0 && "Invalid distance");
 
       MSI += Distance;
@@ -525,7 +511,7 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
     }
     case MethodStepKind::Serve:
     {
-      auto Recipe = std::static_pointer_cast<RecipeOp>(MS->getOperand(0));
+      auto *Recipe = (RecipeOp *)MS->getOperand(0);
       const std::string CalleeRecipeName = Recipe->getRecipeName();
 
       std::shared_ptr<CheffeRecipeInfo> CalleeRecipeInfo =
@@ -551,8 +537,8 @@ CheffeJIT::executeRecipe(std::shared_ptr<CheffeRecipeInfo> RecipeInfo,
     }
     case MethodStepKind::Refrigerate:
     {
-      const long long NumberOfHours = std::static_pointer_cast<NumberOp>(
-                                          MS->getOperand(0))->getNumberValue();
+      const long long NumberOfHours =
+          ((NumberOp *)(MS->getOperand(0)))->getNumberValue();
       return returnFromRecipe(MixingBowls, BakingDishes, CallerMixingBowls,
                               NumberOfHours, RecipeInfo->getRecipeTitle());
     }

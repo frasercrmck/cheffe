@@ -18,16 +18,15 @@ public:
   {
   }
 
-  CheffeScope(const std::string &BeginVerb,
-              std::shared_ptr<CheffeMethodStep> BeginMethodStep)
+  CheffeScope(const std::string &BeginVerb, CheffeMethodStep *BeginMethodStep)
       : BeginVerb(BeginVerb), BeginScope(BeginMethodStep), EndScope(nullptr)
   {
   }
 
   std::string BeginVerb;
-  std::shared_ptr<CheffeMethodStep> BeginScope;
-  std::shared_ptr<CheffeMethodStep> EndScope;
-  std::vector<std::shared_ptr<CheffeMethodStep>> BreakList;
+  CheffeMethodStep *BeginScope;
+  CheffeMethodStep *EndScope;
+  std::vector<CheffeMethodStep *> BreakList;
 };
 
 class CheffeScopeInfo
@@ -40,22 +39,22 @@ public:
   void clearInfo();
 
   void addScope(const std::string &BeginVerb,
-                std::shared_ptr<CheffeMethodStep> BeginMethodStep);
+                CheffeMethodStep *BeginMethodStep);
 
   bool empty() const;
 
-  bool popScope(std::shared_ptr<CheffeScope> &ScopeInfo);
+  bool popScope(CheffeScope **ScopeInfo);
 
-  bool addBreak(std::shared_ptr<CheffeMethodStep> MethodStep);
+  bool addBreak(CheffeMethodStep *MethodStep);
 
-  CheffeErrorCode fixupScopeMethodSteps(
-      const std::vector<std::shared_ptr<CheffeMethodStep>> &MethodList);
+  CheffeErrorCode
+  fixupScopeMethodSteps(const std::vector<CheffeMethodStep *> &MethodList);
 
   void dumpInfo(std::ostream &OS) const;
 
 private:
   std::stack<unsigned> ScopeStack;
-  std::vector<std::shared_ptr<CheffeScope>> ScopeList;
+  std::vector<std::unique_ptr<CheffeScope>> ScopeList;
 };
 
 } // end namespace cheffe

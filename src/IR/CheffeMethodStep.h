@@ -2,6 +2,7 @@
 #define CHEFFE_METHOD_STEP
 
 #include "Lexer/CheffeToken.h"
+#include "IR/CheffeIngredient.h"
 
 #include <vector>
 #include <ostream>
@@ -10,8 +11,6 @@
 
 namespace cheffe
 {
-
-class CheffeIngredient;
 
 enum class MethodStepKind
 {
@@ -63,20 +62,19 @@ public:
   {
   }
 
-  IngredientOp(const std::shared_ptr<CheffeIngredient> &Ingredient,
-               const SourceLocation SourceLoc)
+  IngredientOp(CheffeIngredient *Ingredient, const SourceLocation SourceLoc)
       : MethodOp(), Ingredient(Ingredient), SourceLoc(SourceLoc)
   {
   }
 
-  std::shared_ptr<CheffeIngredient> getIngredient() const;
+  CheffeIngredient *getIngredient() const;
 
   SourceLocation getSourceLoc() const;
 
   void dump(std::ostream &OS) const override;
 
 private:
-  std::shared_ptr<CheffeIngredient> Ingredient;
+  CheffeIngredient *Ingredient;
   SourceLocation SourceLoc;
 };
 
@@ -172,12 +170,12 @@ public:
   SourceLocation getSourceLoc() const;
   void setSourceLoc(const SourceLocation Loc);
 
-  std::shared_ptr<MethodOp> getOperand(const unsigned Idx) const;
+  MethodOp *getOperand(const unsigned Idx) const;
 
-  void addIngredient(const std::shared_ptr<CheffeIngredient> &IngredientInfo,
+  void addIngredient(CheffeIngredient *IngredientInfo,
                      const SourceLocation SourceLoc);
 
-  void addIngredient(std::shared_ptr<IngredientOp> IngredientOp);
+  void addIngredient(IngredientOp *IngredientOp);
 
   void addMixingBowl(const unsigned MixingBowlNo);
 
@@ -193,7 +191,7 @@ public:
 private:
   MethodStepKind Kind;
   SourceLocation SourceLoc;
-  std::vector<std::shared_ptr<MethodOp>> MethodOps;
+  std::vector<std::unique_ptr<MethodOp>> MethodOps;
 };
 
 } // end namespace cheffe

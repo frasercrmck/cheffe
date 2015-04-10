@@ -39,13 +39,11 @@ private:
   StackItemTy popStackItem(std::vector<StackTy> &Stack,
                            const unsigned StackItemIdx);
 
-  bool
-  checkIngredientHasValue(const std::shared_ptr<CheffeIngredient> &Ingredient,
-                          const SourceLocation IngredientLoc);
-  CheffeErrorCode
-  getIngredientInfo(const std::shared_ptr<MethodOp> &MOp,
-                    std::shared_ptr<CheffeIngredient> &IngredientInfo,
-                    SourceLocation &IngredientLoc);
+  bool checkIngredientHasValue(const CheffeIngredient *Ingredient,
+                               const SourceLocation IngredientLoc);
+  CheffeErrorCode getIngredientInfo(const MethodOp *MOp,
+                                    CheffeIngredient **IngredientInfo,
+                                    SourceLocation &IngredientLoc);
 
   CheffeErrorCode returnFromRecipe(std::vector<StackTy> &MixingBowls,
                                    std::vector<StackTy> &BakingDishes,

@@ -29,24 +29,23 @@ public:
 
   void addIngredientDefinition(const CheffeIngredient &Ingredient);
 
-  std::shared_ptr<CheffeIngredient>
-  getIngredient(const std::string &IngredientName) const;
+  CheffeIngredient *getIngredient(const std::string &IngredientName) const;
 
-  std::vector<std::shared_ptr<CheffeIngredient>> getDryIngredients() const;
+  std::vector<CheffeIngredient *> getDryIngredients() const;
 
-  std::shared_ptr<CheffeMethodStep> addNewMethodStep(const MethodStepKind Kind);
+  CheffeMethodStep *addNewMethodStep(const MethodStepKind Kind);
 
-  std::shared_ptr<CheffeMethodStep> getLastMethodStep() const;
+  CheffeMethodStep *getLastMethodStep() const;
 
-  const std::vector<std::shared_ptr<CheffeMethodStep>> &getMethodStepList();
+  std::vector<CheffeMethodStep *> getMethodStepList();
 
   void resetIngredientsToInitialValues();
 
 private:
   unsigned ServesNo;
   std::string RecipeTitle;
-  std::map<std::string, std::shared_ptr<CheffeIngredient>> Ingredients;
-  std::vector<std::shared_ptr<CheffeMethodStep>> MethodSteps;
+  std::map<std::string, std::unique_ptr<CheffeIngredient>> Ingredients;
+  std::vector<std::unique_ptr<CheffeMethodStep>> MethodSteps;
 };
 
 } // end namespace cheffe

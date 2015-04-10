@@ -58,7 +58,7 @@ void MethodOp::dump(std::ostream &OS) const
   (void)OS;
 }
 
-std::shared_ptr<CheffeIngredient> IngredientOp::getIngredient() const
+CheffeIngredient *IngredientOp::getIngredient() const
 {
   return Ingredient;
 }
@@ -127,10 +127,10 @@ void RecipeOp::dump(std::ostream &OS) const
   OS << "(Recipe '" << RecipeName << "')";
 }
 
-std::shared_ptr<MethodOp> CheffeMethodStep::getOperand(const unsigned Idx) const
+MethodOp *CheffeMethodStep::getOperand(const unsigned Idx) const
 {
   assert(Idx < MethodOps.size() && "Invalid operand access!");
-  return MethodOps[Idx];
+  return MethodOps[Idx].get();
 }
 
 MethodStepKind CheffeMethodStep::getMethodStepKind() const
@@ -148,14 +148,13 @@ void CheffeMethodStep::setSourceLoc(const SourceLocation Loc)
   SourceLoc = Loc;
 }
 
-void CheffeMethodStep::addIngredient(
-    const std::shared_ptr<CheffeIngredient> &Ingredient,
-    const SourceLocation SourceLoc)
+void CheffeMethodStep::addIngredient(CheffeIngredient *Ingredient,
+                                     const SourceLocation SourceLoc)
 {
-  MethodOps.push_back(std::make_shared<IngredientOp>(Ingredient, SourceLoc));
+  MethodOps.push_back(std::make_unique<IngredientOp>(Ingredient, SourceLoc));
 }
 
-void CheffeMethodStep::addIngredient(std::shared_ptr<IngredientOp> IngredientOp)
+void CheffeMethodStep::addIngredient(IngredientOp *IngredientOp)
 {
   assert(IngredientOp != nullptr && "Invalid ingredient information");
   addIngredient(IngredientOp->getIngredient(), IngredientOp->getSourceLoc());
@@ -163,23 +162,23 @@ void CheffeMethodStep::addIngredient(std::shared_ptr<IngredientOp> IngredientOp)
 
 void CheffeMethodStep::addMixingBowl(const unsigned MixingBowlNo)
 {
-  MethodOps.push_back(std::make_shared<MixingBowlOp>(MixingBowlNo));
+  MethodOps.push_back(std::make_unique<MixingBowlOp>(MixingBowlNo));
 }
 
 void CheffeMethodStep::addBakingDish(const unsigned BakingDishNo)
 {
-  MethodOps.push_back(std::make_shared<BakingDishOp>(BakingDishNo));
+  MethodOps.push_back(std::make_unique<BakingDishOp>(BakingDishNo));
 }
 
 void CheffeMethodStep::addNumber(const long long NumberValue)
 {
-  MethodOps.push_back(std::make_shared<NumberOp>(NumberValue));
+  MethodOps.push_back(std::make_unique<NumberOp>(NumberValue));
 }
 
 void CheffeMethodStep::addRecipe(const std::string &RecipeName,
                                  const SourceLocation SourceLoc)
 {
-  MethodOps.push_back(std::make_shared<RecipeOp>(RecipeName, SourceLoc));
+  MethodOps.push_back(std::make_unique<RecipeOp>(RecipeName, SourceLoc));
 }
 
 std::ostream &operator<<(std::ostream &OS, const CheffeMethodStep &MethodStep)

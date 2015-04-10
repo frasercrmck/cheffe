@@ -78,11 +78,11 @@ bool CheffeParser::checkCurrentTokenPlurality(const long long Number,
 }
 
 // Emits a diagnostic and returns true if the ingredient is undefined
-bool CheffeParser::getIngredientInfo(
-    const std::string &IngredientName, const SourceLocation IngredientLoc,
-    std::shared_ptr<CheffeIngredient> &Ingredient)
+bool CheffeParser::getIngredientInfo(const std::string &IngredientName,
+                                     const SourceLocation IngredientLoc,
+                                     CheffeIngredient **Ingredient)
 {
-  Ingredient = CurrentRecipe->getIngredient(IngredientName);
+  *Ingredient = CurrentRecipe->getIngredient(IngredientName);
   if (Ingredient != nullptr)
   {
     return false;
@@ -1008,8 +1008,8 @@ CheffeParser::parsePutOrFoldMethodStep(const MethodStepKind Step)
 
   const SourceLocation IngredientLoc(BeginIngredientLoc, EndIngredientLoc);
 
-  std::shared_ptr<CheffeIngredient> Ingredient = nullptr;
-  if (getIngredientInfo(IngredientName, IngredientLoc, Ingredient))
+  CheffeIngredient *Ingredient = nullptr;
+  if (getIngredientInfo(IngredientName, IngredientLoc, &Ingredient))
   {
     return CheffeErrorCode::CHEFFE_ERROR;
   }
@@ -1070,7 +1070,7 @@ CheffeParser::parseArithmeticMethodStep(const MethodStepKind Step)
   }
   const std::string Preposition = MethodStepPrepositions.find(Step)->second;
 
-  std::shared_ptr<CheffeMethodStep> MethodStep = nullptr;
+  CheffeMethodStep *MethodStep = nullptr;
 
   // Not in the spec, but in some examples:
   //   "Add the potatoes [to [nth] mixing bowl]."
@@ -1105,8 +1105,8 @@ CheffeParser::parseArithmeticMethodStep(const MethodStepKind Step)
 
     const SourceLocation IngredientLoc(BeginIngredientLoc, EndIngredientLoc);
 
-    std::shared_ptr<CheffeIngredient> Ingredient = nullptr;
-    if (getIngredientInfo(IngredientName, IngredientLoc, Ingredient))
+    CheffeIngredient *Ingredient = nullptr;
+    if (getIngredientInfo(IngredientName, IngredientLoc, &Ingredient))
     {
       return CheffeErrorCode::CHEFFE_ERROR;
     }
@@ -1189,8 +1189,8 @@ CheffeErrorCode CheffeParser::parseTakeMethodStep()
 
   const SourceLocation IngredientLoc(BeginIngredientLoc, EndIngredientLoc);
 
-  std::shared_ptr<CheffeIngredient> Ingredient = nullptr;
-  if (getIngredientInfo(IngredientName, IngredientLoc, Ingredient))
+  CheffeIngredient *Ingredient = nullptr;
+  if (getIngredientInfo(IngredientName, IngredientLoc, &Ingredient))
   {
     return CheffeErrorCode::CHEFFE_ERROR;
   }
@@ -1291,8 +1291,8 @@ CheffeErrorCode CheffeParser::parseLiquefyMethodStep()
 
   const SourceLocation IngredientLoc(BeginIngredientLoc, EndIngredientLoc);
 
-  std::shared_ptr<CheffeIngredient> Ingredient = nullptr;
-  if (getIngredientInfo(IngredientName, IngredientLoc, Ingredient))
+  CheffeIngredient *Ingredient = nullptr;
+  if (getIngredientInfo(IngredientName, IngredientLoc, &Ingredient))
   {
     return CheffeErrorCode::CHEFFE_ERROR;
   }
@@ -1386,8 +1386,8 @@ CheffeErrorCode CheffeParser::parseStirMethodStep()
 
   const SourceLocation IngredientLoc(BeginIngredientLoc, EndIngredientLoc);
 
-  std::shared_ptr<CheffeIngredient> Ingredient = nullptr;
-  if (getIngredientInfo(IngredientName, IngredientLoc, Ingredient))
+  CheffeIngredient *Ingredient = nullptr;
+  if (getIngredientInfo(IngredientName, IngredientLoc, &Ingredient))
   {
     return CheffeErrorCode::CHEFFE_ERROR;
   }
@@ -1624,7 +1624,7 @@ CheffeErrorCode CheffeParser::parseVerbMethodStep()
   getNextToken();
 
   SourceLocation IngredientLoc;
-  std::shared_ptr<CheffeIngredient> Ingredient = nullptr;
+  CheffeIngredient *Ingredient = nullptr;
 
   if (CurrentToken.isNot("until"))
   {
@@ -1649,7 +1649,7 @@ CheffeErrorCode CheffeParser::parseVerbMethodStep()
 
     IngredientLoc = SourceLocation(BeginIngredientLoc, EndIngredientLoc);
 
-    if (getIngredientInfo(IngredientName, IngredientLoc, Ingredient))
+    if (getIngredientInfo(IngredientName, IngredientLoc, &Ingredient))
     {
       return CheffeErrorCode::CHEFFE_ERROR;
     }
@@ -1677,8 +1677,8 @@ CheffeErrorCode CheffeParser::parseVerbMethodStep()
 
     const std::string UntilVerb = CurrentToken.getIdentifierString();
 
-    std::shared_ptr<CheffeScope> Scope = nullptr;
-    if (RecipeScopeInfo.popScope(Scope))
+    CheffeScope *Scope = nullptr;
+    if (RecipeScopeInfo.popScope(&Scope))
     {
       Diagnostics->report(CurrentToken.getSourceLoc(), DiagnosticKind::Error,
                           LineContext::WithContext)
@@ -1721,8 +1721,8 @@ CheffeErrorCode CheffeParser::parseVerbMethodStep()
     // UntilVerbed's method step.
     assert(Scope->BeginScope &&
            "MethodStep at beginning of loop shall not be nullptr");
-    MethodStep->addIngredient(std::static_pointer_cast<IngredientOp>(
-        Scope->BeginScope->getOperand(0)));
+    MethodStep->addIngredient(
+        ((IngredientOp *)(Scope->BeginScope->getOperand(0))));
 
     // Register this UntilVerbed method step as the end of the current nest.
     Scope->EndScope = MethodStep;

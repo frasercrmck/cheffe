@@ -12,13 +12,12 @@ void CheffeScopeInfo::clearInfo()
   }
 }
 
-void CheffeScopeInfo::addScope(
-    const std::string &BeginVerb,
-    std::shared_ptr<CheffeMethodStep> BeginMethodStep)
+void CheffeScopeInfo::addScope(const std::string &BeginVerb,
+                               CheffeMethodStep *BeginMethodStep)
 {
   ScopeStack.push(ScopeList.size());
   ScopeList.push_back(
-      std::make_shared<CheffeScope>(BeginVerb, BeginMethodStep));
+      std::make_unique<CheffeScope>(BeginVerb, BeginMethodStep));
 }
 
 bool CheffeScopeInfo::empty() const
@@ -26,7 +25,7 @@ bool CheffeScopeInfo::empty() const
   return ScopeStack.empty();
 }
 
-bool CheffeScopeInfo::popScope(std::shared_ptr<CheffeScope> &ScopeInfo)
+bool CheffeScopeInfo::popScope(CheffeScope **ScopeInfo)
 {
   if (ScopeStack.empty())
   {
@@ -37,11 +36,11 @@ bool CheffeScopeInfo::popScope(std::shared_ptr<CheffeScope> &ScopeInfo)
   ScopeStack.pop();
 
   assert(LastScopeId < ScopeList.size() && "Invalid nest index");
-  ScopeInfo = ScopeList[LastScopeId];
+  *ScopeInfo = ScopeList[LastScopeId].get();
   return false;
 }
 
-bool CheffeScopeInfo::addBreak(std::shared_ptr<CheffeMethodStep> MethodStep)
+bool CheffeScopeInfo::addBreak(CheffeMethodStep *MethodStep)
 {
   if (ScopeStack.empty())
   {
@@ -69,7 +68,7 @@ bool CheffeScopeInfo::addBreak(std::shared_ptr<CheffeMethodStep> MethodStep)
 // * Each Set Aside method scope in the nest get an offset to the end of the
 //   scope.
 CheffeErrorCode CheffeScopeInfo::fixupScopeMethodSteps(
-    const std::vector<std::shared_ptr<CheffeMethodStep>> &MethodList)
+    const std::vector<CheffeMethodStep *> &MethodList)
 {
   for (auto &Scope : ScopeList)
   {
@@ -81,7 +80,7 @@ CheffeErrorCode CheffeScopeInfo::fixupScopeMethodSteps(
     {
       return CheffeErrorCode::CHEFFE_ERROR;
     }
-    const auto BeginScopeMethodStep = Scope->BeginScope;
+    auto *BeginScopeMethodStep = Scope->BeginScope;
 
     auto BeginFound = std::find(std::begin(MethodList), std::end(MethodList),
                                 BeginScopeMethodStep);
@@ -90,7 +89,7 @@ CheffeErrorCode CheffeScopeInfo::fixupScopeMethodSteps(
       return CheffeErrorCode::CHEFFE_ERROR;
     }
 
-    const auto EndScopeMethodStep = Scope->EndScope;
+    auto *EndScopeMethodStep = Scope->EndScope;
     auto EndFound = std::find(std::begin(MethodList), std::end(MethodList),
                               EndScopeMethodStep);
     if (EndFound == std::end(MethodList))

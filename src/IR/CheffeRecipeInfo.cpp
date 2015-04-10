@@ -23,12 +23,11 @@ void CheffeRecipeInfo::addIngredientDefinition(
     const CheffeIngredient &Ingredient)
 {
   // It's alright to overwrite an existing ingredient; it's in the spec
-  auto IngredientInfo =
-      std::shared_ptr<CheffeIngredient>(new CheffeIngredient(Ingredient));
+  auto IngredientInfo = std::make_unique<CheffeIngredient>(Ingredient);
   Ingredients[IngredientInfo->Name] = std::move(IngredientInfo);
 }
 
-std::shared_ptr<CheffeIngredient>
+CheffeIngredient *
 CheffeRecipeInfo::getIngredient(const std::string &IngredientName) const
 {
   auto Ingredient = Ingredients.find(IngredientName);
@@ -36,50 +35,51 @@ CheffeRecipeInfo::getIngredient(const std::string &IngredientName) const
   {
     return nullptr;
   }
-  return Ingredient->second;
+  return Ingredient->second.get();
 }
 
-std::vector<std::shared_ptr<CheffeIngredient>>
-CheffeRecipeInfo::getDryIngredients() const
+std::vector<CheffeIngredient *> CheffeRecipeInfo::getDryIngredients() const
 {
-  std::vector<std::shared_ptr<CheffeIngredient>> DryIngredients;
+  std::vector<CheffeIngredient *> DryIngredients;
   for (auto &Ingredient : Ingredients)
   {
     if (Ingredient.second->RuntimeValueData.IsDry)
     {
-      DryIngredients.push_back(Ingredient.second);
+      DryIngredients.push_back(Ingredient.second.get());
     }
   }
 
   return DryIngredients;
 }
 
-std::shared_ptr<CheffeMethodStep>
-CheffeRecipeInfo::addNewMethodStep(const MethodStepKind Kind)
+CheffeMethodStep *CheffeRecipeInfo::addNewMethodStep(const MethodStepKind Kind)
 {
-  auto MethodStep =
-      std::shared_ptr<CheffeMethodStep>(new CheffeMethodStep(Kind));
-  MethodSteps.push_back(MethodStep);
-  return MethodStep;
+  auto MethodStep = std::make_unique<CheffeMethodStep>(Kind);
+  MethodSteps.push_back(std::move(MethodStep));
+  return MethodSteps.back().get();
 }
 
-std::shared_ptr<CheffeMethodStep> CheffeRecipeInfo::getLastMethodStep() const
+CheffeMethodStep *CheffeRecipeInfo::getLastMethodStep() const
 {
-  return MethodSteps.empty() ? nullptr : MethodSteps.back();
+  return MethodSteps.empty() ? nullptr : MethodSteps.back().get();
 }
 
 void CheffeRecipeInfo::resetIngredientsToInitialValues()
 {
-  for (auto Ingredient : Ingredients)
+  for (auto &Ingredient : Ingredients)
   {
     Ingredient.second->resetToInitialValue();
   }
 }
 
-const std::vector<std::shared_ptr<CheffeMethodStep>> &
-CheffeRecipeInfo::getMethodStepList()
+std::vector<CheffeMethodStep *> CheffeRecipeInfo::getMethodStepList()
 {
-  return MethodSteps;
+  std::vector<CheffeMethodStep *> MethodStepList;
+  for (auto &MS : MethodSteps)
+  {
+    MethodStepList.push_back(MS.get());
+  }
+  return MethodStepList;
 }
 
 } // end namespace cheffe

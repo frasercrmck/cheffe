@@ -66,7 +66,7 @@ int main(int argc, char **argv)
         return 1;
       }
       bool StrictChef = false;
-      const char* OptionValue = argv[++i];
+      const char *OptionValue = argv[++i];
       if (!std::strcmp(OptionValue, "on"))
       {
         StrictChef = true;
