@@ -2,7 +2,7 @@ cmake_minimum_required ( VERSION 3.0 )
 
 project( cheffe )
 
-set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11" )
+set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14" )
 
 set( CHEFFE_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR} )
 
